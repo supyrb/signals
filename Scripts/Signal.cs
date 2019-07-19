@@ -18,7 +18,7 @@ namespace Supyrb
 
 		public override int ListenerCount => listeners.Count;
 
-		protected Signal() : base()
+		public Signal() : base()
 		{
 			this.listeners = new OrderedList<Action>(true);
 		}
@@ -56,7 +56,7 @@ namespace Supyrb
 
 		public override int ListenerCount => listeners.Count;
 
-		protected Signal() : base()
+		public Signal() : base()
 		{
 			this.listeners = new OrderedList<Action<T>>(true);
 		}
@@ -102,7 +102,7 @@ namespace Supyrb
 
 		public override int ListenerCount => listeners.Count;
 
-		protected Signal() : base()
+		public Signal() : base()
 		{
 			this.listeners = new OrderedList<Action<T, U>>(true);
 		}
@@ -151,7 +151,7 @@ namespace Supyrb
 
 		public override int ListenerCount => listeners.Count;
 
-		protected Signal() : base()
+		public Signal() : base()
 		{
 			this.listeners = new OrderedList<Action<T, U, V>>(true);
 		}
