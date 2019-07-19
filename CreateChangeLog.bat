@@ -1,0 +1,2 @@
+github_changelog_generator supyrb/signals
+PAUSE
