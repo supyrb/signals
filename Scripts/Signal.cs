@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ASignal.cs" company="Supyrb">
+// <copyright file="Signal.cs" company="Supyrb">
 //   Copyright (c) 2019 Supyrb. All rights reserved.
 // </copyright>
 // <author>
@@ -12,13 +12,13 @@ using System;
 
 namespace Supyrb
 {
-	public abstract class ASignal : ABaseSignal
+	public class Signal : ABaseSignal
 	{
 		private readonly OrderedList<Action> listeners;
 
 		public override int ListenerCount => listeners.Count;
 
-		protected ASignal() : base()
+		protected Signal() : base()
 		{
 			this.listeners = new OrderedList<Action>(true);
 		}
@@ -49,14 +49,14 @@ namespace Supyrb
 		}
 	}
 
-	public abstract class ASignal<T> : ABaseSignal
+	public class Signal<T> : ABaseSignal
 	{
 		private readonly OrderedList<Action<T>> listeners;
 		private T context;
 
 		public override int ListenerCount => listeners.Count;
 
-		protected ASignal() : base()
+		protected Signal() : base()
 		{
 			this.listeners = new OrderedList<Action<T>>(true);
 		}
@@ -94,7 +94,7 @@ namespace Supyrb
 		}
 	}
 
-	public abstract class ASignal<T, U> : ABaseSignal
+	public class Signal<T, U> : ABaseSignal
 	{
 		private readonly OrderedList<Action<T, U>> listeners;
 		private T context0;
@@ -102,7 +102,7 @@ namespace Supyrb
 
 		public override int ListenerCount => listeners.Count;
 
-		protected ASignal() : base()
+		protected Signal() : base()
 		{
 			this.listeners = new OrderedList<Action<T, U>>(true);
 		}
@@ -142,7 +142,7 @@ namespace Supyrb
 		}
 	}
 
-	public abstract class ASignal<T, U, V> : ABaseSignal
+	public class Signal<T, U, V> : ABaseSignal
 	{
 		private readonly OrderedList<Action<T, U, V>> listeners;
 		private T context0;
@@ -151,7 +151,7 @@ namespace Supyrb
 
 		public override int ListenerCount => listeners.Count;
 
-		protected ASignal() : base()
+		protected Signal() : base()
 		{
 			this.listeners = new OrderedList<Action<T, U, V>>(true);
 		}
