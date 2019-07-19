@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.1.2](https://github.com/supyrb/signals/tree/0.1.2) (2019-07-19)
+[Full Changelog](https://github.com/supyrb/signals/compare/0.1.1...0.1.2)
+
 ## [0.1.1](https://github.com/supyrb/signals/tree/0.1.1) (2019-07-19)
 [Full Changelog](https://github.com/supyrb/signals/compare/0.1.0...0.1.1)
 
