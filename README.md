@@ -5,7 +5,7 @@
 
 ## UPM
 
-Import via `"com.supyrb.signals": "https://github.com/supyrb/signals#0.1.0"`
+Import via `"com.supyrb.signals": "https://github.com/supyrb/signals#0.1.2"`
 
 ## Features
 
