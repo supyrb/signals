@@ -31,11 +31,11 @@ namespace Supyrb
 		/// <summary>
 		/// Get the Signal for a certain class. If the signal is not yet registered in the hub it will be created.
 		/// </summary>
-		/// <typeparam name="SType">Type of the Signal</typeparam>
+		/// <typeparam name="T">Type of the Signal</typeparam>
 		/// <returns>An instance of the Signal of SType</returns>
-		public static SType Get<SType>() where SType : ISignal, new()
+		public static T Get<T>() where T : ISignal, new()
 		{
-			return signalHub.Get<SType>();
+			return signalHub.Get<T>();
 		}
 	}
 
@@ -46,19 +46,19 @@ namespace Supyrb
 		/// <summary>
 		/// Getter for a signal of a given type
 		/// </summary>
-		/// <typeparam name="SType">Type of signal</typeparam>
+		/// <typeparam name="T">Type of signal</typeparam>
 		/// <returns>The proper signal binding</returns>
-		public SType Get<SType>() where SType : ISignal, new()
+		public T Get<T>() where T : ISignal, new()
 		{
-			var signalType = typeof(SType);
+			var signalType = typeof(T);
 			ISignal signal;
 
 			if (signals.TryGetValue(signalType, out signal))
 			{
-				return (SType) signal;
+				return (T) signal;
 			}
 
-			return (SType) Bind(signalType);
+			return (T) Bind(signalType);
 		}
 
 		private ISignal Bind(Type signalType)
