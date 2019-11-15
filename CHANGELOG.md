@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.1.3](https://github.com/supyrb/signals/tree/0.1.3) (2019-11-15)
+[Full Changelog](https://github.com/supyrb/signals/compare/0.1.2...0.1.3)
+
+**Closed issues:**
+
+- Add example to package [\#4](https://github.com/supyrb/signals/issues/4)
+- Changelog generation [\#2](https://github.com/supyrb/signals/issues/2)
+
 ## [0.1.2](https://github.com/supyrb/signals/tree/0.1.2) (2019-07-19)
 [Full Changelog](https://github.com/supyrb/signals/compare/0.1.1...0.1.2)
 
