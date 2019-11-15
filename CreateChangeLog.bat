@@ -1,2 +1,2 @@
-github_changelog_generator supyrb/signals
+github_changelog_generator -u supyrb -p signals
 PAUSE
