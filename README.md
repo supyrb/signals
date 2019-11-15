@@ -1,5 +1,7 @@
 # Signals UPM
 
+![UPM Screenshot](https://repository-images.githubusercontent.com/196998874/5b81aa00-0794-11ea-804b-4acc77a1ce2e)
+
 ### A typesafe, lightweight messaging lib for Unity.
 ---
 
