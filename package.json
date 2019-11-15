@@ -14,5 +14,12 @@
 	"unity": "2018.1",
 	"dependencies": {
 		
-	}
+	},
+	"samples": [
+		{
+			"displayName": "Basic",
+			"description": "Simple example with one listener showing the basic usage of order and consuming signals",
+			"path": "Samples~/Basic"
+		}
+	]
 }
