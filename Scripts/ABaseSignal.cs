@@ -101,5 +101,28 @@ namespace Supyrb
 		{
 			consumed = true;
 		}
+
+		public override string ToString()
+		{
+			string state = string.Empty;
+			if (paused)
+			{
+				state = "Paused at " + currentIndex;
+			}
+			else if (consumed)
+			{
+				state = "Consumed at " + (currentIndex-1);
+			}
+			else if (currentIndex > 0 && !finished)
+			{
+				state = "Running at " + currentIndex;
+			}
+			else
+			{
+				state = "Idle";
+			}
+
+			return string.Format("Signal {0}: {1} Listeners, Current state {2}", this.GetType().Name, ListenerCount, state);
+		}
 	}
 }
