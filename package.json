@@ -20,6 +20,11 @@
 			"displayName": "Basic",
 			"description": "Simple example with one listener showing the basic usage of order and consuming signals",
 			"path": "Samples~/Basic"
+		},
+		{
+			"displayName": "StressTest",
+			"description": "Dispatch every frame to 10000 listeners",
+			"path": "Samples~/StressTest"
 		}
 	]
 }
