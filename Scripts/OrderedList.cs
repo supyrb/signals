@@ -37,35 +37,46 @@ namespace Supyrb
 			set => values[index] = value;
 		}
 
-		public bool Add(int order, T value)
+		/// <summary>
+		/// Add an item to the ordered list
+		/// </summary>
+		/// <param name="order">Value after which the list is sorted (Ascending)</param>
+		/// <param name="value">Value to be added</param>
+		/// <returns>The index at which the value was added, or -1 if the value was already in the list and only unique values are allowed</returns>
+		public int Add(int order, T value)
 		{
 			if (uniqueValuesOnly && Contains(value))
 			{
-				return false;
+				return -1;
 			}
 
 			var index = GetSortedIndexFor(order);
 			sortedOrders.Insert(index, order);
 			values.Insert(index, value);
-			return true;
+			return index;
 		}
 
-		public int IndexOf(T value)
-		{
-			return values.IndexOf(value);
-		}
-
-		public bool Remove(T value)
+		/// <summary>
+		/// Remove an item from the ordered list
+		/// </summary>
+		/// <param name="value">Item to remove</param>
+		/// <returns>The index at which the item was removed, or -1 if the list didn't contain the item</returns>
+		public int Remove(T value)
 		{
 			var index = IndexOf(value);
 			if (index == -1)
 			{
-				return false;
+				return -1;
 			}
 
 			sortedOrders.RemoveAt(index);
 			values.RemoveAt(index);
-			return true;
+			return index;
+		}
+		
+		public int IndexOf(T value)
+		{
+			return values.IndexOf(value);
 		}
 
 		public void Clear()

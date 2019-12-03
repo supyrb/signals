@@ -79,6 +79,32 @@ namespace Supyrb
 			Run();
 		}
 
+		protected void AddListenerAt(int index)
+		{
+			if (finished || consumed)
+			{
+				return;
+			}
+			
+			if (currentIndex >= index)
+			{
+				currentIndex++;
+			}
+		}
+		
+		protected void RemoveListenerAt(int index)
+		{
+			if (finished || consumed)
+			{
+				return;
+			}
+
+			if (currentIndex >= index)
+			{
+				currentIndex--;
+			}
+		}
+
 		protected virtual void OnFinish()
 		{
 			finished = true;

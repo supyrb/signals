@@ -29,12 +29,24 @@ namespace Supyrb
 			UnityEngine.Debug.Assert(listener.Method.GetCustomAttributes(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false).Length == 0,
 				"Adding anonymous delegates as Signal callbacks is not supported (you wouldn't be able to unregister them later).");
 			#endif
-			return listeners.Add(order, listener);
+			var index = listeners.Add(order, listener);
+			if (index < 0)
+			{
+				return false;
+			}
+			AddListenerAt(index);
+			return true;
 		}
 
 		public bool RemoveListener(Action listener)
 		{
-			return listeners.Remove(listener);
+			var index = listeners.Remove(listener);
+			if (index < 0)
+			{
+				return false;
+			}
+			RemoveListenerAt(index);
+			return true;
 		}
 
 		public void Dispatch()
@@ -67,12 +79,24 @@ namespace Supyrb
 			UnityEngine.Debug.Assert(listener.Method.GetCustomAttributes(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false).Length == 0,
 				"Adding anonymous delegates as Signal callbacks is not supported (you wouldn't be able to unregister them later).");
 			#endif
-			return listeners.Add(order, listener);
+			var index = listeners.Add(order, listener);
+			if (index < 0)
+			{
+				return false;
+			}
+			AddListenerAt(index);
+			return true;
 		}
 
 		public bool RemoveListener(Action<T> listener)
 		{
-			return listeners.Remove(listener);
+			var index = listeners.Remove(listener);
+			if (index < 0)
+			{
+				return false;
+			}
+			RemoveListenerAt(index);
+			return true;
 		}
 
 		public void Dispatch(T context)
@@ -113,12 +137,24 @@ namespace Supyrb
 			UnityEngine.Debug.Assert(listener.Method.GetCustomAttributes(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false).Length == 0,
 				"Adding anonymous delegates as Signal callbacks is not supported (you wouldn't be able to unregister them later).");
 			#endif
-			return listeners.Add(order, listener);
+			var index = listeners.Add(order, listener);
+			if (index < 0)
+			{
+				return false;
+			}
+			AddListenerAt(index);
+			return true;
 		}
 
 		public bool RemoveListener(Action<T, U> listener)
 		{
-			return listeners.Remove(listener);
+			var index = listeners.Remove(listener);
+			if (index < 0)
+			{
+				return false;
+			}
+			RemoveListenerAt(index);
+			return true;
 		}
 
 		public void Dispatch(T context0, U context1)
@@ -162,12 +198,24 @@ namespace Supyrb
 			UnityEngine.Debug.Assert(listener.Method.GetCustomAttributes(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false).Length == 0,
 				"Adding anonymous delegates as Signal callbacks is not supported (you wouldn't be able to unregister them later).");
 			#endif
-			return listeners.Add(order, listener);
+			var index = listeners.Add(order, listener);
+			if (index < 0)
+			{
+				return false;
+			}
+			AddListenerAt(index);
+			return true;
 		}
 
 		public bool RemoveListener(Action<T, U, V> listener)
 		{
-			return listeners.Remove(listener);
+			var index = listeners.Remove(listener);
+			if (index < 0)
+			{
+				return false;
+			}
+			RemoveListenerAt(index);
+			return true;
 		}
 
 		public void Dispatch(T context0, U context1, V context2)
