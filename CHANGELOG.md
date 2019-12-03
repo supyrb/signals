@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.5](https://github.com/supyrb/signals/tree/0.1.5) (2019-12-03)
+
+[Full Changelog](https://github.com/supyrb/signals/compare/0.1.4...0.1.5)
+
+**Fixed bugs:**
+
+- Adding and removing Listeners while Signal is dispatching [\#6](https://github.com/supyrb/signals/issues/6)
+
 ## [0.1.4](https://github.com/supyrb/signals/tree/0.1.4) (2019-12-03)
 
 [Full Changelog](https://github.com/supyrb/signals/compare/0.1.3...0.1.4)
