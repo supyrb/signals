@@ -9,12 +9,14 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-using System;
-
 namespace Supyrb
 {
 	public class BasicExampleSignal : Signal
 	{
-		
+		// Override invoke to make sure that the derived signal class shows up in the stacktrace
+		protected override void Invoke(int index)
+		{
+			base.Invoke(index);
+		}
 	}
 }
