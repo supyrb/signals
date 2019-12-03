@@ -63,20 +63,22 @@ namespace Supyrb
 
 		protected void Run()
 		{
-			if (paused || finished || consumed)
+			while (true)
 			{
-				return;
-			}
+				if (paused || finished || consumed)
+				{
+					return;
+				}
 
-			if (currentIndex >= ListenerCount)
-			{
-				OnFinish();
-				return;
-			}
+				if (currentIndex >= ListenerCount)
+				{
+					OnFinish();
+					return;
+				}
 
-			Invoke(currentIndex);
-			currentIndex++;
-			Run();
+				Invoke(currentIndex);
+				currentIndex++;
+			}
 		}
 
 		protected void AddListenerAt(int index)
