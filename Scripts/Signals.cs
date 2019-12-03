@@ -4,7 +4,11 @@
 // </copyright>
 // <author>
 //   Johannes Deml
-//   send@johannesdeml.com
+//   public@deml.io
+// </author>
+// <author>
+//   Yanko Oliveira
+//   https://github.com/yankooliveira
 // </author>
 // <summary>
 // Inspired by
