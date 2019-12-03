@@ -37,6 +37,22 @@ namespace Supyrb
 		{
 			return signalHub.Get<T>();
 		}
+		
+		/// <summary>
+		/// The number of registered signals
+		/// </summary>
+		public static int Count
+		{
+			get { return signalHub.Count; }
+		}
+
+		/// <summary>
+		/// Removes all registered signals
+		/// </summary>
+		public static void Clear()
+		{
+			signalHub.Clear();
+		}
 	}
 
 	public class SignalHub
@@ -59,6 +75,22 @@ namespace Supyrb
 			}
 
 			return (T) Bind(signalType);
+		}
+		
+		/// <summary>
+		/// The number of registered signals in the hub
+		/// </summary>
+		public int Count
+		{
+			get { return signals.Count; }
+		}
+
+		/// <summary>
+		/// Removes all signals from the hub
+		/// </summary>
+		public void Clear()
+		{
+			signals.Clear();
 		}
 
 		private ISignal Bind(Type signalType)
