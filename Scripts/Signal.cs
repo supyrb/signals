@@ -4,11 +4,12 @@
 // </copyright>
 // <author>
 //   Johannes Deml
-//   send@johannesdeml.com
+//   public@deml.io
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using UnityEngine.Profiling;
 
 namespace Supyrb
 {
@@ -34,6 +35,7 @@ namespace Supyrb
 			{
 				return false;
 			}
+
 			AddListenerAt(index);
 			return true;
 		}
@@ -45,14 +47,23 @@ namespace Supyrb
 			{
 				return false;
 			}
+
 			RemoveListenerAt(index);
 			return true;
 		}
 
 		public void Dispatch()
 		{
-			CleanupForDispatch();
-			Run();
+			Profiler.BeginSample("Dispatch Signal");
+			{
+				Profiler.BeginSample(this.GetType().FullName);
+				{
+					CleanupForDispatch();
+					Run();
+				}
+				Profiler.EndSample();
+			}
+			Profiler.EndSample();
 		}
 
 		protected override void Invoke(int index)
@@ -84,6 +95,7 @@ namespace Supyrb
 			{
 				return false;
 			}
+
 			AddListenerAt(index);
 			return true;
 		}
@@ -95,15 +107,24 @@ namespace Supyrb
 			{
 				return false;
 			}
+
 			RemoveListenerAt(index);
 			return true;
 		}
 
 		public void Dispatch(T context)
 		{
-			CleanupForDispatch();
-			this.context = context;
-			Run();
+			Profiler.BeginSample("Dispatch Signal");
+			{
+				Profiler.BeginSample(this.GetType().FullName);
+				{
+					CleanupForDispatch();
+					this.context = context;
+					Run();
+				}
+				Profiler.EndSample();
+			}
+			Profiler.EndSample();
 		}
 
 		protected override void Invoke(int index)
@@ -142,6 +163,7 @@ namespace Supyrb
 			{
 				return false;
 			}
+
 			AddListenerAt(index);
 			return true;
 		}
@@ -153,16 +175,25 @@ namespace Supyrb
 			{
 				return false;
 			}
+
 			RemoveListenerAt(index);
 			return true;
 		}
 
 		public void Dispatch(T context0, U context1)
 		{
-			CleanupForDispatch();
-			this.context0 = context0;
-			this.context1 = context1;
-			Run();
+			Profiler.BeginSample("Dispatch Signal");
+			{
+				Profiler.BeginSample(this.GetType().FullName);
+				{
+					CleanupForDispatch();
+					this.context0 = context0;
+					this.context1 = context1;
+					Run();
+				}
+				Profiler.EndSample();
+			}
+			Profiler.EndSample();
 		}
 
 		protected override void Invoke(int index)
@@ -203,6 +234,7 @@ namespace Supyrb
 			{
 				return false;
 			}
+
 			AddListenerAt(index);
 			return true;
 		}
@@ -214,17 +246,26 @@ namespace Supyrb
 			{
 				return false;
 			}
+
 			RemoveListenerAt(index);
 			return true;
 		}
 
 		public void Dispatch(T context0, U context1, V context2)
 		{
-			CleanupForDispatch();
-			this.context0 = context0;
-			this.context1 = context1;
-			this.context2 = context2;
-			Run();
+			Profiler.BeginSample("Dispatch Signal");
+			{
+				Profiler.BeginSample(this.GetType().FullName);
+				{
+					CleanupForDispatch();
+					this.context0 = context0;
+					this.context1 = context1;
+					this.context2 = context2;
+					Run();
+				}
+				Profiler.EndSample();
+			}
+			Profiler.EndSample();
 		}
 
 		protected override void Invoke(int index)

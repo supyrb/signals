@@ -4,9 +4,11 @@
 // </copyright>
 // <author>
 //   Johannes Deml
-//   send@johannesdeml.com
+//   public@deml.io
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
+
+using UnityEngine.Profiling;
 
 namespace Supyrb
 {
@@ -87,13 +89,13 @@ namespace Supyrb
 			{
 				return;
 			}
-			
+
 			if (currentIndex >= index)
 			{
 				currentIndex++;
 			}
 		}
-		
+
 		protected void RemoveListenerAt(int index)
 		{
 			if (finished || consumed)
@@ -121,8 +123,16 @@ namespace Supyrb
 
 		public void Continue()
 		{
-			paused = false;
-			Run();
+			Profiler.BeginSample("Continue Signal");
+			{
+				Profiler.BeginSample(this.GetType().FullName);
+				{
+					paused = false;
+					Run();
+				}
+				Profiler.EndSample();
+			}
+			Profiler.EndSample();
 		}
 
 		public void Consume()
@@ -132,14 +142,14 @@ namespace Supyrb
 
 		public override string ToString()
 		{
-			string state = string.Empty;
+			var state = string.Empty;
 			if (paused)
 			{
 				state = "Paused at " + currentIndex;
 			}
 			else if (consumed)
 			{
-				state = "Consumed at " + (currentIndex-1);
+				state = "Consumed at " + (currentIndex - 1);
 			}
 			else if (currentIndex > 0 && !finished)
 			{
