@@ -1,4 +1,4 @@
-# Signals UPM
+# Signals ❇
 
 ![UPM Screenshot](https://repository-images.githubusercontent.com/196998874/5b81aa00-0794-11ea-804b-4acc77a1ce2e)
 
@@ -18,7 +18,7 @@ Find `Packages/manifest.json` in your project and add the following:
 ```json
 {
   "dependencies": {
-    "com.supyrb.signals": "https://github.com/supyrb/signals#0.1.5",
+    "com.supyrb.signals": "https://github.com/supyrb/signals#0.2.0",
     "...": "..."
   }
 }
