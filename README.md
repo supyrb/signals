@@ -64,3 +64,5 @@ Sometimes only one script should handle a signal or the signal should not reach 
 
 ## License
 * MIT - see [LICENSE](./LICENSE.md)
+
+*Made by ![💥Supyrb](https://supyrb.com/data/supyrb-inline-logo.svg)*
