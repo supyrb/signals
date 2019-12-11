@@ -17,6 +17,9 @@ namespace Supyrb
 	/// </summary>
 	public interface ISignal
 	{
+		/// <summary>
+		/// Unique id for this signal
+		/// </summary>
 		string Hash { get; }
 	}
 
@@ -29,9 +32,8 @@ namespace Supyrb
 
 		protected string _hash;
 
-		/// <summary>
-		/// Unique id for this signal
-		/// </summary>
+
+		/// <inheritdoc />
 		public string Hash
 		{
 			get
@@ -45,7 +47,11 @@ namespace Supyrb
 			}
 		}
 
+		/// <summary>
+		/// Number of registered listeners
+		/// </summary>
 		public abstract int ListenerCount { get; }
+		
 
 		protected ABaseSignal()
 		{
@@ -54,7 +60,52 @@ namespace Supyrb
 			this.paused = false;
 			this.finished = true;
 		}
+		
+		/// <summary>
+		/// Removes all registered listeners
+		/// </summary>
+		public abstract void Clear();
 
+		/// <summary>
+		/// Pause dispatching
+		/// Dispatching can be continued by calling <see cref="Continue"/> 
+		/// </summary>
+		public void Pause()
+		{
+			paused = true;
+		}
+
+		/// <summary>
+		/// Continue dispatching
+		/// Only applicable if <see cref="Pause"/> was called before
+		/// </summary>
+		public void Continue()
+		{
+			if (!paused)
+			{
+				return;
+			}
+			
+			Profiler.BeginSample("Continue Signal");
+			{
+				Profiler.BeginSample(this.GetType().FullName);
+				{
+					paused = false;
+					Run();
+				}
+				Profiler.EndSample();
+			}
+			Profiler.EndSample();
+		}
+
+		/// <summary>
+		/// Consume the signal, no further listener will receive the dispatched signal
+		/// </summary>
+		public void Consume()
+		{
+			consumed = true;
+		}
+		
 		protected void CleanupForDispatch()
 		{
 			currentIndex = 0;
@@ -116,30 +167,7 @@ namespace Supyrb
 
 		protected abstract void Invoke(int index);
 
-		public void Pause()
-		{
-			paused = true;
-		}
-
-		public void Continue()
-		{
-			Profiler.BeginSample("Continue Signal");
-			{
-				Profiler.BeginSample(this.GetType().FullName);
-				{
-					paused = false;
-					Run();
-				}
-				Profiler.EndSample();
-			}
-			Profiler.EndSample();
-		}
-
-		public void Consume()
-		{
-			consumed = true;
-		}
-
+		/// <inheritdoc />
 		public override string ToString()
 		{
 			var state = string.Empty;
