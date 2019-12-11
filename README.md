@@ -41,7 +41,7 @@ Find `Packages/manifest.json` in your project and add the following:
 exampleSignal = Signals.Get<BasicExampleSignal>();
 
 // Other way to get a signal
-Signals.Get(exampleSignal);
+Signals.Get(out exampleSignal);
 
 // Subscribe to signal
 exampleSignal.AddListener(DefaultListener);

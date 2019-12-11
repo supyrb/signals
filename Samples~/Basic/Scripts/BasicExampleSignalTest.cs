@@ -20,7 +20,7 @@ namespace Supyrb
 		private Signal exampleSignal;
 		private void Awake()
 		{
-			exampleSignal = Signals.Get<BasicExampleSignal>();
+			Signals.Get(out exampleSignal);
 			SubscribeListeners();
 		}
 
