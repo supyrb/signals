@@ -35,11 +35,21 @@ namespace Supyrb
 		/// <summary>
 		/// Get the Signal for a certain class. If the signal is not yet registered in the hub it will be created.
 		/// </summary>
-		/// <typeparam name="T">Type of the Signal</typeparam>
+		/// <typeparam name="T">Type of the Signal to retrieve</typeparam>
 		/// <returns>An instance of the Signal of SType</returns>
 		public static T Get<T>() where T : ISignal, new()
 		{
 			return signalHub.Get<T>();
+		}
+		
+		/// <summary>
+		/// Get the Signal for a certain class. If the signal is not yet registered in the hub it will be created.
+		/// </summary>
+		/// <param name="reference">The output argument for which the reference will be set</param>
+		/// <typeparam name="T">The signal type to retrieve</typeparam>
+		public static void Get<T>(out T reference) where T : ISignal, new()
+		{
+			reference = Get<T>();
 		}
 		
 		/// <summary>
