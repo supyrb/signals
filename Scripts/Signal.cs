@@ -17,13 +17,29 @@ namespace Supyrb
 	{
 		private readonly OrderedList<Action> listeners;
 
+		/// <inheritdoc />
 		public override int ListenerCount => listeners.Count;
 
 		public Signal() : base()
 		{
 			this.listeners = new OrderedList<Action>(true);
 		}
+		
+		/// <inheritdoc />
+		public override void Clear()
+		{
+			listeners.Clear();
+		}
 
+		/// <summary>
+		/// Add a listener for that signal
+		/// </summary>
+		/// <param name="listener">Listener Method to call</param>
+		/// <param name="order">Lower order values will be called first</param>
+		/// <returns>
+		/// True, if the listener was added successfully
+		/// False, if the listener was already subscribed
+		/// </returns>
 		public bool AddListener(Action listener, int order = 0)
 		{
 			#if UNITY_EDITOR
@@ -40,6 +56,14 @@ namespace Supyrb
 			return true;
 		}
 
+		/// <summary>
+		/// Remove a listener from that signal
+		/// </summary>
+		/// <param name="listener">Subscribed listener method</param>
+		/// <returns>
+		/// True, if the signal was removed successfully
+		/// False, if the listener was not subscribed
+		/// </returns>
 		public bool RemoveListener(Action listener)
 		{
 			var index = listeners.Remove(listener);
@@ -52,6 +76,10 @@ namespace Supyrb
 			return true;
 		}
 
+		/// <summary>
+		/// Dispatch the signal to the listeners in their defined order until the signal
+		/// is consumed (<see cref="ABaseSignal.Consume"/>) or paused (<see cref="ABaseSignal.Pause"/>)
+		/// </summary>
 		public void Dispatch()
 		{
 			Profiler.BeginSample("Dispatch Signal");
@@ -77,6 +105,7 @@ namespace Supyrb
 		private readonly OrderedList<Action<T>> listeners;
 		private T context;
 
+		/// <inheritdoc />
 		public override int ListenerCount => listeners.Count;
 
 		public Signal() : base()
@@ -84,6 +113,21 @@ namespace Supyrb
 			this.listeners = new OrderedList<Action<T>>(true);
 		}
 
+		/// <inheritdoc />
+		public override void Clear()
+		{
+			listeners.Clear();
+		}
+		
+		/// <summary>
+		/// Add a listener for that signal
+		/// </summary>
+		/// <param name="listener">Listener Method to call</param>
+		/// <param name="order">Lower order values will be called first</param>
+		/// <returns>
+		/// True, if the listener was added successfully
+		/// False, if the listener was already subscribed
+		/// </returns>
 		public bool AddListener(Action<T> listener, int order = 0)
 		{
 			#if UNITY_EDITOR
@@ -100,6 +144,14 @@ namespace Supyrb
 			return true;
 		}
 
+		/// <summary>
+		/// Remove a listener from that signal
+		/// </summary>
+		/// <param name="listener">Subscribed listener method</param>
+		/// <returns>
+		/// True, if the signal was removed successfully
+		/// False, if the listener was not subscribed
+		/// </returns>
 		public bool RemoveListener(Action<T> listener)
 		{
 			var index = listeners.Remove(listener);
@@ -112,6 +164,10 @@ namespace Supyrb
 			return true;
 		}
 
+		/// <summary>
+		/// Dispatch the signal to the listeners in their defined order until the signal
+		/// is consumed (<see cref="ABaseSignal.Consume"/>) or paused (<see cref="ABaseSignal.Pause"/>)
+		/// </summary>
 		public void Dispatch(T context)
 		{
 			Profiler.BeginSample("Dispatch Signal");
@@ -145,13 +201,29 @@ namespace Supyrb
 		private T context0;
 		private U context1;
 
+		/// <inheritdoc />
 		public override int ListenerCount => listeners.Count;
 
 		public Signal() : base()
 		{
 			this.listeners = new OrderedList<Action<T, U>>(true);
 		}
+		
+		/// <inheritdoc />
+		public override void Clear()
+		{
+			listeners.Clear();
+		}
 
+		/// <summary>
+		/// Add a listener for that signal
+		/// </summary>
+		/// <param name="listener">Listener Method to call</param>
+		/// <param name="order">Lower order values will be called first</param>
+		/// <returns>
+		/// True, if the listener was added successfully
+		/// False, if the listener was already subscribed
+		/// </returns>
 		public bool AddListener(Action<T, U> listener, int order = 0)
 		{
 			#if UNITY_EDITOR
@@ -168,6 +240,14 @@ namespace Supyrb
 			return true;
 		}
 
+		/// <summary>
+		/// Remove a listener from that signal
+		/// </summary>
+		/// <param name="listener">Subscribed listener method</param>
+		/// <returns>
+		/// True, if the signal was removed successfully
+		/// False, if the listener was not subscribed
+		/// </returns>
 		public bool RemoveListener(Action<T, U> listener)
 		{
 			var index = listeners.Remove(listener);
@@ -180,6 +260,10 @@ namespace Supyrb
 			return true;
 		}
 
+		/// <summary>
+		/// Dispatch the signal to the listeners in their defined order until the signal
+		/// is consumed (<see cref="ABaseSignal.Consume"/>) or paused (<see cref="ABaseSignal.Pause"/>)
+		/// </summary>
 		public void Dispatch(T context0, U context1)
 		{
 			Profiler.BeginSample("Dispatch Signal");
@@ -216,13 +300,29 @@ namespace Supyrb
 		private U context1;
 		private V context2;
 
+		/// <inheritdoc />
 		public override int ListenerCount => listeners.Count;
 
 		public Signal() : base()
 		{
 			this.listeners = new OrderedList<Action<T, U, V>>(true);
 		}
+		
+		/// <inheritdoc />
+		public override void Clear()
+		{
+			listeners.Clear();
+		}
 
+		/// <summary>
+		/// Add a listener for that signal
+		/// </summary>
+		/// <param name="listener">Listener Method to call</param>
+		/// <param name="order">Lower order values will be called first</param>
+		/// <returns>
+		/// True, if the listener was added successfully
+		/// False, if the listener was already subscribed
+		/// </returns>
 		public bool AddListener(Action<T, U, V> listener, int order = 0)
 		{
 			#if UNITY_EDITOR
@@ -239,6 +339,14 @@ namespace Supyrb
 			return true;
 		}
 
+		/// <summary>
+		/// Remove a listener from that signal
+		/// </summary>
+		/// <param name="listener">Subscribed listener method</param>
+		/// <returns>
+		/// True, if the signal was removed successfully
+		/// False, if the listener was not subscribed
+		/// </returns>
 		public bool RemoveListener(Action<T, U, V> listener)
 		{
 			var index = listeners.Remove(listener);
@@ -251,6 +359,10 @@ namespace Supyrb
 			return true;
 		}
 
+		/// <summary>
+		/// Dispatch the signal to the listeners in their defined order until the signal
+		/// is consumed (<see cref="ABaseSignal.Consume"/>) or paused (<see cref="ABaseSignal.Pause"/>)
+		/// </summary>
 		public void Dispatch(T context0, U context1, V context2)
 		{
 			Profiler.BeginSample("Dispatch Signal");

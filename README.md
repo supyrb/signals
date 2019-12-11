@@ -18,7 +18,7 @@ Find `Packages/manifest.json` in your project and add the following:
 ```json
 {
   "dependencies": {
-    "com.supyrb.signals": "https://github.com/supyrb/signals.git#0.2.0",
+    "com.supyrb.signals": "https://github.com/supyrb/signals.git#0.2.1",
     "...": "..."
   }
 }
@@ -39,6 +39,9 @@ Find `Packages/manifest.json` in your project and add the following:
 
 // Get signal
 exampleSignal = Signals.Get<BasicExampleSignal>();
+
+// Other way to get a signal
+Signals.Get(exampleSignal);
 
 // Subscribe to signal
 exampleSignal.AddListener(DefaultListener);
