@@ -9,7 +9,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
-using UnityEngine.Profiling;
 
 namespace Supyrb
 {
@@ -85,16 +84,12 @@ namespace Supyrb
 		/// </summary>
 		public void Dispatch()
 		{
-			Profiler.BeginSample("Dispatch Signal");
-			{
-				Profiler.BeginSample(this.GetType().FullName);
-				{
-					CleanupForDispatch();
-					Run();
-				}
-				Profiler.EndSample();
-			}
-			Profiler.EndSample();
+			BeginDispatchProfilerSample();
+			
+			CleanupForDispatch();
+			Run();
+			
+			EndDispatchProfilerSample();
 		}
 
 		protected override void Invoke(int index)
@@ -106,7 +101,7 @@ namespace Supyrb
 	public class Signal<T> : ABaseSignal
 	{
 		private readonly OrderedList<Action<T>> listeners;
-		private T context;
+		private T context0;
 
 		/// <inheritdoc />
 		public override int ListenerCount
@@ -174,30 +169,26 @@ namespace Supyrb
 		/// Dispatch the signal to the listeners in their defined order until the signal
 		/// is consumed (<see cref="ABaseSignal.Consume"/>) or paused (<see cref="ABaseSignal.Pause"/>)
 		/// </summary>
-		public void Dispatch(T context)
+		public void Dispatch(T context0)
 		{
-			Profiler.BeginSample("Dispatch Signal");
-			{
-				Profiler.BeginSample(this.GetType().FullName);
-				{
-					CleanupForDispatch();
-					this.context = context;
-					Run();
-				}
-				Profiler.EndSample();
-			}
-			Profiler.EndSample();
+			BeginDispatchProfilerSample();
+			
+			CleanupForDispatch();
+			this.context0 = context0;
+			Run();
+			
+			EndDispatchProfilerSample();
 		}
 
 		protected override void Invoke(int index)
 		{
-			listeners[currentIndex].Invoke(context);
+			listeners[currentIndex].Invoke(context0);
 		}
 
 		protected override void OnFinish()
 		{
 			base.OnFinish();
-			context = default(T);
+			context0 = default(T);
 		}
 	}
 
@@ -275,18 +266,14 @@ namespace Supyrb
 		/// </summary>
 		public void Dispatch(T context0, U context1)
 		{
-			Profiler.BeginSample("Dispatch Signal");
-			{
-				Profiler.BeginSample(this.GetType().FullName);
-				{
-					CleanupForDispatch();
-					this.context0 = context0;
-					this.context1 = context1;
-					Run();
-				}
-				Profiler.EndSample();
-			}
-			Profiler.EndSample();
+			BeginDispatchProfilerSample();
+			
+			CleanupForDispatch();
+			this.context0 = context0;
+			this.context1 = context1;
+			Run();
+			
+			EndDispatchProfilerSample();
 		}
 
 		protected override void Invoke(int index)
@@ -377,19 +364,15 @@ namespace Supyrb
 		/// </summary>
 		public void Dispatch(T context0, U context1, V context2)
 		{
-			Profiler.BeginSample("Dispatch Signal");
-			{
-				Profiler.BeginSample(this.GetType().FullName);
-				{
-					CleanupForDispatch();
-					this.context0 = context0;
-					this.context1 = context1;
-					this.context2 = context2;
-					Run();
-				}
-				Profiler.EndSample();
-			}
-			Profiler.EndSample();
+			BeginDispatchProfilerSample();
+			
+			CleanupForDispatch();
+			this.context0 = context0;
+			this.context1 = context1;
+			this.context2 = context2;
+			Run();
+			
+			EndDispatchProfilerSample();
 		}
 
 		protected override void Invoke(int index)

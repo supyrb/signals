@@ -85,17 +85,13 @@ namespace Supyrb
 			{
 				return;
 			}
+
+			BeginContinueProfilerSample();
 			
-			Profiler.BeginSample("Continue Signal");
-			{
-				Profiler.BeginSample(this.GetType().FullName);
-				{
-					paused = false;
-					Run();
-				}
-				Profiler.EndSample();
-			}
-			Profiler.EndSample();
+			paused = false;
+			Run();
+			
+			EndContinueProfilerSample();
 		}
 
 		/// <summary>
@@ -165,12 +161,46 @@ namespace Supyrb
 			finished = true;
 		}
 
+		protected void BeginDispatchProfilerSample()
+		{
+			Profiler.BeginSample("Dispatch Signal");
+			BeginSignalNameProfilerSample();
+		}
+		
+		protected void EndDispatchProfilerSample()
+		{
+			Profiler.EndSample();
+			EndSignalNameProfilerSample();
+		}
+		
+		protected void BeginContinueProfilerSample()
+		{
+			Profiler.BeginSample("Continue Signal");
+			BeginSignalNameProfilerSample();
+		}
+		
+		protected void EndContinueProfilerSample()
+		{
+			Profiler.EndSample();
+			EndSignalNameProfilerSample();
+		}
+		
+		protected void BeginSignalNameProfilerSample()
+		{
+			Profiler.BeginSample(this.GetType().FullName);
+		}
+		
+		protected void EndSignalNameProfilerSample()
+		{
+			Profiler.EndSample();
+		}
+
 		protected abstract void Invoke(int index);
 
 		/// <inheritdoc />
 		public override string ToString()
 		{
-			var state = string.Empty;
+			string state;
 			if (paused)
 			{
 				state = "Paused at " + currentIndex;

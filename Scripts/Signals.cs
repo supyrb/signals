@@ -120,10 +120,5 @@ namespace Supyrb
 			signals.Add(signalType, signal);
 			return signal;
 		}
-
-		private ISignal Bind<T>() where T : ISignal, new()
-		{
-			return Bind(typeof(T));
-		}
 	}
 }
