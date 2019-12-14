@@ -84,12 +84,12 @@ namespace Supyrb
 		/// </summary>
 		public void Dispatch()
 		{
-			BeginDispatchProfilerSample();
+			BeginSignalProfilerSample("Dispatch Signal");
 			
 			CleanupForDispatch();
 			Run();
 			
-			EndDispatchProfilerSample();
+			EndSignalProfilerSample();
 		}
 
 		protected override void Invoke(int index)
@@ -171,13 +171,13 @@ namespace Supyrb
 		/// </summary>
 		public void Dispatch(T context0)
 		{
-			BeginDispatchProfilerSample();
+			BeginSignalProfilerSample("Dispatch Signal");
 			
 			CleanupForDispatch();
 			this.context0 = context0;
 			Run();
 			
-			EndDispatchProfilerSample();
+			EndSignalProfilerSample();
 		}
 
 		protected override void Invoke(int index)
@@ -266,14 +266,14 @@ namespace Supyrb
 		/// </summary>
 		public void Dispatch(T context0, U context1)
 		{
-			BeginDispatchProfilerSample();
+			BeginSignalProfilerSample("Dispatch Signal");
 			
 			CleanupForDispatch();
 			this.context0 = context0;
 			this.context1 = context1;
 			Run();
 			
-			EndDispatchProfilerSample();
+			EndSignalProfilerSample();
 		}
 
 		protected override void Invoke(int index)
@@ -364,7 +364,7 @@ namespace Supyrb
 		/// </summary>
 		public void Dispatch(T context0, U context1, V context2)
 		{
-			BeginDispatchProfilerSample();
+			BeginSignalProfilerSample("Dispatch Signal");
 			
 			CleanupForDispatch();
 			this.context0 = context0;
@@ -372,7 +372,7 @@ namespace Supyrb
 			this.context2 = context2;
 			Run();
 			
-			EndDispatchProfilerSample();
+			EndSignalProfilerSample();
 		}
 
 		protected override void Invoke(int index)

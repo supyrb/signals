@@ -86,12 +86,12 @@ namespace Supyrb
 				return;
 			}
 
-			BeginContinueProfilerSample();
+			BeginSignalProfilerSample("Continue Signal");
 			
 			paused = false;
 			Run();
 			
-			EndContinueProfilerSample();
+			EndSignalProfilerSample();
 		}
 
 		/// <summary>
@@ -161,37 +161,15 @@ namespace Supyrb
 			finished = true;
 		}
 
-		protected void BeginDispatchProfilerSample()
+		protected void BeginSignalProfilerSample(string sampleName)
 		{
-			Profiler.BeginSample("Dispatch Signal");
-			BeginSignalNameProfilerSample();
-		}
-		
-		protected void EndDispatchProfilerSample()
-		{
-			Profiler.EndSample();
-			EndSignalNameProfilerSample();
-		}
-		
-		protected void BeginContinueProfilerSample()
-		{
-			Profiler.BeginSample("Continue Signal");
-			BeginSignalNameProfilerSample();
-		}
-		
-		protected void EndContinueProfilerSample()
-		{
-			Profiler.EndSample();
-			EndSignalNameProfilerSample();
-		}
-		
-		protected void BeginSignalNameProfilerSample()
-		{
+			Profiler.BeginSample(sampleName);
 			Profiler.BeginSample(this.GetType().FullName);
 		}
 		
-		protected void EndSignalNameProfilerSample()
+		protected void EndSignalProfilerSample()
 		{
+			Profiler.EndSample();
 			Profiler.EndSample();
 		}
 
