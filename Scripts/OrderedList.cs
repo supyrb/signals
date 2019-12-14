@@ -29,12 +29,15 @@ namespace Supyrb
 			this.values = new List<T>();
 		}
 
-		public int Count => values.Count;
+		public int Count
+		{
+			get { return values.Count; }
+		}
 
 		public T this[int index]
 		{
-			get => values[index];
-			set => values[index] = value;
+			get { return values[index]; }
+			set { values[index] = value; }
 		}
 
 		/// <summary>

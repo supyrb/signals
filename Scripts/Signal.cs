@@ -18,7 +18,10 @@ namespace Supyrb
 		private readonly OrderedList<Action> listeners;
 
 		/// <inheritdoc />
-		public override int ListenerCount => listeners.Count;
+		public override int ListenerCount
+		{
+			get { return listeners.Count; }
+		}
 
 		public Signal() : base()
 		{
@@ -106,7 +109,10 @@ namespace Supyrb
 		private T context;
 
 		/// <inheritdoc />
-		public override int ListenerCount => listeners.Count;
+		public override int ListenerCount
+		{
+			get { return listeners.Count; }
+		}
 
 		public Signal() : base()
 		{
@@ -202,7 +208,10 @@ namespace Supyrb
 		private U context1;
 
 		/// <inheritdoc />
-		public override int ListenerCount => listeners.Count;
+		public override int ListenerCount
+		{
+			get { return listeners.Count; }
+		}
 
 		public Signal() : base()
 		{
@@ -301,7 +310,10 @@ namespace Supyrb
 		private V context2;
 
 		/// <inheritdoc />
-		public override int ListenerCount => listeners.Count;
+		public override int ListenerCount
+		{
+			get { return listeners.Count; }
+		}
 
 		public Signal() : base()
 		{
