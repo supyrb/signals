@@ -14,9 +14,9 @@ namespace Supyrb
 {
 	public class OrderedList<T>
 	{
-		private List<int> sortedOrders;
-		private List<T> values;
-		private bool uniqueValuesOnly;
+		private readonly List<int> sortedOrders;
+		private readonly List<T> values;
+		private readonly bool uniqueValuesOnly;
 
 		/// <summary>
 		/// Ordered list with an order value that does not have to be unique and a value can be unique

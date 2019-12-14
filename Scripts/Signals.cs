@@ -71,7 +71,7 @@ namespace Supyrb
 
 	public class SignalHub
 	{
-		private Dictionary<Type, ISignal> signals = new Dictionary<Type, ISignal>();
+		private readonly Dictionary<Type, ISignal> signals = new Dictionary<Type, ISignal>();
 
 		/// <summary>
 		/// Getter for a signal of a given type
