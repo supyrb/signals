@@ -17,10 +17,10 @@ namespace Supyrb
 {
 	public class BasicExampleSignalTest : MonoBehaviour
 	{
-		private Signal exampleSignal;
+		private BasicExampleSignal basicExampleSignal;
 		private void Awake()
 		{
-			Signals.Get(out exampleSignal);
+			Signals.Get(out basicExampleSignal);
 			SubscribeListeners();
 		}
 
@@ -31,26 +31,26 @@ namespace Supyrb
 
 		private void SubscribeListeners()
 		{
-			exampleSignal.AddListener(FirstListener, -100);
-			exampleSignal.AddListener(PauseTwoSecondsListener, -10);
-			exampleSignal.AddListener(DefaultListener);
-			exampleSignal.AddListener(ConsumeEventListener, 10);
-			exampleSignal.AddListener(LastListener, 100);
+			basicExampleSignal.AddListener(FirstListener, -100);
+			basicExampleSignal.AddListener(PauseTwoSecondsListener, -10);
+			basicExampleSignal.AddListener(DefaultListener);
+			basicExampleSignal.AddListener(ConsumeEventListener, 10);
+			basicExampleSignal.AddListener(LastListener, 100);
 		}
 		
 		private void OnDestroy()
 		{
-			exampleSignal.RemoveListener(FirstListener);
-			exampleSignal.RemoveListener(PauseTwoSecondsListener);
-			exampleSignal.RemoveListener(DefaultListener);
-			exampleSignal.RemoveListener(ConsumeEventListener);
-			exampleSignal.RemoveListener(LastListener);
+			basicExampleSignal.RemoveListener(FirstListener);
+			basicExampleSignal.RemoveListener(PauseTwoSecondsListener);
+			basicExampleSignal.RemoveListener(DefaultListener);
+			basicExampleSignal.RemoveListener(ConsumeEventListener);
+			basicExampleSignal.RemoveListener(LastListener);
 		}
 		
 		[ContextMenu("DispatchSignal")]
 		public void DispatchSignal()
 		{
-			exampleSignal.Dispatch();
+			basicExampleSignal.Dispatch();
 		}
 		
 		private void FirstListener()
@@ -61,8 +61,8 @@ namespace Supyrb
 		private void PauseTwoSecondsListener()
 		{
 			Debug.Log("Pausing for 2 seconds (Order -10)");
-			exampleSignal.Pause();
-			StartCoroutine(ContinueAfterDelay(exampleSignal, 2f));
+			basicExampleSignal.Pause();
+			StartCoroutine(ContinueAfterDelay(basicExampleSignal, 2f));
 		}
 
 		private void DefaultListener()
@@ -73,7 +73,7 @@ namespace Supyrb
 		private void ConsumeEventListener()
 		{
 			Debug.Log("Consume Signal (Order 10)");
-			exampleSignal.Consume();
+			basicExampleSignal.Consume();
 		}
 
 		private void LastListener()
