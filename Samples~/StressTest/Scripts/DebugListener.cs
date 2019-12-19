@@ -8,6 +8,7 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
 using UnityEngine;
 
 namespace Supyrb
@@ -17,11 +18,15 @@ namespace Supyrb
 		private int order;
 		private bool subscribed;
 		private Signal signal = null;
+		
+		// Cache action in order to avoid additional garbage every subscribe/unsubscribe
+		private Action onSignalAction;
 
 		public DebugListener(int order, Signal signal)
 		{
 			this.order = order;
 			this.signal = signal;
+			this.onSignalAction = OnSignal;
 			this.subscribed = false;
 		}
 
@@ -37,7 +42,7 @@ namespace Supyrb
 				Debug.LogFormat("Subscribe Listener with order {0}", order);
 			}
 
-			signal.AddListener(OnSignal, order);
+			signal.AddListener(onSignalAction, order);
 			subscribed = true;
 		}
 
@@ -53,7 +58,7 @@ namespace Supyrb
 				Debug.LogFormat("Unsubscribe Listener with order {0}", order);
 			}
 
-			signal.RemoveListener(OnSignal);
+			signal.RemoveListener(onSignalAction);
 			subscribed = false;
 		}
 

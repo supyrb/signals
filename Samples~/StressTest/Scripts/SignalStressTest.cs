@@ -10,6 +10,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Supyrb
 {
@@ -46,34 +47,42 @@ namespace Supyrb
 			DispatchSignal();
 		}
 
-		private void SubscribeListeners()
-		{
-			for (int i = 0; i < listeners.Count; i++)
-			{
-				var listener = listeners[i];
-				listener.Subscribe();
-			}
-		}
-		
-		private void UnsubscribeListeners()
-		{
-			for (int i = 0; i < listeners.Count; i++)
-			{
-				var listener = listeners[i];
-				listener.Unsubscribe();
-			}
-		}
-		
 		private void OnDestroy()
 		{
 			UnsubscribeListeners();
 		}
 		
+		private void SubscribeListeners()
+		{
+			Profiler.BeginSample("SubscribeListeners");
+			for (int i = 0; i < listeners.Count; i++)
+			{
+				var listener = listeners[i];
+				listener.Subscribe();
+			}
+			Profiler.EndSample();
+		}
+		
+		private void UnsubscribeListeners()
+		{
+			Profiler.BeginSample("UnsubscribeListeners");
+			for (int i = 0; i < listeners.Count; i++)
+			{
+				var listener = listeners[i];
+				listener.Unsubscribe();
+			}
+			Profiler.EndSample();
+		}
+
 		[ContextMenu("DispatchSignal")]
 		public void DispatchSignal()
 		{
-			Debug.LogFormat("Dispatching stress signal with {0} listeners", signal.ListenerCount);
-			signal.Dispatch();
+			Profiler.BeginSample("DispatchSignal");
+			{
+				Debug.LogFormat("Dispatching stress signal with {0} listeners", signal.ListenerCount);
+				signal.Dispatch();
+			}
+			Profiler.EndSample();
 		}
 	}
 }
