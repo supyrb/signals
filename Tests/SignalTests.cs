@@ -13,6 +13,9 @@ using NUnit.Framework;
 
 namespace Supyrb
 {
+	/// <summary>
+	/// Tests the functionality of class Signal
+	/// </summary>
 	[Category("Signals")]
 	public class SignalTests
 	{
