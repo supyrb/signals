@@ -15,10 +15,12 @@ namespace Supyrb
 	/// <summary>
 	/// Tests the functionality of class Signals
 	/// </summary>
+	[TestFixture]
 	[Category("Signal Registry")]
 	public class SignalRegistryTests
 	{
 		[SetUp]
+		[OneTimeTearDown]
 		public void Setup()
 		{
 			Signals.Clear();
@@ -35,6 +37,8 @@ namespace Supyrb
 		[Test]
 		public void SignalRegistryClearTest()
 		{
+			Signals.Get<TestSignal>();
+			Assert.IsTrue(Signals.Count > 0);
 			Signals.Clear();
 			Assert.IsTrue(Signals.Count == 0);
 		}

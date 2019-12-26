@@ -16,21 +16,29 @@ namespace Supyrb
 	/// <summary>
 	/// Tests the functionality of class Signal
 	/// </summary>
+	[TestFixture]
 	[Category("Signals")]
 	public class SignalTests
 	{
 		private TestSignal testSignal;
 		private readonly List<string> callLog = new List<string>();
 
-		[SetUp]
-		public void Setup()
+		[OneTimeSetUp]
+		public void InitialSetup()
 		{
 			callLog.Clear();
 			Signals.Clear();
 			Signals.Get(out testSignal);
 		}
-
-		public void Reset()
+		
+		[OneTimeTearDown]
+		public void FinalTearDown()
+		{
+			Signals.Clear();
+		}
+		
+		[TearDown]
+		public void TearDown()
 		{
 			callLog.Clear();
 			testSignal.Clear();
@@ -49,7 +57,6 @@ namespace Supyrb
 			Assert.IsTrue(callLog[1] == "B");
 			Assert.IsTrue(callLog[2] == "C");
 			Assert.IsTrue(testSignal.ListenerCount == 3);
-			Reset();
 		}
 		
 		[Test]
@@ -68,7 +75,6 @@ namespace Supyrb
 			Assert.IsTrue(callLog[1] == "C");
 			Assert.IsTrue(callLog[2] == "C");
 			Assert.IsTrue(testSignal.ListenerCount == 1);
-			Reset();
 		}
 
 		[Test]
@@ -86,8 +92,6 @@ namespace Supyrb
 			ContinueSignal();
 			
 			Assert.IsTrue(callLog.Contains("B"));
-			
-			Reset();
 		}
 		
 		[Test]
@@ -101,7 +105,6 @@ namespace Supyrb
 
 			Assert.IsTrue(callLog.Contains("A"));
 			Assert.IsFalse(callLog.Contains("B"));
-			Reset();
 		}
 		
 		[Test]
@@ -115,7 +118,6 @@ namespace Supyrb
 
 			Assert.IsTrue(callLog.Contains("B"));
 			Assert.IsTrue(testSignal.ListenerCount == 2);
-			Reset();
 		}
 		
 		private void OnListenerA()
@@ -131,11 +133,6 @@ namespace Supyrb
 		private void OnListenerC()
 		{
 			callLog.Add("C");
-		}
-
-		private void OnListenerGeneric(string logName)
-		{
-			callLog.Add(logName);
 		}
 		
 		private void OnRemoveSelfListener()
