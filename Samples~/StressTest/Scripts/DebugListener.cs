@@ -15,12 +15,12 @@ namespace Supyrb
 {
 	public class DebugListener
 	{
-		private int order;
+		private readonly int order;
 		private bool subscribed;
-		private Signal signal = null;
+		private readonly Signal signal;
 		
 		// Cache action in order to avoid additional garbage every subscribe/unsubscribe
-		private Action onSignalAction;
+		private readonly Action onSignalAction;
 
 		public DebugListener(int order, Signal signal)
 		{

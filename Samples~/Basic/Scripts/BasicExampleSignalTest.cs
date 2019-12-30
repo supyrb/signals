@@ -8,10 +8,8 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Collections;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace Supyrb
 {
