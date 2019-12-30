@@ -38,7 +38,7 @@ namespace Supyrb
 		public void SignalRegistryClearTest()
 		{
 			Signals.Get<TestSignal>();
-			Assert.IsTrue(Signals.Count > 0);
+			Assert.IsTrue(Signals.Count == 1);
 			Signals.Clear();
 			Assert.IsTrue(Signals.Count == 0);
 		}

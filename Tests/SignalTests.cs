@@ -108,16 +108,114 @@ namespace Supyrb
 		}
 		
 		[Test]
-		public void RemoveListenerWhileDispatching()
+		public void RemoveCurrentListenerWhileDispatching()
 		{
 			testSignal.AddListener(OnListenerA, -10);
-			testSignal.AddListener(OnRemoveSelfListener, 0);
+			testSignal.AddListener(RemoveSelfListener, 0);
 			testSignal.AddListener(OnListenerB, 10);
 
 			testSignal.Dispatch();
 
 			Assert.IsTrue(callLog.Contains("B"));
 			Assert.IsTrue(testSignal.ListenerCount == 2);
+		}
+		
+		[Test]
+		public void RemoveLastListenerWhileDispatching()
+		{
+			testSignal.AddListener(OnListenerA, -10);
+			testSignal.AddListener(RemoveListenerA, 0);
+			testSignal.AddListener(OnListenerB, 10);
+
+			testSignal.Dispatch();
+
+			Assert.IsTrue(callLog.Contains("A"));
+			Assert.IsTrue(callLog.Contains("B"));
+			Assert.IsTrue(testSignal.ListenerCount == 2);
+		}
+		
+		[Test]
+		public void RemoveNextListenerWhileDispatching()
+		{
+			testSignal.AddListener(OnListenerA, -10);
+			testSignal.AddListener(RemoveListenerB, 0);
+			testSignal.AddListener(OnListenerB, 10);
+
+			testSignal.Dispatch();
+
+			Assert.IsTrue(callLog.Contains("A"));
+			Assert.IsFalse(callLog.Contains("B"));
+			Assert.IsTrue(testSignal.ListenerCount == 2);
+		}
+		
+		[Test]
+		public void RemoveNotExistingListener()
+		{
+			testSignal.RemoveListener(OnListenerA);
+			testSignal.Dispatch();
+			
+			Assert.IsTrue(testSignal.ListenerCount == 0);
+		}
+		
+		[Test]
+		public void AddListenerTwice()
+		{
+			testSignal.AddListener(OnListenerA, -10);
+			// Should be ignored
+			testSignal.AddListener(OnListenerA, 0);
+			testSignal.Dispatch();
+			
+			Assert.IsTrue(callLog.Contains("A"));
+			Assert.IsTrue(callLog.Count == 1);
+			Assert.IsTrue(testSignal.ListenerCount == 1);
+		}
+		
+		[Test]
+		public void AddSameOrderListenerWhileDispatching()
+		{
+			testSignal.AddListener(AddListenerAOrderMinusTen, -10);
+			testSignal.AddListener(OnListenerB, 0);
+			testSignal.Dispatch();
+			
+			Assert.IsFalse(callLog.Contains("A"));
+			Assert.IsTrue(callLog.Count == 2);
+			Assert.IsTrue(testSignal.ListenerCount == 3);
+			
+			testSignal.Dispatch();
+			
+			Assert.IsTrue(callLog.Contains("A"));
+			Assert.IsTrue(callLog.Count == 5);
+			Assert.IsTrue(testSignal.ListenerCount == 3);
+		}
+		
+		[Test]
+		public void AddLowerOrderListenerWhileDispatching()
+		{
+			testSignal.AddListener(AddListenerAOrderMinusTen, -5);
+			testSignal.AddListener(OnListenerB, 0);
+			testSignal.Dispatch();
+			
+			Assert.IsFalse(callLog.Contains("A"));
+			Assert.IsTrue(callLog.Count == 2);
+			Assert.IsTrue(testSignal.ListenerCount == 3);
+			
+			testSignal.Dispatch();
+			
+			Assert.IsTrue(callLog.Contains("A"));
+			Assert.IsTrue(callLog.Count == 5);
+			Assert.IsTrue(testSignal.ListenerCount == 3);
+		}
+		
+		[Test]
+		public void AddHigherOrderListenerWhileDispatching()
+		{
+			testSignal.AddListener(OnListenerA, -10);
+			testSignal.AddListener(AddListenerBOrderTen, 0);
+			testSignal.Dispatch();
+			
+			Assert.IsTrue(callLog.Contains("B"));
+			Assert.IsTrue(callLog.Count == 3);
+			Assert.IsTrue(testSignal.ListenerCount == 3);
 		}
 		
 		private void OnListenerA()
@@ -135,10 +233,34 @@ namespace Supyrb
 			callLog.Add("C");
 		}
 		
-		private void OnRemoveSelfListener()
+		private void RemoveSelfListener()
 		{
-			callLog.Add("Remove SemoveSelfListener");
-			testSignal.RemoveListener(OnRemoveSelfListener);
+			callLog.Add("Remove RemoveSelfListener");
+			testSignal.RemoveListener(RemoveSelfListener);
+		}
+		
+		private void RemoveListenerA()
+		{
+			callLog.Add("Remove ListenerA");
+			testSignal.RemoveListener(OnListenerA);
+		}
+		
+		private void AddListenerAOrderMinusTen()
+		{
+			callLog.Add("Add ListenerA");
+			testSignal.AddListener(OnListenerA, -10);
+		}
+		
+		private void RemoveListenerB()
+		{
+			callLog.Add("Remove ListenerB");
+			testSignal.RemoveListener(OnListenerB);
+		}
+		
+		private void AddListenerBOrderTen()
+		{
+			callLog.Add("Add ListenerB");
+			testSignal.AddListener(OnListenerB, 10);
 		}
 
 		private void OnConsumeListener()
