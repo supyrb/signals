@@ -95,6 +95,18 @@ namespace Supyrb
 		}
 		
 		[Test]
+		public void InvalidContinueSignalTest()
+		{
+			testSignal.AddListener(OnListenerA, -10);
+			testSignal.AddListener(OnListenerB, 0);
+
+			ContinueSignal();
+			
+			Assert.IsFalse(callLog.Contains("A"));
+			Assert.IsFalse(callLog.Contains("B"));
+		}
+		
+		[Test]
 		public void ConsumeSignalTest()
 		{
 			testSignal.AddListener(OnListenerA, -10);
