@@ -129,14 +129,7 @@ namespace Supyrb
 
 		private ISignal Bind(Type signalType)
 		{
-			ISignal signal;
-			if (signals.TryGetValue(signalType, out signal))
-			{
-				UnityEngine.Debug.LogError(string.Format("Signal already registered for type {0}", signalType.ToString()));
-				return signal;
-			}
-
-			signal = (ISignal) Activator.CreateInstance(signalType);
+			ISignal signal = (ISignal) Activator.CreateInstance(signalType);
 			signals.Add(signalType, signal);
 			return signal;
 		}
