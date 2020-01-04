@@ -19,7 +19,7 @@ Find `Packages/manifest.json` in your project and add the following:
 ```json
 {
   "dependencies": {
-    "com.supyrb.signals": "https://github.com/supyrb/signals.git#0.2.1",
+    "com.supyrb.signals": "https://github.com/supyrb/signals.git#0.3.0",
     "...": "..."
   }
 }
@@ -36,37 +36,55 @@ Find `Packages/manifest.json` in your project and add the following:
 ## Usage
 
 [BasicExample](./Samples~/Basic/Scripts/BasicExampleSignalTest.cs)
+
+### Get Signal
+
 ```c#
-
-// Get signal
 exampleSignal = Signals.Get<BasicExampleSignal>();
-
-// Other way to get a signal
+```
+or
+```c#
 Signals.Get(out exampleSignal);
+```
+or
+```c#
+exampleSignal = Signals.Get(typeof(BasicExampleSignal));
+```
 
-// Subscribe to signal
+### Subscribe to Signal
+
+```c#
+// Default subscription with order 0
 exampleSignal.AddListener(DefaultListener);
-
 // Subscribe with an earlier order to be called first
 exampleSignal.AddListener(FirstListener, -100);
+```
 
-// Dispatch signal
+### Dispatch Signal
+
+```c#
 exampleSignal.Dispatch();
-
 ```
 ### Pause & Continue
 
+```c#
+exampleSignal.Pause();
+exampleSignal.Continue();
+```
 If you want to pause the further propagation of a signal (wait for a *user input*/*scene that needs to laod*/*network package*) you can easily do that with `signal.Pause()` and `signal.Continue()`.
 
 ### Consume Signals
 
+```c#
+exampleSignal.Consume();
+```
 Sometimes only one script should handle a signal or the signal should not reach others. Unity for example does this with keystrokes in the editor, you can decide in the script if the [event is used](https://docs.unity3d.com/ScriptReference/Event.Use.html). Similar to that, you can consume signals with `signal.Consume()`. Always be away of the order of your listeners. Listeners with a lower order value are called first and therefore decide before others if they should get the event as well.
 
 ## Contribute
 
 Contributions to the repository are always welcome. There are several ways to contribute:  
 * Creating issues with problems you found or ideas you have how to improve the project
-* Solving exisiting issues with PRs
+* Solving existing issues with PRs
 * Writing test cases to make sure everything is running the way it is supposed to run
 * Create CI actions (e.g. run automated tests, trigger new version creation)
 * Refactor / Cleanup code
