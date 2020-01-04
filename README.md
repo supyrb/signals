@@ -32,7 +32,8 @@ Find `Packages/manifest.json` in your project and add the following:
 * Signal Listener Order
 * Consuming Signals
 * Pausing Signals
-  
+
+As well as
 * Easy integration with UPM
 * Unit tests to assure quality
 * Sample packages to get started fast
