@@ -8,6 +8,7 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 
@@ -18,9 +19,9 @@ namespace Supyrb
 	/// </summary>
 	[TestFixture]
 	[Category("Signals")]
-	public class SignalTests
+	public abstract class ASignalTests<T> where T: ABaseSignal
 	{
-		private TestSignal testSignal;
+		protected T signal;
 		private readonly List<string> callLog = new List<string>();
 
 		[OneTimeSetUp]
@@ -28,7 +29,7 @@ namespace Supyrb
 		{
 			callLog.Clear();
 			Signals.Clear();
-			Signals.Get(out testSignal);
+			Signals.Get(out signal);
 		}
 		
 		[OneTimeTearDown]
@@ -41,50 +42,50 @@ namespace Supyrb
 		public void TearDown()
 		{
 			callLog.Clear();
-			testSignal.Clear();
+			signal.Clear();
 		}
 
 		[Test]
 		public void ListenerOrderTest()
 		{
-			testSignal.AddListener(OnListenerA, -10);
-			testSignal.AddListener(OnListenerB, 0);
-			testSignal.AddListener(OnListenerC, 10);
+			AddListenerA(-10);
+			AddListenerB(0);
+			AddListenerC(10);
 
-			testSignal.Dispatch();
+			Dispatch();
 
 			Assert.IsTrue(callLog[0] == "A");
 			Assert.IsTrue(callLog[1] == "B");
 			Assert.IsTrue(callLog[2] == "C");
-			Assert.IsTrue(testSignal.ListenerCount == 3);
+			Assert.IsTrue(signal.ListenerCount == 3);
 		}
 		
 		[Test]
 		public void RemoveListenerTest()
 		{
-			testSignal.AddListener(OnListenerA, -10);
-			testSignal.AddListener(OnListenerB, 0);
-			testSignal.AddListener(OnListenerC, 10);
+			AddListenerA(-10);
+			AddListenerB(0);
+			AddListenerC(10);
 
-			testSignal.RemoveListener(OnListenerA);
-			testSignal.Dispatch();
-			testSignal.RemoveListener(OnListenerB);
-			testSignal.Dispatch();
+			RemoveListenerA();
+			Dispatch();
+			RemoveListenerB();
+			Dispatch();
 
 			Assert.IsTrue(callLog[0] == "B");
 			Assert.IsTrue(callLog[1] == "C");
 			Assert.IsTrue(callLog[2] == "C");
-			Assert.IsTrue(testSignal.ListenerCount == 1);
+			Assert.IsTrue(signal.ListenerCount == 1);
 		}
 
 		[Test]
 		public void PauseContinueSignalTest()
 		{
-			testSignal.AddListener(OnListenerA, -10);
-			testSignal.AddListener(OnPauseListener, 0);
-			testSignal.AddListener(OnListenerB, 10);
+			AddListenerA(-10);
+			AddPauseListener(0);
+			AddListenerB(10);
 
-			testSignal.Dispatch();
+			Dispatch();
 
 			Assert.IsTrue(callLog.Contains("A"));
 			Assert.IsFalse(callLog.Contains("B"));
@@ -97,8 +98,8 @@ namespace Supyrb
 		[Test]
 		public void InvalidContinueSignalTest()
 		{
-			testSignal.AddListener(OnListenerA, -10);
-			testSignal.AddListener(OnListenerB, 0);
+			AddListenerA(-10);
+			AddListenerB(0);
 
 			ContinueSignal();
 			
@@ -109,11 +110,11 @@ namespace Supyrb
 		[Test]
 		public void ConsumeSignalTest()
 		{
-			testSignal.AddListener(OnListenerA, -10);
-			testSignal.AddListener(OnConsumeListener, 0);
-			testSignal.AddListener(OnListenerB, 10);
+			AddListenerA(-10);
+			AddConsumeListener(0);
+			AddListenerB(10);
 
-			testSignal.Dispatch();
+			Dispatch();
 
 			Assert.IsTrue(callLog.Contains("A"));
 			Assert.IsFalse(callLog.Contains("B"));
@@ -122,175 +123,163 @@ namespace Supyrb
 		[Test]
 		public void RemoveCurrentListenerWhileDispatching()
 		{
-			testSignal.AddListener(OnListenerA, -10);
-			testSignal.AddListener(RemoveSelfListener, 0);
-			testSignal.AddListener(OnListenerB, 10);
+			AddListenerA(-10);
+			AddUnsubscribeSelfListener(0);
+			AddListenerB(10);
 
-			testSignal.Dispatch();
+			Dispatch();
 
 			Assert.IsTrue(callLog.Contains("B"));
-			Assert.IsTrue(testSignal.ListenerCount == 2);
+			Assert.IsTrue(signal.ListenerCount == 2);
 		}
 		
 		[Test]
 		public void RemoveLastListenerWhileDispatching()
 		{
-			testSignal.AddListener(OnListenerA, -10);
-			testSignal.AddListener(RemoveListenerA, 0);
-			testSignal.AddListener(OnListenerB, 10);
+			AddListenerA(-10);
+			RemoveListenerAOnCall(0);
+			AddListenerB(10);
 
-			testSignal.Dispatch();
+			Dispatch();
 
 			Assert.IsTrue(callLog.Contains("A"));
 			Assert.IsTrue(callLog.Contains("B"));
-			Assert.IsTrue(testSignal.ListenerCount == 2);
+			Assert.IsTrue(signal.ListenerCount == 2);
 		}
 		
 		[Test]
 		public void RemoveNextListenerWhileDispatching()
 		{
-			testSignal.AddListener(OnListenerA, -10);
-			testSignal.AddListener(RemoveListenerB, 0);
-			testSignal.AddListener(OnListenerB, 10);
+			AddListenerA(-10);
+			RemoveListenerBOnCall(0);
+			AddListenerB(10);
 
-			testSignal.Dispatch();
+			Dispatch();
 
 			Assert.IsTrue(callLog.Contains("A"));
 			Assert.IsFalse(callLog.Contains("B"));
-			Assert.IsTrue(testSignal.ListenerCount == 2);
+			Assert.IsTrue(signal.ListenerCount == 2);
 		}
 		
 		[Test]
 		public void RemoveNotExistingListener()
 		{
-			testSignal.RemoveListener(OnListenerA);
-			testSignal.Dispatch();
+			RemoveListenerA();
+			Dispatch();
 			
-			Assert.IsTrue(testSignal.ListenerCount == 0);
+			Assert.IsTrue(signal.ListenerCount == 0);
 		}
 		
 		[Test]
 		public void AddListenerTwice()
 		{
-			testSignal.AddListener(OnListenerA, -10);
+			AddListenerA(-10);
 			// Should be ignored
-			testSignal.AddListener(OnListenerA, 0);
-			testSignal.Dispatch();
+			AddListenerA(0);
+			Dispatch();
 			
 			Assert.IsTrue(callLog.Contains("A"));
 			Assert.IsTrue(callLog.Count == 1);
-			Assert.IsTrue(testSignal.ListenerCount == 1);
+			Assert.IsTrue(signal.ListenerCount == 1);
 		}
 		
 		[Test]
 		public void AddSameOrderListenerWhileDispatching()
 		{
-			testSignal.AddListener(AddListenerAOrderMinusTen, -10);
-			testSignal.AddListener(OnListenerB, 0);
-			testSignal.Dispatch();
+			AddListenerAOnCallAtMinusTen(-10);
+			AddListenerB(0);
+			Dispatch();
 			
 			Assert.IsFalse(callLog.Contains("A"));
-			Assert.IsTrue(callLog.Count == 2);
-			Assert.IsTrue(testSignal.ListenerCount == 3);
+			Assert.IsTrue(callLog.Count == 1);
+			Assert.IsTrue(signal.ListenerCount == 3);
 			
-			testSignal.Dispatch();
+			Dispatch();
 			
 			Assert.IsTrue(callLog.Contains("A"));
-			Assert.IsTrue(callLog.Count == 5);
-			Assert.IsTrue(testSignal.ListenerCount == 3);
+			Assert.IsTrue(callLog.Count == 3);
+			Assert.IsTrue(signal.ListenerCount == 3);
 		}
 		
 		[Test]
 		public void AddLowerOrderListenerWhileDispatching()
 		{
-			testSignal.AddListener(AddListenerAOrderMinusTen, -5);
-			testSignal.AddListener(OnListenerB, 0);
-			testSignal.Dispatch();
+			AddListenerAOnCallAtMinusTen(-5);
+			AddListenerB(0);
+			Dispatch();
 			
 			Assert.IsFalse(callLog.Contains("A"));
-			Assert.IsTrue(callLog.Count == 2);
-			Assert.IsTrue(testSignal.ListenerCount == 3);
+			Assert.IsTrue(callLog.Count == 1);
+			Assert.IsTrue(signal.ListenerCount == 3);
 			
-			testSignal.Dispatch();
+			Dispatch();
 			
 			Assert.IsTrue(callLog.Contains("A"));
-			Assert.IsTrue(callLog.Count == 5);
-			Assert.IsTrue(testSignal.ListenerCount == 3);
+			Assert.IsTrue(callLog.Count == 3);
+			Assert.IsTrue(signal.ListenerCount == 3);
 		}
 		
 		[Test]
 		public void AddHigherOrderListenerWhileDispatching()
 		{
-			testSignal.AddListener(OnListenerA, -10);
-			testSignal.AddListener(AddListenerBOrderTen, 0);
-			testSignal.Dispatch();
+			AddListenerA(-10);
+			AddListenerBOnCallAtZero(-5);
+			Dispatch();
 			
 			Assert.IsTrue(callLog.Contains("B"));
-			Assert.IsTrue(callLog.Count == 3);
-			Assert.IsTrue(testSignal.ListenerCount == 3);
+			Assert.IsTrue(callLog.Count == 2);
+			Assert.IsTrue(signal.ListenerCount == 3);
 		}
 		
-		private void OnListenerA()
+		protected abstract void Dispatch();
+		protected abstract void AddListenerA(int order = 0);
+		protected abstract void RemoveListenerA();
+		protected abstract void AddListenerB(int order = 0);
+		protected abstract void RemoveListenerB();
+		protected abstract void AddListenerC(int order = 0);
+		protected abstract void RemoveListenerC();
+		protected abstract void AddPauseListener(int order = 0);
+		protected abstract void AddConsumeListener(int order = 0);
+		
+		protected abstract void AddUnsubscribeSelfListener(int order = 0);
+		
+		protected abstract void AddListenerAOnCallAtMinusTen(int order = 0);
+		protected abstract void RemoveListenerAOnCall(int order = 0);
+		
+		protected abstract void AddListenerBOnCallAtZero(int order = 0);
+		protected abstract void RemoveListenerBOnCall(int order = 0);
+
+		protected void OnListenerA()
 		{
 			callLog.Add("A");
 		}
 
-		private void OnListenerB()
+		protected void OnListenerB()
 		{
 			callLog.Add("B");
 		}
 		
-		private void OnListenerC()
+		protected void OnListenerC()
 		{
 			callLog.Add("C");
 		}
-		
-		private void RemoveSelfListener()
-		{
-			callLog.Add("Remove RemoveSelfListener");
-			testSignal.RemoveListener(RemoveSelfListener);
-		}
-		
-		private void RemoveListenerA()
-		{
-			callLog.Add("Remove ListenerA");
-			testSignal.RemoveListener(OnListenerA);
-		}
-		
-		private void AddListenerAOrderMinusTen()
-		{
-			callLog.Add("Add ListenerA");
-			testSignal.AddListener(OnListenerA, -10);
-		}
-		
-		private void RemoveListenerB()
-		{
-			callLog.Add("Remove ListenerB");
-			testSignal.RemoveListener(OnListenerB);
-		}
-		
-		private void AddListenerBOrderTen()
-		{
-			callLog.Add("Add ListenerB");
-			testSignal.AddListener(OnListenerB, 10);
-		}
 
-		private void OnConsumeListener()
+		protected void OnConsumeListener()
 		{
 			callLog.Add("Consume Signal");
-			testSignal.Consume();
+			signal.Consume();
 		}
 
-		private void OnPauseListener()
+		protected void OnPauseListener()
 		{
 			callLog.Add("Pause Signal");
-			testSignal.Pause();
+			signal.Pause();
 		}
 
 		private void ContinueSignal()
 		{
 			callLog.Add("Continue Signal");
-			testSignal.Continue();
+			signal.Continue();
 		}
 	}
 }
