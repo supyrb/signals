@@ -19,7 +19,7 @@ namespace Supyrb
 	/// </summary>
 	[TestFixture]
 	[Category("Signals")]
-	public abstract class ASignalTests<T> where T: ABaseSignal
+	public abstract class ASignalTests<T> where T: ASignal
 	{
 		protected T signal;
 		private readonly List<string> callLog = new List<string>();

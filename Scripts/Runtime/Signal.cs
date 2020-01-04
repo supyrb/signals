@@ -12,7 +12,7 @@ using System;
 
 namespace Supyrb
 {
-	public class Signal : ABaseSignal
+	public class Signal : ASignal
 	{
 		private readonly OrderedList<Action> listeners;
 
@@ -80,7 +80,7 @@ namespace Supyrb
 
 		/// <summary>
 		/// Dispatch the signal to the listeners in their defined order until the signal
-		/// is consumed (<see cref="ABaseSignal.Consume"/>) or paused (<see cref="ABaseSignal.Pause"/>)
+		/// is consumed (<see cref="ASignal.Consume"/>) or paused (<see cref="ASignal.Pause"/>)
 		/// </summary>
 		public void Dispatch()
 		{
@@ -98,7 +98,7 @@ namespace Supyrb
 		}
 	}
 
-	public class Signal<T> : ABaseSignal
+	public class Signal<T> : ASignal
 	{
 		private readonly OrderedList<Action<T>> listeners;
 		private T context0;
@@ -167,7 +167,7 @@ namespace Supyrb
 
 		/// <summary>
 		/// Dispatch the signal to the listeners in their defined order until the signal
-		/// is consumed (<see cref="ABaseSignal.Consume"/>) or paused (<see cref="ABaseSignal.Pause"/>)
+		/// is consumed (<see cref="ASignal.Consume"/>) or paused (<see cref="ASignal.Pause"/>)
 		/// </summary>
 		public void Dispatch(T context0)
 		{
@@ -192,7 +192,7 @@ namespace Supyrb
 		}
 	}
 
-	public class Signal<T, U> : ABaseSignal
+	public class Signal<T, U> : ASignal
 	{
 		private readonly OrderedList<Action<T, U>> listeners;
 		private T context0;
@@ -262,7 +262,7 @@ namespace Supyrb
 
 		/// <summary>
 		/// Dispatch the signal to the listeners in their defined order until the signal
-		/// is consumed (<see cref="ABaseSignal.Consume"/>) or paused (<see cref="ABaseSignal.Pause"/>)
+		/// is consumed (<see cref="ASignal.Consume"/>) or paused (<see cref="ASignal.Pause"/>)
 		/// </summary>
 		public void Dispatch(T context0, U context1)
 		{
@@ -289,7 +289,7 @@ namespace Supyrb
 		}
 	}
 
-	public class Signal<T, U, V> : ABaseSignal
+	public class Signal<T, U, V> : ASignal
 	{
 		private readonly OrderedList<Action<T, U, V>> listeners;
 		private T context0;
@@ -360,7 +360,7 @@ namespace Supyrb
 
 		/// <summary>
 		/// Dispatch the signal to the listeners in their defined order until the signal
-		/// is consumed (<see cref="ABaseSignal.Consume"/>) or paused (<see cref="ABaseSignal.Pause"/>)
+		/// is consumed (<see cref="ASignal.Consume"/>) or paused (<see cref="ASignal.Pause"/>)
 		/// </summary>
 		public void Dispatch(T context0, U context1, V context2)
 		{
