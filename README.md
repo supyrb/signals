@@ -33,6 +33,12 @@ Find `Packages/manifest.json` in your project and add the following:
 * Consuming Signals
 * Pausing Signals
 
+As well as
+* Easy integration with UPM
+* Unit tests to assure quality
+* Sample packages to get started fast
+* XML comments for all public methods and properties
+
 ## Usage
 
 [BasicExample](./Samples~/Basic/Scripts/BasicExampleSignalTest.cs)
@@ -83,14 +89,15 @@ Sometimes only one script should handle a signal or the signal should not reach 
 ## Contribute
 
 Contributions to the repository are always welcome. There are several ways to contribute:  
-* Creating issues with problems you found or ideas you have how to improve the project
-* Solving existing issues with PRs
-* Writing test cases to make sure everything is running the way it is supposed to run
+* [Create an issue](../../issues) for a problem you found or an idea on how to improve the project
+* Solve existing issues with PRs
+* Write test cases to make sure everything is running the way it is supposed to run
 * Create CI actions (e.g. run automated tests, trigger new version creation)
 * Refactor / Cleanup code
 * Document code functionality
 * Write wiki entries
 * Improve editor integration of signals
+* Post your thoughts in the [Unity Forum](https://forum.unity.com/threads/open-source-signals-a-decoupled-typesafe-messaging-system.803487/)
 
 ### Code Contribution
 
