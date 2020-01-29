@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.1](https://github.com/supyrb/signals/tree/0.3.1) (2020-01-29)
+
+[Full Changelog](https://github.com/supyrb/signals/compare/0.3.0...0.3.1)
+
+**Closed issues:**
+
+- Remove Test folder from unity packages [\#13](https://github.com/supyrb/signals/issues/13)
+
+**Merged pull requests:**
+
+- Fix namespace 'NUnit' not found on version 0.3.0 [\#12](https://github.com/supyrb/signals/pull/12) ([tony707](https://github.com/tony707))
+
 ## [0.3.0](https://github.com/supyrb/signals/tree/0.3.0) (2020-01-04)
 
 [Full Changelog](https://github.com/supyrb/signals/compare/0.2.1...0.3.0)
