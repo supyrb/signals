@@ -68,6 +68,7 @@ namespace Supyrb
 				var type = types[i];
 				signalTypes.Add(new SerializableSystemType(type));
 			}
+			signalTypes.Sort();
 		}
 	}
 }

@@ -4,13 +4,14 @@
 //
 // Written by Bryan Keiren (http://www.bryankeiren.com)
 
+using System;
 using UnityEngine;
 using System.Runtime.Serialization;
 
 namespace Supyrb
 {
 	[System.Serializable]
-	public class SerializableSystemType
+	public class SerializableSystemType : IComparable<SerializableSystemType>
 	{
 		[SerializeField]
 		private string m_Name;
@@ -60,6 +61,24 @@ namespace Supyrb
 			m_Name = systemType.Name;
 			m_AssemblyQualifiedName = systemType.AssemblyQualifiedName;
 			m_AssemblyName = systemType.Assembly.FullName;
+		}
+
+		public int CompareTo(SerializableSystemType other)
+		{
+			if (m_Name == null)
+			{
+				if (other == null || other.m_Name == null)
+				{
+					return 0;
+				}
+
+				return -1;
+			}
+			if (other == null || other.m_Name == null)
+			{
+				return 1;
+			}
+			return String.Compare(m_Name, other.m_Name, StringComparison.Ordinal);
 		}
 	}
 
