@@ -1,6 +1,6 @@
 # Signals ❇
 
-![UPM Screenshot](https://repository-images.githubusercontent.com/196998874/5b81aa00-0794-11ea-804b-4acc77a1ce2e)
+![Signals Editor Window Screenshot](https://repository-images.githubusercontent.com/196998874/b2e67b80-5e52-11ea-8dfb-ada57e144936)
 
 ### A typesafe, lightweight, tested messaging package for Unity.
 ---
