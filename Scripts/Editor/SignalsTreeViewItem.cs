@@ -73,7 +73,7 @@ namespace Supyrb
 
 		private object DrawField(string label, Type type, object value)
 		{
-			if (type.IsAssignableFrom(typeof(UnityEngine.Object)))
+			if (typeof(UnityEngine.Object).IsAssignableFrom(type))
 			{
 				return EditorGUILayout.ObjectField(label, (UnityEngine.Object) value, type, true);
 			}
@@ -81,11 +81,6 @@ namespace Supyrb
 			if (type == typeof(string))
 			{
 				return EditorGUILayout.TextField(label, (string) value);
-			}
-			
-			if (type == typeof(Enum))
-			{
-				return EditorGUILayout.EnumPopup(label, (Enum) value);
 			}
 			
 			if (type == typeof(AnimationCurve))
@@ -96,6 +91,16 @@ namespace Supyrb
 			if (type == typeof(Gradient))
 			{
 				return EditorGUILayout.GradientField(label, (Gradient) value);
+			}
+			
+			if (type.IsEnum)
+			{
+				int enumValue = 0;
+				if (value != null)
+				{
+					enumValue = (int) value;
+				}
+				return EditorGUILayout.EnumPopup(label, (Enum) Enum.ToObject(type, enumValue));
 			}
 			
 			if (type == typeof(bool))
