@@ -40,6 +40,11 @@ namespace Supyrb
 			set { values[index] = value; }
 		}
 
+		public int GetSortOrderForIndex(int index)
+		{
+			return sortedOrders[index];
+		}
+
 		/// <summary>
 		/// Add an item to the ordered list
 		/// </summary>

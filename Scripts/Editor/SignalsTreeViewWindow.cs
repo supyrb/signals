@@ -21,8 +21,9 @@ namespace Supyrb
 
 		private SignalsTreeView treeView;
 		private SearchField searchField;
+		private SignalsTreeViewItems items;
 		private SerializableSystemType currentSelection;
-		private ASignal cachedSignal;
+		private SignalsTreeViewItem currentItem;
 
 		private const float HierarchyWidth = 250f;
 		private const float ToolbarHeight = 18f;
@@ -43,6 +44,7 @@ namespace Supyrb
 				treeViewState = new TreeViewState();
 			}
 
+			items = new SignalsTreeViewItems();
 			treeView = new SignalsTreeView(treeViewState);
 			treeView.OnSelectionChanged += OnSelectionChanged;
 			searchField = new SearchField();
@@ -73,8 +75,9 @@ namespace Supyrb
 
 		private void DoToolbar()
 		{
-			GUILayout.BeginHorizontal(EditorStyles.toolbar, 
-				GUILayout.Width(this.position.width), GUILayout.Height(ToolbarHeight));
+			GUILayout.BeginHorizontal(EditorStyles.toolbar,
+				GUILayout.Width(this.position.width),
+				GUILayout.Height(ToolbarHeight));
 			GUILayout.Space(100);
 			GUILayout.FlexibleSpace();
 			treeView.searchString = searchField.OnToolbarGUI(treeView.searchString);
@@ -94,54 +97,38 @@ namespace Supyrb
 				return;
 			}
 
-			if (cachedSignal == null)
+			if (currentItem == null)
 			{
-				cachedSignal = Signals.Get(currentSelection.SystemType) as ASignal;
+				currentItem = items.Get(currentSelection.SystemType);
 			}
 
-			if (cachedSignal == null)
+			if (currentItem == null)
 			{
 				GUILayout.Label("Only signals derived from ASignal supported");
 				return;
 			}
 
-			GUILayout.BeginVertical();
-
-			GUILayout.Label(string.Format("{0} ({1} Listeners)",
-				currentSelection.Name,
-				cachedSignal.ListenerCount));
-			var type = currentSelection.SystemType;
-			var baseType = type.BaseType;
-
-			if (baseType != null)
-			{
-				var genericArguments = baseType.GetGenericArguments();
-				for (var i = 0; i < genericArguments.Length; i++)
-				{
-					var argument = genericArguments[i];
-					GUILayout.Label(argument.Name);
-				}
-			}
-			
-			GUILayout.EndVertical();
+			currentItem.DrawSignalDetailView();
 		}
 
 		private void DoFooter()
 		{
-			GUILayout.BeginHorizontal(Styles.FooterStyle, 
-				GUILayout.Width(this.position.width), GUILayout.Height(FooterHeight));
+			GUILayout.BeginHorizontal(Styles.FooterStyle,
+				GUILayout.Width(this.position.width),
+				GUILayout.Height(FooterHeight));
 			GUILayout.Space(100);
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button("Update Signal List"))
 			{
 				treeView.UpdateSignalData();
+				items.Clear();
 			}
+
 			GUILayout.EndHorizontal();
 		}
 
 		
-		// Add menu named "My Window" to the Window menu
-		[MenuItem("Supyrb/Simple Tree Window")]
+		[MenuItem("Window/Signals")]
 		private static void ShowWindow()
 		{
 			// Get existing open window or if none, make a new one:
@@ -153,11 +140,7 @@ namespace Supyrb
 		private void OnSelectionChanged(SerializableSystemType selectedtype)
 		{
 			currentSelection = selectedtype;
-
-			if (currentSelection != null)
-			{
-				cachedSignal = Signals.Get(currentSelection.SystemType) as ASignal;
-			}
+			currentItem = items.Get(currentSelection.SystemType);
 		}
 	}
 }

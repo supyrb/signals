@@ -151,6 +151,12 @@ namespace Supyrb
 		/// <inheritdoc />
 		public override string ToString()
 		{
+			
+			return string.Format("Signal {0}: {1} Listeners, Current state {2}", this.GetType().Name, ListenerCount, GetCurrentState());
+		}
+
+		public string GetCurrentState()
+		{
 			string state;
 			if (paused)
 			{
@@ -169,7 +175,7 @@ namespace Supyrb
 				state = "Idle";
 			}
 
-			return string.Format("Signal {0}: {1} Listeners, Current state {2}", this.GetType().Name, ListenerCount, state);
+			return state;
 		}
 	}
 }
