@@ -67,6 +67,18 @@ namespace Supyrb
 			{
 				dispatchMethod.Invoke(instance, argumentValues);
 			}
+			
+			GUILayout.BeginHorizontal();
+			if (GUILayout.Button("Continue"))
+			{
+				instance.Continue();
+			}
+			
+			if (GUILayout.Button("Pause"))
+			{
+				instance.Pause();
+			}
+			GUILayout.EndHorizontal();
 
 			GUILayout.EndVertical();
 		}
