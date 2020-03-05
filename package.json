@@ -1,7 +1,7 @@
 {
 	"name": "com.supyrb.signals",
 	"displayName": "Signals ❇",
-	"description": "Signals is a powerful, lightweight messaging system that provides sortable, consumable and pausable signals.",
+	"description": "Signals is a powerful, lightweight messaging system that provides sortable, consumable and pausable signals. Comes with an editor window for easy access to the signals.",
 	"keywords": [
 		"Signal",
 		"Signals",
@@ -10,7 +10,7 @@
 		"Decoupled"
 	],
 	"category": "Utility",
-	"version": "0.3.1",
+	"version": "0.4.0",
 	"unity": "2018.1",
 	"dependencies": {
 		
