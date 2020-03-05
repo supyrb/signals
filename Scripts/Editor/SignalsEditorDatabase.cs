@@ -45,8 +45,8 @@ namespace Supyrb
 				return instance;
 			}
 		}
-
-		[InitializeOnLoadMethod]
+		
+		[UnityEditor.Callbacks.DidReloadScripts(100)]
 		private static void FindOrCreateInstance()
 		{
 			if (instance != null)
@@ -55,6 +55,8 @@ namespace Supyrb
 			}
 
 			instance = SignalsEditorAssetUtilities.FindOrCreateEditorAsset<SignalsEditorDatabase>("Signals", "SignalsEditorDatabase.asset", false);
+			instance.signalTypes = new List<SerializableSystemType>();
+			EditorUtility.SetDirty(instance);
 		}
 
 		[ContextMenu("UpdateDatabase")]
@@ -69,6 +71,7 @@ namespace Supyrb
 				signalTypes.Add(new SerializableSystemType(type));
 			}
 			signalTypes.Sort();
+			EditorUtility.SetDirty(this);
 		}
 	}
 }
