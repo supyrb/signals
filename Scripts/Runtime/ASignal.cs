@@ -158,13 +158,13 @@ namespace Supyrb
 		public string GetCurrentState()
 		{
 			string state;
-			if (paused)
+			if (consumed)
+			{
+				state = "Consumed by " + (currentIndex - 1);
+			}
+			else if (paused)
 			{
 				state = "Paused at " + currentIndex;
-			}
-			else if (consumed)
-			{
-				state = "Consumed at " + (currentIndex - 1);
 			}
 			else if (currentIndex > 0 && !finished)
 			{

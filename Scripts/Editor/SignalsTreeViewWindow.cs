@@ -8,6 +8,7 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -49,6 +50,21 @@ namespace Supyrb
 			treeView.OnSelectionChanged += OnSelectionChanged;
 			searchField = new SearchField();
 			searchField.downOrUpArrowKeyPressed += treeView.SetFocusAndEnsureSelectedItem;
+			
+			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+		}
+
+		private void OnDisable()
+		{
+			EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+		}
+		
+		private void OnPlayModeStateChanged(PlayModeStateChange state)
+		{
+			if (state == PlayModeStateChange.EnteredEditMode)
+			{
+				items.ResetInstances();
+			}
 		}
 
 		private void OnGUI()

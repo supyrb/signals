@@ -17,12 +17,25 @@ namespace Supyrb
 {
 	public class SignalsTreeViewItem
 	{
+		static class Styles {
+			
+			internal static GUIStyle NumberLabel;
+ 
+			static Styles() {
+				NumberLabel = new GUIStyle(EditorStyles.label);
+				NumberLabel.alignment = TextAnchor.MiddleRight;
+				NumberLabel.fixedWidth = 90f;
+				NumberLabel.padding.right = 8;
+			}
+		}
+		
 		private readonly Type type;
 		private readonly Type baseType;
 		private readonly Type[] argumentTypes;
 		private ASignal instance;
 		private object[] argumentValues;
 		private MethodInfo dispatchMethod;
+		private FieldInfo listenersField;
 
 		public SignalsTreeViewItem(Type type)
 		{
@@ -38,6 +51,7 @@ namespace Supyrb
 			argumentValues = new object[argumentTypes.Length];
 
 			dispatchMethod = this.type.GetMethod("Dispatch", BindingFlags.Instance | BindingFlags.Public);
+			listenersField = baseType.GetField("listeners", BindingFlags.Instance | BindingFlags.NonPublic);
 		}
 
 		public void DrawSignalDetailView()
@@ -63,10 +77,16 @@ namespace Supyrb
 				argumentValues[i] = DrawField(argumentType.Name, argumentType, argumentValue);
 			}
 
+			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("Dispatch"))
 			{
 				dispatchMethod.Invoke(instance, argumentValues);
 			}
+			if (GUILayout.Button("Consume"))
+			{
+				instance.Consume();
+			}
+			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("Continue"))
@@ -80,7 +100,48 @@ namespace Supyrb
 			}
 			GUILayout.EndHorizontal();
 
+			GUILayout.Space(24f);
+			DrawListeners();
+			
 			GUILayout.EndVertical();
+		}
+
+		public void ResetInstance()
+		{
+			instance = null;
+		}
+		
+		private void DrawListeners()
+		{
+			if (instance.ListenerCount == 0)
+			{
+				return;
+			}
+			dynamic listeners = listenersField.GetValue(instance);
+			
+			for (int i = 0; i < listeners.Count; i++)
+			{
+				var sortOrder = listeners.GetSortOrderForIndex(i);
+				var listener = listeners[i];
+				var target = listener.Target;
+				Type targetType = target.GetType();
+				
+				GUILayout.BeginHorizontal();
+				
+				GUILayout.Label(sortOrder.ToString(), Styles.NumberLabel);
+				if (typeof(UnityEngine.Object).IsAssignableFrom(targetType))
+				{
+					EditorGUILayout.ObjectField((UnityEngine.Object) target, targetType, true);
+				}
+				else
+				{
+					GUILayout.Label(target.ToString());
+				}
+				GUILayout.Label("-> " + listener.Method.Name);
+				GUILayout.FlexibleSpace();
+				
+				GUILayout.EndHorizontal();
+			}
 		}
 
 		private object DrawField(string label, Type type, object value)

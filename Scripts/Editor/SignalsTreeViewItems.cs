@@ -39,5 +39,13 @@ namespace Supyrb
 		{
 			items.Clear();
 		}
+
+		public void ResetInstances()
+		{
+			foreach (var item in items)
+			{
+				item.Value.ResetInstance();
+			}
+		}
 	}
 }
