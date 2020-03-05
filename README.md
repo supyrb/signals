@@ -1,6 +1,6 @@
 # Signals ❇
 
-![Signals Editor Window Screenshot](https://repository-images.githubusercontent.com/196998874/b2e67b80-5e52-11ea-8dfb-ada57e144936)
+![Signals Editor Window Screenshot](https://repository-images.githubusercontent.com/196998874/22ae4200-5ef7-11ea-960e-89527dd2f0b8)
 
 ### A typesafe, lightweight, tested messaging package for Unity.
 ---
@@ -34,6 +34,7 @@ Find `Packages/manifest.json` in your project and add the following:
 * Pausing Signals
 
 As well as
+* An editor window for easily dispatching and debugging signals
 * Easy integration with UPM
 * Unit tests to assure quality
 * Sample packages to get started fast
@@ -85,6 +86,16 @@ If you want to pause the further propagation of a signal (wait for a *user input
 exampleSignal.Consume();
 ```
 Sometimes only one script should handle a signal or the signal should not reach others. Unity for example does this with keystrokes in the editor, you can decide in the script if the [event is used](https://docs.unity3d.com/ScriptReference/Event.Use.html). Similar to that, you can consume signals with `signal.Consume()`. Always be away of the order of your listeners. Listeners with a lower order value are called first and therefore decide before others if they should get the event as well.
+
+## Editor Window
+
+The editor window can be accessed through `Window->Signals`. It is a work in progress, but already adds quite some value to the package. If you would like to use the package without the editor window, the last valid version for that is `0.3.1`
+
+* On the first start and whenever you added a signal you want to debug, just hit the `Update Signals List` button in the bottom right corner of the window
+* In the top right corner there is a search field which you can use to filter your signals
+* Click on a signal in the list, to see the details of that signal
+* You can dispatch, consume, pause and continue the signal. For dispatching you will get the needed fields to enter your custom arguments. Most common types are supported, for non supported types you will see an information.
+* In the detail view you can also see all listeners subscribed to the signal with their order value and method that is called
 
 ## Contribute
 
