@@ -131,6 +131,7 @@ Contributions to the repository are always welcome. There are several ways to co
 ## Credits
 
 * Built on the shoulders of [Signals](https://github.com/yankooliveira/signals) by [Yanko Oliveira](https://github.com/yankooliveira)
+* Inspired by the great wisdom of [Benny Berger](https://github.com/Asorano)
 * Inspired by [JS-Signas](https://github.com/millermedeiros/js-signals) by [Miller Medeiros](https://github.com/millermedeiros)
 * Developed by [Johannes Deml](https://github.com/JohannesDeml) – [public@deml.io](mailto:public@deml.io)
 
