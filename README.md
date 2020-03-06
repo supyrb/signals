@@ -1,6 +1,6 @@
 # Signals ❇
 
-![Signals Editor Window Screenshot](https://repository-images.githubusercontent.com/196998874/22ae4200-5ef7-11ea-960e-89527dd2f0b8)
+![Signals Editor Window Screenshot](https://repository-images.githubusercontent.com/196998874/89ce0400-5f94-11ea-91f0-817e8691def5)
 
 ### A typesafe, lightweight, tested messaging package for Unity.
 ---
@@ -19,7 +19,7 @@ Find `Packages/manifest.json` in your project and add the following:
 ```json
 {
   "dependencies": {
-    "com.supyrb.signals": "https://github.com/supyrb/signals.git#0.4.0",
+    "com.supyrb.signals": "https://github.com/supyrb/signals.git#0.4.1",
     "...": "..."
   }
 }
@@ -126,6 +126,7 @@ Contributions to the repository are always welcome. There are several ways to co
 * Use [XML comments](https://docs.microsoft.com/en-us/dotnet/csharp/codedoc) for public methods and classes
 * Follow the [Supyrb Guidelines](https://github.com/supyrb/SupyrbConventions) in your code.
 * Use present tense git commits as described [here](https://github.com/supyrb/SupyrbConventions/tree/develop/git#commit-messages)
+* Use reflection for the editor window to access data from the signals, do not change field visibility just for editor tools.
 
 ## Credits
 
