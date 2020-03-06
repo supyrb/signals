@@ -56,7 +56,16 @@ namespace Supyrb
 
 		private void OnDisable()
 		{
+			if (searchField != null)
+			{
+				searchField.downOrUpArrowKeyPressed -= treeView.SetFocusAndEnsureSelectedItem;
+			}
 			EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+		}
+		
+		void OnInspectorUpdate()
+		{
+			this.Repaint();
 		}
 		
 		private void OnPlayModeStateChanged(PlayModeStateChange state)
