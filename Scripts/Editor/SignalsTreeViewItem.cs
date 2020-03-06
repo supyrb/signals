@@ -19,12 +19,16 @@ namespace Supyrb
 	{
 		static class Styles {
 			
+			internal static GUIStyle HeaderLabel;
 			internal static GUIStyle NumberLabel;
- 
-			static Styles() {
+			
+			static Styles()
+			{
+				HeaderLabel = (GUIStyle)"AM MixerHeader";
+				HeaderLabel.margin.left = 4;
 				NumberLabel = new GUIStyle(EditorStyles.label);
 				NumberLabel.alignment = TextAnchor.MiddleRight;
-				NumberLabel.fixedWidth = 90f;
+				NumberLabel.fixedWidth = 50f;
 				NumberLabel.padding.right = 8;
 			}
 		}
@@ -36,6 +40,7 @@ namespace Supyrb
 		private object[] argumentValues;
 		private MethodInfo dispatchMethod;
 		private FieldInfo listenersField;
+		private bool foldoutListeners = true;
 
 		public SignalsTreeViewItem(Type type)
 		{
@@ -61,11 +66,15 @@ namespace Supyrb
 			if (instance == null)
 			{
 				instance = Signals.Get(type) as ASignal;
+				
+				if (instance == null)
+				{
+					GUILayout.Label("Only signals derived from ASignal supported");
+					return;
+				}
 			}
 
-			GUILayout.Label(string.Format("{0} ({1} Listeners)",
-				type.Name,
-				instance.ListenerCount));
+			GUILayout.Label(string.Format(type.Name), Styles.HeaderLabel);
 			GUILayout.Label(string.Format("Current State: {0}",
 				instance.GetCurrentState()));
 			GUILayout.Space(12f);
@@ -115,20 +124,28 @@ namespace Supyrb
 		{
 			if (instance.ListenerCount == 0)
 			{
+				GUILayout.Label("No listeners subscribed");
+				return;
+			}
+
+			foldoutListeners = EditorGUILayout.Foldout(foldoutListeners, string.Format("Listeners ({0})", instance.ListenerCount));
+			if (!foldoutListeners)
+			{
 				return;
 			}
 			dynamic listeners = listenersField.GetValue(instance);
 			
 			for (int i = 0; i < listeners.Count; i++)
 			{
-				var sortOrder = listeners.GetSortOrderForIndex(i);
+				int sortOrder = listeners.GetSortOrderForIndex(i);
 				var listener = listeners[i];
 				var target = listener.Target;
 				Type targetType = target.GetType();
 				
 				GUILayout.BeginHorizontal();
 				
-				GUILayout.Label(sortOrder.ToString(), Styles.NumberLabel);
+				GUILayout.Label(i.ToString(), GUILayout.Width(30f));
+				GUILayout.Label(GetSortOrderString(sortOrder), Styles.NumberLabel);
 				if (typeof(UnityEngine.Object).IsAssignableFrom(targetType))
 				{
 					EditorGUILayout.ObjectField((UnityEngine.Object) target, targetType, true);
@@ -137,11 +154,26 @@ namespace Supyrb
 				{
 					GUILayout.Label(target.ToString());
 				}
-				GUILayout.Label("-> " + listener.Method.Name);
+				GUILayout.Label("▶ " + listener.Method.Name);
 				GUILayout.FlexibleSpace();
 				
 				GUILayout.EndHorizontal();
 			}
+		}
+
+		private string GetSortOrderString(int sortOrder)
+		{
+			if (sortOrder == Int32.MinValue)
+			{
+				return "min";
+			}
+			
+			if (sortOrder == Int32.MaxValue)
+			{
+				return "max";
+			}
+			
+			return sortOrder.ToString();
 		}
 
 		private object DrawField(string label, Type type, object value)

@@ -116,7 +116,7 @@ namespace Supyrb
 
 		private void DoDetailView()
 		{
-			if (currentSelection == null)
+			if (currentSelection == null || currentSelection.SystemType == null)
 			{
 				GUILayout.Label("Nothing selected");
 				return;
@@ -125,12 +125,6 @@ namespace Supyrb
 			if (currentItem == null)
 			{
 				currentItem = items.Get(currentSelection.SystemType);
-			}
-
-			if (currentItem == null)
-			{
-				GUILayout.Label("Only signals derived from ASignal supported");
-				return;
 			}
 
 			currentItem.DrawSignalDetailView();
