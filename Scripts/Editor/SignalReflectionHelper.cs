@@ -11,12 +11,15 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Supyrb
 {
 	public static class SignalReflectionHelper
 	{
+		private static readonly string[] AssemblyBlackList = new[] {"Microsoft.CodeAnalysis.*"};
+		
 		public static void GetAllDerivedClasses<T>(ref List<Type> list) where T : ABaseSignal
 		{
 			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -29,8 +32,27 @@ namespace Supyrb
 					continue;
 				}
 
+				if (IsAssemblyBlackListed(assembly.FullName))
+				{
+					continue;
+				}
+
 				GetAllDerivedClasses<T>(ref list, assembly);
 			}
+		}
+
+		private static bool IsAssemblyBlackListed(string assemblyFullName)
+		{
+			for (int i = 0; i < AssemblyBlackList.Length; i++)
+			{
+				var blackListRegex = AssemblyBlackList[i];
+				if (Regex.IsMatch(assemblyFullName, blackListRegex))
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		private static bool IsInProject(string path)
