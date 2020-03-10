@@ -14,10 +14,28 @@ namespace Supyrb
 {
 	public abstract class ASignal : ABaseSignal
 	{
+		public enum State
+		{
+			/// <summary>
+			/// Signal was never called or is finished
+			/// </summary>
+			Idle,
+			/// <summary>
+			/// Signal is currently active and processing listener at <see cref="ASignal.currentIndex"/>
+			/// </summary>
+			Running,
+			/// <summary>
+			/// Signal is paused and can be continued at the next index by calling <see cref="ASignal.Continue"/>
+			/// </summary>
+			Paused,
+			/// <summary>
+			/// Signal was consumed at <see cref="ASignal.currentIndex"/>
+			/// </summary>
+			Consumed
+		}
+		
 		protected int currentIndex;
-		private bool consumed;
-		private bool paused;
-		private bool finished;
+		private State state;
 
 
 		/// <summary>
@@ -29,9 +47,7 @@ namespace Supyrb
 		protected ASignal() : base()
 		{
 			this.currentIndex = 0;
-			this.consumed = false;
-			this.paused = false;
-			this.finished = true;
+			this.state = State.Idle;
 		}
 		
 		/// <summary>
@@ -45,7 +61,7 @@ namespace Supyrb
 		/// </summary>
 		public void Pause()
 		{
-			paused = true;
+			this.state = State.Paused;
 		}
 
 		/// <summary>
@@ -54,14 +70,15 @@ namespace Supyrb
 		/// </summary>
 		public void Continue()
 		{
-			if (!paused)
+			if (state != State.Paused)
 			{
 				return;
 			}
 
 			BeginSignalProfilerSample("Continue Signal");
-			
-			paused = false;
+
+			currentIndex++;
+			state = State.Running;
 			Run();
 			
 			EndSignalProfilerSample();
@@ -72,26 +89,19 @@ namespace Supyrb
 		/// </summary>
 		public void Consume()
 		{
-			consumed = true;
+			state = State.Consumed;
 		}
 		
 		protected void CleanupForDispatch()
 		{
 			currentIndex = 0;
-			consumed = false;
-			paused = false;
-			finished = false;
+			state = State.Running;
 		}
 
 		protected void Run()
 		{
 			while (true)
 			{
-				if (paused || finished || consumed)
-				{
-					return;
-				}
-
 				if (currentIndex >= ListenerCount)
 				{
 					OnFinish();
@@ -99,13 +109,18 @@ namespace Supyrb
 				}
 
 				Invoke(currentIndex);
+				
+				if (state != State.Running)
+				{
+					return;
+				}
 				currentIndex++;
 			}
 		}
 
 		protected void AddListenerAt(int index)
 		{
-			if (finished || consumed)
+			if (state == State.Idle)
 			{
 				return;
 			}
@@ -118,7 +133,7 @@ namespace Supyrb
 
 		protected void RemoveListenerAt(int index)
 		{
-			if (finished || consumed)
+			if (state == State.Idle)
 			{
 				return;
 			}
@@ -131,7 +146,7 @@ namespace Supyrb
 
 		protected virtual void OnFinish()
 		{
-			finished = true;
+			state = State.Idle;
 		}
 
 		protected void BeginSignalProfilerSample(string sampleName)
@@ -152,30 +167,8 @@ namespace Supyrb
 		public override string ToString()
 		{
 			
-			return string.Format("Signal {0}: {1} Listeners, Current state {2}", this.GetType().Name, ListenerCount, GetCurrentState());
-		}
-
-		public string GetCurrentState()
-		{
-			string state;
-			if (consumed)
-			{
-				state = "Consumed by " + (currentIndex - 1);
-			}
-			else if (paused)
-			{
-				state = "Paused at " + currentIndex;
-			}
-			else if (currentIndex > 0 && !finished)
-			{
-				state = "Running at " + currentIndex;
-			}
-			else
-			{
-				state = "Idle";
-			}
-
-			return state;
+			return string.Format("Signal {0}: {1} Listeners, State {2}, Index {3}", 
+				this.GetType().Name, ListenerCount, state, currentIndex);
 		}
 	}
 }

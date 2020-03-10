@@ -22,6 +22,10 @@ namespace Supyrb
 			internal static GUIStyle HeaderLabel;
 			internal static GUIStyle NumberLabel;
 			
+			internal static GUIStyle RunningLabel;
+			internal static GUIStyle PausedLabel;
+			internal static GUIStyle ConsumedLabel;
+
 			static Styles()
 			{
 				HeaderLabel = (GUIStyle)"AM MixerHeader";
@@ -30,6 +34,22 @@ namespace Supyrb
 				NumberLabel.alignment = TextAnchor.MiddleRight;
 				NumberLabel.fixedWidth = 50f;
 				NumberLabel.padding.right = 8;
+				
+				RunningLabel = new GUIStyle(EditorStyles.label);
+				RunningLabel.normal.background = CreateColorTexture(new Color(0.2f, 0.8f, 0.2f, 0.4f));
+				PausedLabel = new GUIStyle(EditorStyles.label);
+				PausedLabel.normal.background = CreateColorTexture(new Color(0.8f, 0.8f, 0.2f, 0.6f));
+				ConsumedLabel = new GUIStyle(EditorStyles.label);
+				ConsumedLabel.normal.background = CreateColorTexture(new Color(0.8f, 0.2f, 0.2f, 0.4f));
+			}
+
+			private static Texture2D CreateColorTexture(Color col)
+			{
+				Texture2D result = new Texture2D(1, 1);
+				result.SetPixel(0, 0, col);
+				result.Apply();
+ 
+				return result;
 			}
 		}
 		
@@ -40,6 +60,10 @@ namespace Supyrb
 		private object[] argumentValues;
 		private MethodInfo dispatchMethod;
 		private FieldInfo listenersField;
+		private FieldInfo currentIndexField;
+		private FieldInfo stateField;
+		private int currentIndex;
+		private ASignal.State state;
 		private bool foldoutListeners = true;
 
 		public SignalsTreeViewItem(Type type)
@@ -57,6 +81,8 @@ namespace Supyrb
 
 			dispatchMethod = this.type.GetMethod("Dispatch", BindingFlags.Instance | BindingFlags.Public);
 			listenersField = baseType.GetField("listeners", BindingFlags.Instance | BindingFlags.NonPublic);
+			currentIndexField = typeof(ASignal).GetField("currentIndex", BindingFlags.Instance | BindingFlags.NonPublic);
+			stateField = typeof(ASignal).GetField("state", BindingFlags.Instance | BindingFlags.NonPublic);
 		}
 
 		public void DrawSignalDetailView()
@@ -74,45 +100,64 @@ namespace Supyrb
 				}
 			}
 
+			var indexObject = currentIndexField.GetValue(instance);
+			currentIndex =  indexObject is int ? (int) indexObject : 0;
+			var stateObject = stateField.GetValue(instance);
+			state = stateObject is ASignal.State ? (ASignal.State) stateObject : ASignal.State.Idle;
+
 			GUILayout.Label(string.Format(type.Name), Styles.HeaderLabel);
-			GUILayout.Label(string.Format("Current State: {0}",
-				instance.GetCurrentState()));
 			GUILayout.Space(12f);
 
+			DrawDispatchPropertyFields();
+			DrawButtons();
+
+			GUILayout.Space(24f);
+			DrawListeners();
+			
+			GUILayout.EndVertical();
+		}
+
+		private void DrawDispatchPropertyFields()
+		{
 			for (var i = 0; i < argumentTypes.Length; i++)
 			{
 				var argumentType = argumentTypes[i];
 				var argumentValue = argumentValues[i];
 				argumentValues[i] = DrawField(argumentType.Name, argumentType, argumentValue);
 			}
+		}
 
+		private void DrawButtons()
+		{
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("Dispatch"))
 			{
 				dispatchMethod.Invoke(instance, argumentValues);
 			}
+
+			GUI.enabled = (state == ASignal.State.Running || state == ASignal.State.Paused);
 			if (GUILayout.Button("Consume"))
 			{
 				instance.Consume();
 			}
+
 			GUILayout.EndHorizontal();
-			
+
 			GUILayout.BeginHorizontal();
+			GUI.enabled = (state == ASignal.State.Paused);
 			if (GUILayout.Button("Continue"))
 			{
 				instance.Continue();
 			}
-			
+
+			GUI.enabled = (state == ASignal.State.Running);
 			if (GUILayout.Button("Pause"))
 			{
 				instance.Pause();
 			}
-			GUILayout.EndHorizontal();
 
-			GUILayout.Space(24f);
-			DrawListeners();
-			
-			GUILayout.EndVertical();
+			GUILayout.EndHorizontal();
+			GUI.enabled = true;
 		}
 
 		public void ResetInstance()
@@ -141,8 +186,9 @@ namespace Supyrb
 				var listener = listeners[i];
 				var target = listener.Target;
 				Type targetType = target.GetType();
-				
-				GUILayout.BeginHorizontal();
+
+				var style = GetStyleForIndex(i);
+				GUILayout.BeginHorizontal(style);
 				
 				GUILayout.Label(i.ToString(), GUILayout.Width(30f));
 				GUILayout.Label(GetSortOrderString(sortOrder), Styles.NumberLabel);
@@ -158,6 +204,26 @@ namespace Supyrb
 				GUILayout.FlexibleSpace();
 				
 				GUILayout.EndHorizontal();
+			}
+		}
+
+		private GUIStyle GetStyleForIndex(int index)
+		{
+			if (currentIndex != index || state == ASignal.State.Idle)
+			{
+				return EditorStyles.label;
+			}
+
+			switch (state)
+			{
+				case ASignal.State.Running:
+					return Styles.RunningLabel;
+				case ASignal.State.Paused:
+					return Styles.PausedLabel;
+				case ASignal.State.Consumed:
+					return Styles.ConsumedLabel;
+				default:
+					throw new ArgumentOutOfRangeException();
 			}
 		}
 
