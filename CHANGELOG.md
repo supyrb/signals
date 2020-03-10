@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.3](https://github.com/supyrb/signals/tree/0.4.3) (2020-03-10)
+
+[Full Changelog](https://github.com/supyrb/signals/compare/0.4.2...0.4.3)
+
 ## [0.4.2](https://github.com/supyrb/signals/tree/0.4.2) (2020-03-10)
 
 [Full Changelog](https://github.com/supyrb/signals/compare/0.4.1...0.4.2)
@@ -39,6 +43,7 @@
 **Implemented enhancements:**
 
 - Add test cases [\#7](https://github.com/supyrb/signals/issues/7)
+- Possibility to clear hub entries [\#5](https://github.com/supyrb/signals/issues/5)
 
 **Closed issues:**
 
@@ -68,10 +73,6 @@
 ## [0.1.4](https://github.com/supyrb/signals/tree/0.1.4) (2019-12-03)
 
 [Full Changelog](https://github.com/supyrb/signals/compare/0.1.3...0.1.4)
-
-**Implemented enhancements:**
-
-- Possibility to clear hub entries [\#5](https://github.com/supyrb/signals/issues/5)
 
 **Closed issues:**
 
