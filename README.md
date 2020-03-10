@@ -19,7 +19,7 @@ Find `Packages/manifest.json` in your project and add the following:
 ```json
 {
   "dependencies": {
-    "com.supyrb.signals": "https://github.com/supyrb/signals.git#0.4.1",
+    "com.supyrb.signals": "https://github.com/supyrb/signals.git#0.4.2",
     "...": "..."
   }
 }
