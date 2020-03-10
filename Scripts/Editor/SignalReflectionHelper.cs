@@ -11,15 +11,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Supyrb
 {
 	public static class SignalReflectionHelper
 	{
-		private static readonly string[] AssemblyBlackList = new[] {"Microsoft.CodeAnalysis.*"};
-		
 		public static void GetAllDerivedClasses<T>(ref List<Type> list) where T : ABaseSignal
 		{
 			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -27,32 +24,26 @@ namespace Supyrb
 			for (int i = 0; i < assemblies.Length; i++)
 			{
 				var assembly = assemblies[i];
-				if (!IsInProject(assembly.Location))
+				if (!assembly.IsDynamic && !IsInProject(assembly.Location))
+				{
+					continue;
+				}
+				
+				// Ignore Microsoft.CodeAnalysis, see https://issuetracker.unity3d.com/issues/reflectiontypeloadexception-is-thrown-when-retrieving-assembly-types-in-project-that-contains-immediate-window-package
+				if (assembly.FullName.StartsWith(("Microsoft.CodeAnalysis")))
 				{
 					continue;
 				}
 
-				if (IsAssemblyBlackListed(assembly.FullName))
+				try
 				{
-					continue;
+					GetAllDerivedClasses<T>(ref list, assembly);
 				}
-
-				GetAllDerivedClasses<T>(ref list, assembly);
-			}
-		}
-
-		private static bool IsAssemblyBlackListed(string assemblyFullName)
-		{
-			for (int i = 0; i < AssemblyBlackList.Length; i++)
-			{
-				var blackListRegex = AssemblyBlackList[i];
-				if (Regex.IsMatch(assemblyFullName, blackListRegex))
+				catch (ReflectionTypeLoadException e)
 				{
-					return true;
+					Debug.LogWarningFormat("Error when getting types of {0}, ignoring this assembly", assembly.FullName);
 				}
 			}
-
-			return false;
 		}
 
 		private static bool IsInProject(string path)
