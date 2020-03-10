@@ -11,20 +11,34 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEngine;
 
 namespace Supyrb
 {
 	public static class SignalReflectionHelper
 	{
-		public static void GetAllDerivedClasses<T>(ref List<Type> list) where T: ABaseSignal
+		public static void GetAllDerivedClasses<T>(ref List<Type> list) where T : ABaseSignal
 		{
 			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
 			for (int i = 0; i < assemblies.Length; i++)
 			{
 				var assembly = assemblies[i];
+				if (!IsInProject(assembly.Location))
+				{
+					continue;
+				}
+
 				GetAllDerivedClasses<T>(ref list, assembly);
 			}
+		}
+
+		private static bool IsInProject(string path)
+		{
+			var assetsPath = Application.dataPath;
+			var projectPath = assetsPath.Substring(0, assetsPath.Length - "/Assets".Length);
+			path = path.Replace('\\', '/');
+			return path.StartsWith(projectPath);
 		}
 
 		public static void GetAllDerivedClasses<T>(ref List<Type> list, Assembly assembly) where T : ABaseSignal
@@ -39,6 +53,7 @@ namespace Supyrb
 				{
 					continue;
 				}
+
 				list.Add(type);
 			}
 		}
