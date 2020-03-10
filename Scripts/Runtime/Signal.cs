@@ -86,9 +86,8 @@ namespace Supyrb
 		{
 			BeginSignalProfilerSample("Dispatch Signal");
 			
-			CleanupForDispatch();
-			Run();
-			
+			StartDispatch();
+
 			EndSignalProfilerSample();
 		}
 
@@ -173,10 +172,9 @@ namespace Supyrb
 		{
 			BeginSignalProfilerSample("Dispatch Signal");
 			
-			CleanupForDispatch();
 			this.context0 = context0;
-			Run();
-			
+			StartDispatch();
+
 			EndSignalProfilerSample();
 		}
 
@@ -268,11 +266,10 @@ namespace Supyrb
 		{
 			BeginSignalProfilerSample("Dispatch Signal");
 			
-			CleanupForDispatch();
 			this.context0 = context0;
 			this.context1 = context1;
-			Run();
-			
+			StartDispatch();
+
 			EndSignalProfilerSample();
 		}
 
@@ -366,12 +363,11 @@ namespace Supyrb
 		{
 			BeginSignalProfilerSample("Dispatch Signal");
 			
-			CleanupForDispatch();
 			this.context0 = context0;
 			this.context1 = context1;
 			this.context2 = context2;
-			Run();
-			
+			StartDispatch();
+
 			EndSignalProfilerSample();
 		}
 

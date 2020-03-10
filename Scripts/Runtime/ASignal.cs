@@ -92,13 +92,15 @@ namespace Supyrb
 			state = State.Consumed;
 		}
 		
-		protected void CleanupForDispatch()
+		protected void StartDispatch()
 		{
 			currentIndex = 0;
 			state = State.Running;
+			
+			Run();
 		}
 
-		protected void Run()
+		private void Run()
 		{
 			while (true)
 			{
