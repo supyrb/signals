@@ -93,7 +93,7 @@ namespace Supyrb
 
 		protected override void Invoke(int index)
 		{
-			listeners[currentIndex].Invoke();
+			listeners[index].Invoke();
 		}
 	}
 
@@ -180,7 +180,7 @@ namespace Supyrb
 
 		protected override void Invoke(int index)
 		{
-			listeners[currentIndex].Invoke(context0);
+			listeners[index].Invoke(context0);
 		}
 
 		protected override void OnFinish()
@@ -275,7 +275,7 @@ namespace Supyrb
 
 		protected override void Invoke(int index)
 		{
-			listeners[currentIndex].Invoke(context0, context1);
+			listeners[index].Invoke(context0, context1);
 		}
 
 		protected override void OnFinish()
@@ -373,7 +373,7 @@ namespace Supyrb
 
 		protected override void Invoke(int index)
 		{
-			listeners[currentIndex].Invoke(context0, context1, context2);
+			listeners[index].Invoke(context0, context1, context2);
 		}
 
 		protected override void OnFinish()

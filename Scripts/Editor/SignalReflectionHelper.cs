@@ -41,7 +41,8 @@ namespace Supyrb
 				}
 				catch (ReflectionTypeLoadException e)
 				{
-					Debug.LogWarningFormat("Error when getting types of {0}, ignoring this assembly", assembly.FullName);
+					Debug.LogWarningFormat("Error when getting types of {0}, ignoring this assembly\n{1}", 
+						assembly.FullName, e.Message);
 				}
 			}
 		}

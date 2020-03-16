@@ -33,8 +33,8 @@ namespace Supyrb
 			/// </summary>
 			Consumed
 		}
-		
-		protected int currentIndex;
+
+		private int currentIndex;
 		private State state;
 
 
