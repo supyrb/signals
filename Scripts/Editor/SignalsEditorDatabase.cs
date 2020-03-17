@@ -45,8 +45,7 @@ namespace Supyrb
 				return instance;
 			}
 		}
-		
-		[UnityEditor.Callbacks.DidReloadScripts(100)]
+
 		private static void FindOrCreateInstance()
 		{
 			if (instance != null)
