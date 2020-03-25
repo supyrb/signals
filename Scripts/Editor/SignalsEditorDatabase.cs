@@ -53,7 +53,7 @@ namespace Supyrb
 				return;
 			}
 
-			instance = SignalsEditorAssetUtilities.FindOrCreateEditorAsset<SignalsEditorDatabase>("Signals", "SignalsEditorDatabase.asset", false);
+			instance = SignalsEditorUtilities.FindOrCreateEditorAsset<SignalsEditorDatabase>("Signals", "SignalsEditorDatabase.asset", false);
 		}
 
 		[ContextMenu("UpdateDatabase")]

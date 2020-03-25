@@ -8,7 +8,6 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -20,6 +19,7 @@ namespace Supyrb
 		[SerializeField]
 		private TreeViewState treeViewState;
 
+		private static SignalsLog signalsLog;
 		private SignalsTreeView treeView;
 		private SearchField searchField;
 		private SignalsTreeViewItems items;
@@ -30,6 +30,12 @@ namespace Supyrb
 		private const float ToolbarHeight = 18f;
 		private const float FooterHeight = 26f;
 
+		// TODO find a better way to expose the log to others
+		public static SignalsLog SignalsLog
+		{
+			get { return signalsLog; }
+		}
+		
 		private static class Styles
 		{
 			public static GUIStyle HierarchyStyle = (GUIStyle) "OL box";
@@ -43,6 +49,12 @@ namespace Supyrb
 			if (treeViewState == null)
 			{
 				treeViewState = new TreeViewState();
+			}
+
+			if (signalsLog == null)
+			{
+				signalsLog = new SignalsLog();
+				signalsLog.Subscribe();
 			}
 
 			items = new SignalsTreeViewItems();
@@ -73,6 +85,7 @@ namespace Supyrb
 			if (state == PlayModeStateChange.EnteredEditMode)
 			{
 				items.ResetInstances();
+				signalsLog.Clear();
 			}
 		}
 
@@ -135,7 +148,15 @@ namespace Supyrb
 			GUILayout.BeginHorizontal(Styles.FooterStyle,
 				GUILayout.Width(this.position.width),
 				GUILayout.Height(FooterHeight));
-			GUILayout.Space(100);
+
+			var lastDispatchedSignal = signalsLog.GetLastEntry();
+			if (lastDispatchedSignal != null)
+			{
+				var signalText = string.Format("[{0:HH:mm:ss}] {1} - Dispatch Time: {2:0.000}", 
+					lastDispatchedSignal.TimeStamp, lastDispatchedSignal.SignalType.Name, lastDispatchedSignal.PlayDispatchTime);
+				GUILayout.Label(signalText);		
+			}
+			
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button("Update Signal List"))
 			{

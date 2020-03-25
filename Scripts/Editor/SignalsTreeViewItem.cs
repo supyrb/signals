@@ -17,17 +17,24 @@ namespace Supyrb
 {
 	public class SignalsTreeViewItem
 	{
-		static class Styles {
+		static class Styles
+		{
+			internal static readonly Color DispatchActive;
+			internal static readonly Color DispatchInactive;
 			
 			internal static GUIStyle HeaderLabel;
 			internal static GUIStyle NumberLabel;
-			
+
+			internal static GUIStyle DispatchIndicatorTemplate;
 			internal static GUIStyle RunningLabel;
 			internal static GUIStyle PausedLabel;
 			internal static GUIStyle ConsumedLabel;
 
 			static Styles()
 			{
+				DispatchActive = new Color(0.2f, 0.8f, 0.2f, 0.9f);
+				DispatchInactive = new Color(0.5f, 0.5f, 0.5f, 0.9f);
+				
 				HeaderLabel = (GUIStyle)"AM MixerHeader";
 				HeaderLabel.margin.left = 4;
 				NumberLabel = new GUIStyle(EditorStyles.label);
@@ -35,24 +42,23 @@ namespace Supyrb
 				NumberLabel.fixedWidth = 50f;
 				NumberLabel.padding.right = 8;
 				
-				RunningLabel = new GUIStyle(EditorStyles.label);
-				RunningLabel.normal.background = CreateColorTexture(new Color(0.2f, 0.8f, 0.2f, 0.4f));
-				PausedLabel = new GUIStyle(EditorStyles.label);
-				PausedLabel.normal.background = CreateColorTexture(new Color(0.8f, 0.8f, 0.2f, 0.6f));
-				ConsumedLabel = new GUIStyle(EditorStyles.label);
-				ConsumedLabel.normal.background = CreateColorTexture(new Color(0.8f, 0.2f, 0.2f, 0.4f));
-			}
+				DispatchIndicatorTemplate = new GUIStyle(EditorStyles.miniLabel);
+				DispatchIndicatorTemplate.fixedWidth = 8f;
+				DispatchIndicatorTemplate.fixedHeight = 8f;
+				DispatchIndicatorTemplate.margin.left = 8;
+				DispatchIndicatorTemplate.margin.right = 8;
+				DispatchIndicatorTemplate.margin.top = 8;
+				DispatchIndicatorTemplate.margin.bottom = 8;
 
-			private static Texture2D CreateColorTexture(Color col)
-			{
-				Texture2D result = new Texture2D(1, 1);
-				result.SetPixel(0, 0, col);
-				result.Apply();
- 
-				return result;
+				RunningLabel = new GUIStyle(EditorStyles.label);
+				RunningLabel.normal.background = SignalsEditorUtilities.CreateColorTexture(new Color(0.2f, 0.8f, 0.2f, 0.4f));
+				PausedLabel = new GUIStyle(EditorStyles.label);
+				PausedLabel.normal.background = SignalsEditorUtilities.CreateColorTexture(new Color(0.8f, 0.8f, 0.2f, 0.6f));
+				ConsumedLabel = new GUIStyle(EditorStyles.label);
+				ConsumedLabel.normal.background = SignalsEditorUtilities.CreateColorTexture(new Color(0.8f, 0.2f, 0.2f, 0.4f));
 			}
 		}
-		
+
 		private readonly Type type;
 		private readonly Type baseType;
 		private readonly Type[] argumentTypes;
@@ -64,6 +70,11 @@ namespace Supyrb
 		private FieldInfo stateField;
 		private int currentIndex;
 		private ASignal.State state;
+		
+		private SignalLogItem lastDispatchLog;
+		private Color dispatchLogIndicatorColor;
+		private GUIStyle dispatchIndicator;
+
 		private bool foldoutListeners = true;
 
 		public SignalsTreeViewItem(Type type)
@@ -83,6 +94,8 @@ namespace Supyrb
 			listenersField = baseType.GetField("listeners", BindingFlags.Instance | BindingFlags.NonPublic);
 			currentIndexField = typeof(ASignal).GetField("currentIndex", BindingFlags.Instance | BindingFlags.NonPublic);
 			stateField = typeof(ASignal).GetField("state", BindingFlags.Instance | BindingFlags.NonPublic);
+			dispatchIndicator = new GUIStyle(Styles.DispatchIndicatorTemplate);
+			dispatchIndicator.normal.background = SignalsEditorUtilities.CreateColorTexture(Styles.DispatchInactive);
 		}
 
 		public void DrawSignalDetailView()
@@ -92,7 +105,7 @@ namespace Supyrb
 			if (instance == null)
 			{
 				instance = Signals.Get(type) as ASignal;
-				
+
 				if (instance == null)
 				{
 					GUILayout.Label("Only signals derived from ASignal supported");
@@ -101,20 +114,60 @@ namespace Supyrb
 			}
 
 			var indexObject = currentIndexField.GetValue(instance);
-			currentIndex =  indexObject is int ? (int) indexObject : 0;
+			currentIndex = indexObject is int ? (int) indexObject : 0;
 			var stateObject = stateField.GetValue(instance);
 			state = stateObject is ASignal.State ? (ASignal.State) stateObject : ASignal.State.Idle;
+			lastDispatchLog = SignalsEditorWindow.SignalsLog.GetLastOccurenceOf(type);
 
-			GUILayout.Label(string.Format(type.Name), Styles.HeaderLabel);
-			GUILayout.Space(12f);
+			DrawHeader();
+			GUILayout.Space(24f);
 
 			DrawDispatchPropertyFields();
 			DrawButtons();
 
 			GUILayout.Space(24f);
 			DrawListeners();
-			
+
 			GUILayout.EndVertical();
+		}
+
+		private void DrawHeader()
+		{
+			GUILayout.BeginHorizontal();
+			GUILayout.Label(string.Format(type.Name), Styles.HeaderLabel);
+
+			DrawDispatchIndicator();
+
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+		}
+
+		private void DrawDispatchIndicator()
+		{
+			if (dispatchIndicator.normal.background == null)
+			{
+				dispatchIndicator.normal.background = SignalsEditorUtilities.CreateColorTexture(Styles.DispatchInactive);
+			}
+			var newDispatchLogColor = CalculateDispatchLogColor();
+
+			if (newDispatchLogColor != dispatchLogIndicatorColor)
+			{
+				dispatchLogIndicatorColor = newDispatchLogColor;
+				SignalsEditorUtilities.ChangeColorTexture(dispatchIndicator.normal.background, dispatchLogIndicatorColor);
+			}
+
+			GUILayout.Label(string.Empty, dispatchIndicator);
+		}
+
+		private Color CalculateDispatchLogColor()
+		{
+			if (lastDispatchLog == null || lastDispatchLog.PlayDispatchTime > Time.time +0.1f)
+			{
+				return Styles.DispatchInactive;
+			}
+
+			var t = Mathf.Clamp01((Time.time - lastDispatchLog.PlayDispatchTime) / 1f);
+			return Color.Lerp(Styles.DispatchActive, Styles.DispatchInactive, t);
 		}
 
 		private void DrawDispatchPropertyFields()
@@ -123,7 +176,7 @@ namespace Supyrb
 			{
 				var argumentType = argumentTypes[i];
 				var argumentValue = argumentValues[i];
-				argumentValues[i] = DrawField(argumentType.Name, argumentType, argumentValue);
+				argumentValues[i] = SignalsEditorUtilities.DrawFittingEditorField(argumentType.Name, argumentType, argumentValue);
 			}
 		}
 
@@ -135,7 +188,7 @@ namespace Supyrb
 				dispatchMethod.Invoke(instance, argumentValues);
 			}
 
-			GUI.enabled = (state == ASignal.State.Running || state == ASignal.State.Paused);
+			GUI.enabled = state == ASignal.State.Running || state == ASignal.State.Paused;
 			if (GUILayout.Button("Consume"))
 			{
 				instance.Consume();
@@ -144,13 +197,13 @@ namespace Supyrb
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal();
-			GUI.enabled = (state == ASignal.State.Paused);
+			GUI.enabled = state == ASignal.State.Paused;
 			if (GUILayout.Button("Continue"))
 			{
 				instance.Continue();
 			}
 
-			GUI.enabled = (state == ASignal.State.Running);
+			GUI.enabled = state == ASignal.State.Running;
 			if (GUILayout.Button("Pause"))
 			{
 				instance.Pause();
@@ -164,7 +217,7 @@ namespace Supyrb
 		{
 			instance = null;
 		}
-		
+
 		private void DrawListeners()
 		{
 			if (instance.ListenerCount == 0)
@@ -178,8 +231,9 @@ namespace Supyrb
 			{
 				return;
 			}
+
 			dynamic listeners = listenersField.GetValue(instance);
-			
+
 			for (int i = 0; i < listeners.Count; i++)
 			{
 				int sortOrder = listeners.GetSortOrderForIndex(i);
@@ -189,7 +243,7 @@ namespace Supyrb
 
 				var style = GetStyleForIndex(i);
 				GUILayout.BeginHorizontal(style);
-				
+
 				GUILayout.Label(i.ToString(), GUILayout.Width(30f));
 				GUILayout.Label(GetSortOrderString(sortOrder), Styles.NumberLabel);
 				if (typeof(UnityEngine.Object).IsAssignableFrom(targetType))
@@ -200,9 +254,10 @@ namespace Supyrb
 				{
 					GUILayout.Label(target.ToString());
 				}
+
 				GUILayout.Label("▶ " + listener.Method.Name);
 				GUILayout.FlexibleSpace();
-				
+
 				GUILayout.EndHorizontal();
 			}
 		}
@@ -233,129 +288,13 @@ namespace Supyrb
 			{
 				return "min";
 			}
-			
+
 			if (sortOrder == Int32.MaxValue)
 			{
 				return "max";
 			}
-			
+
 			return sortOrder.ToString();
-		}
-
-		private object DrawField(string label, Type type, object value)
-		{
-			if (typeof(UnityEngine.Object).IsAssignableFrom(type))
-			{
-				return EditorGUILayout.ObjectField(label, (UnityEngine.Object) value, type, true);
-			}
-
-			if (type == typeof(string))
-			{
-				return EditorGUILayout.TextField(label, (string) value);
-			}
-			
-			if (type == typeof(AnimationCurve))
-			{
-				return EditorGUILayout.CurveField(label, (AnimationCurve) value);
-			}
-
-			if (type == typeof(Gradient))
-			{
-				return EditorGUILayout.GradientField(label, (Gradient) value);
-			}
-			
-			if (type.IsEnum)
-			{
-				int enumValue = 0;
-				if (value != null)
-				{
-					enumValue = (int) value;
-				}
-				return EditorGUILayout.EnumPopup(label, (Enum) Enum.ToObject(type, enumValue));
-			}
-			
-			if (type == typeof(bool))
-			{
-				var boolValue = false;
-				if (value != null)
-				{
-					boolValue = (bool) value;
-				}
-				return EditorGUILayout.Toggle(label, boolValue);
-			}
-
-			if (type == typeof(int))
-			{
-				var intValue = 0;
-				if (value != null)
-				{
-					intValue = (int) value;
-				}
-				return EditorGUILayout.IntField(label, (int) intValue);
-			}
-
-			if (type == typeof(long))
-			{
-				var longValue = 0L;
-				if (value != null)
-				{
-					longValue = (long) value;
-				}
-				return EditorGUILayout.LongField(label, longValue);
-			}
-
-			if (type == typeof(float))
-			{
-				var floatValue = 0f;
-				if (value != null)
-				{
-					floatValue = (float) value;
-				}
-				return EditorGUILayout.FloatField(label, floatValue);
-			}
-
-			if (type == typeof(Vector2))
-			{
-				var vectorValue = Vector2.zero;
-				if (value != null)
-				{
-					vectorValue = (Vector2) value;
-				}
-				return EditorGUILayout.Vector2Field(label, vectorValue);
-			}
-
-			if (type == typeof(Vector3))
-			{
-				var vectorValue = Vector3.zero;
-				if (value != null)
-				{
-					vectorValue = (Vector3) value;
-				}
-				return EditorGUILayout.Vector3Field(label, vectorValue);
-			}
-
-			if (type == typeof(Vector4))
-			{
-				var vectorValue = Vector4.zero;
-				if (value != null)
-				{
-					vectorValue = (Vector4) value;
-				}
-				return EditorGUILayout.Vector4Field(label, vectorValue);
-			}
-
-			if (type == typeof(Color))
-			{
-				var colorValue = Color.black;
-				if (value != null)
-				{
-					colorValue = (Color) value;
-				}
-				return EditorGUILayout.ColorField(label, colorValue);
-			}
-
-			GUILayout.Label(string.Format("Type {0} not supported", type.Name));
-			return null;
 		}
 	}
 }
