@@ -30,6 +30,8 @@ namespace Supyrb
 	/// </summary>
 	public static class Signals
 	{
+		public delegate void SignalDelegate(ASignal signal);
+		public static event SignalDelegate OnSignalDispatch;
 		private static readonly SignalHub signalHub = new SignalHub();
 
 		/// <summary>
@@ -76,6 +78,15 @@ namespace Supyrb
 		public static void Clear()
 		{
 			signalHub.Clear();
+			OnSignalDispatch = null;
+		}
+
+		internal static void LogSignalDispatch(ASignal signal)
+		{
+			if (OnSignalDispatch != null)
+			{
+				OnSignalDispatch(signal);
+			}
 		}
 	}
 
