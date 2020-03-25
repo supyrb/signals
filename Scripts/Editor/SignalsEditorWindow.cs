@@ -15,7 +15,7 @@ using UnityEngine;
 
 namespace Supyrb
 {
-	internal class SignalsTreeViewWindow : EditorWindow
+	internal class SignalsEditorWindow : EditorWindow
 	{
 		[SerializeField]
 		private TreeViewState treeViewState;
@@ -151,7 +151,7 @@ namespace Supyrb
 		private static void ShowWindow()
 		{
 			// Get existing open window or if none, make a new one:
-			var window = GetWindow<SignalsTreeViewWindow>();
+			var window = GetWindow<SignalsEditorWindow>();
 			window.titleContent = new GUIContent("Signals");
 			window.Show();
 		}
