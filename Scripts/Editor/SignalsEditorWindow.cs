@@ -25,7 +25,8 @@ namespace Supyrb
 		private SignalsTreeViewItems items;
 		private SerializableSystemType currentSelection;
 		private SignalsTreeViewItem currentItem;
-
+		private GUIContent refreshSignalListGuiContent;
+		
 		private const float HierarchyWidth = 250f;
 		private const float ToolbarHeight = 18f;
 		private const float FooterHeight = 26f;
@@ -62,6 +63,9 @@ namespace Supyrb
 			treeView.OnSelectionChanged += OnSelectionChanged;
 			searchField = new SearchField();
 			searchField.downOrUpArrowKeyPressed += treeView.SetFocusAndEnsureSelectedItem;
+
+			refreshSignalListGuiContent = EditorGUIUtility.IconContent("Refresh");
+			refreshSignalListGuiContent.tooltip = "Refresh Signal list";
 			
 			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 		}
@@ -158,7 +162,7 @@ namespace Supyrb
 			}
 			
 			GUILayout.FlexibleSpace();
-			if (GUILayout.Button("Update Signal List"))
+			if (GUILayout.Button(refreshSignalListGuiContent))
 			{
 				treeView.UpdateSignalData();
 				items.Clear();
@@ -173,7 +177,9 @@ namespace Supyrb
 		{
 			// Get existing open window or if none, make a new one:
 			var window = GetWindow<SignalsEditorWindow>();
-			window.titleContent = new GUIContent("Signals");
+			var titleContent = EditorGUIUtility.IconContent("Profiler.NetworkMessages");
+			titleContent.text = "Signals";
+			window.titleContent = titleContent;
 			window.Show();
 		}
 
