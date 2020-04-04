@@ -19,28 +19,12 @@ namespace Supyrb
 	{
 		static class Styles
 		{
-			internal static readonly Color DispatchActive;
-			internal static readonly Color DispatchInactive;
-			
 			internal static GUIStyle HeaderLabel;
-
-			internal static GUIStyle DispatchIndicatorTemplate;
 
 			static Styles()
 			{
-				DispatchActive = new Color(0.2f, 0.8f, 0.2f, 0.9f);
-				DispatchInactive = new Color(0.5f, 0.5f, 0.5f, 0.9f);
-				
 				HeaderLabel = (GUIStyle)"AM MixerHeader";
 				HeaderLabel.margin.left = 4;
-
-				DispatchIndicatorTemplate = new GUIStyle(EditorStyles.miniLabel);
-				DispatchIndicatorTemplate.fixedWidth = 8f;
-				DispatchIndicatorTemplate.fixedHeight = 8f;
-				DispatchIndicatorTemplate.margin.left = 8;
-				DispatchIndicatorTemplate.margin.right = 8;
-				DispatchIndicatorTemplate.margin.top = 8;
-				DispatchIndicatorTemplate.margin.bottom = 8;
 			}
 		}
 
@@ -55,11 +39,8 @@ namespace Supyrb
 		private int currentIndex;
 		private ASignal.State state;
 		
-		private SignalLogItem lastDispatchLog;
 		private SignalLogViewDrawer logViewDrawer;
 		private SignalListenerViewDrawer listenerViewDrawer;
-		private Color dispatchLogIndicatorColor;
-		private GUIStyle dispatchIndicator;
 
 		private bool foldoutListeners = true;
 		private bool foldoutLog = true;
@@ -95,9 +76,7 @@ namespace Supyrb
 			dispatchMethod = this.type.GetMethod("Dispatch", BindingFlags.Instance | BindingFlags.Public);
 			currentIndexField = typeof(ASignal).GetField("currentIndex", BindingFlags.Instance | BindingFlags.NonPublic);
 			stateField = typeof(ASignal).GetField("state", BindingFlags.Instance | BindingFlags.NonPublic);
-			dispatchIndicator = new GUIStyle(Styles.DispatchIndicatorTemplate);
-			dispatchIndicator.normal.background = SignalsEditorUtilities.CreateColorTexture(Styles.DispatchInactive);
-			
+
 			logViewDrawer = new SignalLogViewDrawer(type);
 			listenerViewDrawer = new SignalListenerViewDrawer(this, baseType);
 		}
@@ -121,7 +100,6 @@ namespace Supyrb
 			currentIndex = indexObject is int ? (int) indexObject : 0;
 			var stateObject = stateField.GetValue(instance);
 			state = stateObject is ASignal.State ? (ASignal.State) stateObject : ASignal.State.Idle;
-			lastDispatchLog = SignalLog.Instance.GetLastOccurenceOf(type);
 
 			DrawHeader();
 			GUILayout.Space(24f);
@@ -140,41 +118,7 @@ namespace Supyrb
 
 		private void DrawHeader()
 		{
-			GUILayout.BeginHorizontal();
 			GUILayout.Label(string.Format(type.Name), Styles.HeaderLabel);
-
-			DrawDispatchIndicator();
-
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-		}
-
-		private void DrawDispatchIndicator()
-		{
-			if (dispatchIndicator.normal.background == null)
-			{
-				dispatchIndicator.normal.background = SignalsEditorUtilities.CreateColorTexture(Styles.DispatchInactive);
-			}
-			var newDispatchLogColor = CalculateDispatchLogColor();
-
-			if (newDispatchLogColor != dispatchLogIndicatorColor)
-			{
-				dispatchLogIndicatorColor = newDispatchLogColor;
-				SignalsEditorUtilities.ChangeColorTexture(dispatchIndicator.normal.background, dispatchLogIndicatorColor);
-			}
-
-			GUILayout.Label(string.Empty, dispatchIndicator);
-		}
-
-		private Color CalculateDispatchLogColor()
-		{
-			if (lastDispatchLog == null || lastDispatchLog.PlayDispatchTime > Time.time +0.1f)
-			{
-				return Styles.DispatchInactive;
-			}
-
-			var t = Mathf.Clamp01((Time.time - lastDispatchLog.PlayDispatchTime) / 1f);
-			return Color.Lerp(Styles.DispatchActive, Styles.DispatchInactive, t);
 		}
 
 		private void DrawDispatchPropertyFields()
