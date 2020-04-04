@@ -23,12 +23,8 @@ namespace Supyrb
 			internal static readonly Color DispatchInactive;
 			
 			internal static GUIStyle HeaderLabel;
-			internal static GUIStyle NumberLabel;
 
 			internal static GUIStyle DispatchIndicatorTemplate;
-			internal static GUIStyle RunningLabel;
-			internal static GUIStyle PausedLabel;
-			internal static GUIStyle ConsumedLabel;
 
 			static Styles()
 			{
@@ -37,11 +33,7 @@ namespace Supyrb
 				
 				HeaderLabel = (GUIStyle)"AM MixerHeader";
 				HeaderLabel.margin.left = 4;
-				NumberLabel = new GUIStyle(EditorStyles.label);
-				NumberLabel.alignment = TextAnchor.MiddleRight;
-				NumberLabel.fixedWidth = 50f;
-				NumberLabel.padding.right = 8;
-				
+
 				DispatchIndicatorTemplate = new GUIStyle(EditorStyles.miniLabel);
 				DispatchIndicatorTemplate.fixedWidth = 8f;
 				DispatchIndicatorTemplate.fixedHeight = 8f;
@@ -49,13 +41,6 @@ namespace Supyrb
 				DispatchIndicatorTemplate.margin.right = 8;
 				DispatchIndicatorTemplate.margin.top = 8;
 				DispatchIndicatorTemplate.margin.bottom = 8;
-
-				RunningLabel = new GUIStyle(EditorStyles.label);
-				RunningLabel.normal.background = SignalsEditorUtilities.CreateColorTexture(new Color(0.2f, 0.8f, 0.2f, 0.4f));
-				PausedLabel = new GUIStyle(EditorStyles.label);
-				PausedLabel.normal.background = SignalsEditorUtilities.CreateColorTexture(new Color(0.8f, 0.8f, 0.2f, 0.6f));
-				ConsumedLabel = new GUIStyle(EditorStyles.label);
-				ConsumedLabel.normal.background = SignalsEditorUtilities.CreateColorTexture(new Color(0.8f, 0.2f, 0.2f, 0.4f));
 			}
 		}
 
@@ -65,7 +50,6 @@ namespace Supyrb
 		private ASignal instance;
 		private object[] argumentValues;
 		private MethodInfo dispatchMethod;
-		private FieldInfo listenersField;
 		private FieldInfo currentIndexField;
 		private FieldInfo stateField;
 		private int currentIndex;
@@ -73,11 +57,27 @@ namespace Supyrb
 		
 		private SignalLogItem lastDispatchLog;
 		private SignalLogViewDrawer logViewDrawer;
+		private SignalListenerViewDrawer listenerViewDrawer;
 		private Color dispatchLogIndicatorColor;
 		private GUIStyle dispatchIndicator;
 
 		private bool foldoutListeners = true;
 		private bool foldoutLog = true;
+
+		public ASignal Instance
+		{
+			get { return instance; }
+		}
+
+		public int CurrentIndex
+		{
+			get { return currentIndex; }
+		}
+
+		public ASignal.State State
+		{
+			get { return state; }
+		}
 
 		public SignalsTreeViewItem(Type type)
 		{
@@ -88,18 +88,18 @@ namespace Supyrb
 			{
 				baseType = this.type;
 			}
-			
-			logViewDrawer = new SignalLogViewDrawer(type);
-			
+
 			argumentTypes = baseType.GetGenericArguments();
 			argumentValues = new object[argumentTypes.Length];
 
 			dispatchMethod = this.type.GetMethod("Dispatch", BindingFlags.Instance | BindingFlags.Public);
-			listenersField = baseType.GetField("listeners", BindingFlags.Instance | BindingFlags.NonPublic);
 			currentIndexField = typeof(ASignal).GetField("currentIndex", BindingFlags.Instance | BindingFlags.NonPublic);
 			stateField = typeof(ASignal).GetField("state", BindingFlags.Instance | BindingFlags.NonPublic);
 			dispatchIndicator = new GUIStyle(Styles.DispatchIndicatorTemplate);
 			dispatchIndicator.normal.background = SignalsEditorUtilities.CreateColorTexture(Styles.DispatchInactive);
+			
+			logViewDrawer = new SignalLogViewDrawer(type);
+			listenerViewDrawer = new SignalListenerViewDrawer(this, baseType);
 		}
 
 		public void DrawSignalDetailView()
@@ -231,12 +231,6 @@ namespace Supyrb
 			logViewDrawer.DrawLog();
 		}
 
-		public void Reset()
-		{
-			instance = null;
-			logViewDrawer.Reset();
-		}
-
 		private void DrawListeners()
 		{
 			foldoutListeners = EditorGUILayout.Foldout(foldoutListeners, string.Format("Listeners ({0})", instance.ListenerCount));
@@ -245,75 +239,13 @@ namespace Supyrb
 				return;
 			}
 			
-			if (instance.ListenerCount == 0)
-			{
-				GUILayout.Label("No listeners subscribed");
-				return;
-			}
-
-			dynamic listeners = listenersField.GetValue(instance);
-
-			for (int i = 0; i < listeners.Count; i++)
-			{
-				int sortOrder = listeners.GetSortOrderForIndex(i);
-				var listener = listeners[i];
-				var target = listener.Target;
-				Type targetType = target.GetType();
-
-				var style = GetStyleForIndex(i);
-				GUILayout.BeginHorizontal(style);
-
-				GUILayout.Label(i.ToString(), GUILayout.Width(30f));
-				GUILayout.Label(GetSortOrderString(sortOrder), Styles.NumberLabel);
-				if (typeof(UnityEngine.Object).IsAssignableFrom(targetType))
-				{
-					EditorGUILayout.ObjectField((UnityEngine.Object) target, targetType, true);
-				}
-				else
-				{
-					GUILayout.Label(target.ToString());
-				}
-
-				GUILayout.Label("▶ " + listener.Method.Name);
-				GUILayout.FlexibleSpace();
-
-				GUILayout.EndHorizontal();
-			}
+			listenerViewDrawer.DrawListeners();
 		}
-
-		private GUIStyle GetStyleForIndex(int index)
+		
+		public void Reset()
 		{
-			if (currentIndex != index || state == ASignal.State.Idle)
-			{
-				return EditorStyles.label;
-			}
-
-			switch (state)
-			{
-				case ASignal.State.Running:
-					return Styles.RunningLabel;
-				case ASignal.State.Paused:
-					return Styles.PausedLabel;
-				case ASignal.State.Consumed:
-					return Styles.ConsumedLabel;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-		}
-
-		private string GetSortOrderString(int sortOrder)
-		{
-			if (sortOrder == Int32.MinValue)
-			{
-				return "min";
-			}
-
-			if (sortOrder == Int32.MaxValue)
-			{
-				return "max";
-			}
-
-			return sortOrder.ToString();
+			instance = null;
+			logViewDrawer.Reset();
 		}
 	}
 }
