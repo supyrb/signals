@@ -43,6 +43,7 @@ namespace Supyrb
 
 		private FieldInfo listenersField;
 		private SignalsTreeViewItem parent;
+		private const int maxEntries = 100;
 
 		public SignalListenerViewDrawer(SignalsTreeViewItem parent, Type baseType)
 		{
@@ -60,7 +61,15 @@ namespace Supyrb
 
 			dynamic listeners = listenersField.GetValue(parent.Instance);
 
-			for (var i = 0; i < listeners.Count; i++)
+			var numEntries = listeners.Count;
+			var cuttingList = false;
+			if (numEntries > maxEntries)
+			{
+				numEntries = maxEntries;
+				cuttingList = true;
+			}
+			
+			for (var i = 0; i < numEntries; i++)
 			{
 				int sortOrder = listeners.GetSortOrderForIndex(i);
 				var listener = listeners[i];
@@ -85,6 +94,12 @@ namespace Supyrb
 				GUILayout.FlexibleSpace();
 
 				GUILayout.EndHorizontal();
+			}
+
+			if (cuttingList)
+			{
+				var text = string.Format("Hiding {0} other entries", listeners.Count - maxEntries);
+				GUILayout.Label(text);
 			}
 		}
 
