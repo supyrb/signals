@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SignalsLog.cs" company="Supyrb">
+// <copyright file="SignalLog.cs" company="Supyrb">
 //   Copyright (c) 2020 Supyrb. All rights reserved.
 // </copyright>
 // <author>
@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Supyrb
 {
@@ -30,21 +31,60 @@ namespace Supyrb
 		}
 	}
 
-	public class SignalsLog
+	public class SignalLog
 	{
 		public delegate void LogDelegate(SignalLogItem logItem);
 
 		public event LogDelegate OnNewSignalLog;
 
+		private bool subscribed;
 		private readonly List<SignalLogItem> log;
 		private readonly Dictionary<Type, SignalLogItem> lastDispatch;
 
-		public SignalsLog()
+		private static SignalLog _instance;
+
+		public static SignalLog Instance
+		{
+			get
+			{
+				if (_instance == null)
+				{
+					_instance = new SignalLog();
+				}
+
+				return _instance;
+			}
+		}
+
+		private SignalLog()
 		{
 			log = new List<SignalLogItem>();
 			lastDispatch = new Dictionary<Type, SignalLogItem>();
+			subscribed = false;
 		}
 
+		public void Subscribe()
+		{
+			if (subscribed)
+			{
+				return;
+			}
+			
+			Signals.OnSignalDispatch += OnSignalDispatch;
+			subscribed = true;
+		}
+
+		public void Unsubscribe()
+		{
+			if (!subscribed)
+			{
+				return;
+			}
+
+			Signals.OnSignalDispatch -= OnSignalDispatch;
+			subscribed = false;
+		}
+		
 		public SignalLogItem GetLastOccurenceOf(Type type)
 		{
 			SignalLogItem item;
@@ -66,16 +106,6 @@ namespace Supyrb
 			return log[log.Count - 1];
 		}
 
-		public void Subscribe()
-		{
-			Signals.OnSignalDispatch += OnSignalDispatch;
-		}
-
-		public void Unsubscribe()
-		{
-			Signals.OnSignalDispatch -= OnSignalDispatch;
-		}
-
 		public void Clear()
 		{
 			log.Clear();
@@ -92,6 +122,44 @@ namespace Supyrb
 			{
 				OnNewSignalLog(signalLogItem);
 			}
+		}
+
+		public bool UpdateLog(Type type, ref List<SignalLogItem> signalLog)
+		{
+			if (!lastDispatch.ContainsKey(type))
+			{
+				return false;
+			}
+
+			var lastLogEntry = lastDispatch[type];
+			SignalLogItem lastListEntry = null;
+			if (signalLog.Count > 0)
+			{
+				lastListEntry = signalLog[signalLog.Count - 1];
+			}
+
+			if (lastListEntry == lastLogEntry)
+			{
+				return false;
+			}
+
+			var startProcessingIndex = 0;
+			if (lastListEntry != null)
+			{
+				startProcessingIndex = log.IndexOf(lastListEntry) + 1;
+				Assert.IsTrue(startProcessingIndex > 0);
+			}
+
+			for (var i = startProcessingIndex; i < log.Count; i++)
+			{
+				var entry = log[i];
+				if (entry.SignalType == type)
+				{
+					signalLog.Add(entry);
+				}
+			}
+
+			return true;
 		}
 	}
 }

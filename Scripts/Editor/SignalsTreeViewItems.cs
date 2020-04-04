@@ -40,11 +40,11 @@ namespace Supyrb
 			items.Clear();
 		}
 
-		public void ResetInstances()
+		public void Reset()
 		{
 			foreach (var item in items)
 			{
-				item.Value.ResetInstance();
+				item.Value.Reset();
 			}
 		}
 	}

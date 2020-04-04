@@ -72,10 +72,12 @@ namespace Supyrb
 		private ASignal.State state;
 		
 		private SignalLogItem lastDispatchLog;
+		private SignalLogViewDrawer logViewDrawer;
 		private Color dispatchLogIndicatorColor;
 		private GUIStyle dispatchIndicator;
 
 		private bool foldoutListeners = true;
+		private bool foldoutLog = true;
 
 		public SignalsTreeViewItem(Type type)
 		{
@@ -86,7 +88,9 @@ namespace Supyrb
 			{
 				baseType = this.type;
 			}
-
+			
+			logViewDrawer = new SignalLogViewDrawer(type);
+			
 			argumentTypes = baseType.GetGenericArguments();
 			argumentValues = new object[argumentTypes.Length];
 
@@ -117,7 +121,7 @@ namespace Supyrb
 			currentIndex = indexObject is int ? (int) indexObject : 0;
 			var stateObject = stateField.GetValue(instance);
 			state = stateObject is ASignal.State ? (ASignal.State) stateObject : ASignal.State.Idle;
-			lastDispatchLog = SignalsEditorWindow.SignalsLog.GetLastOccurenceOf(type);
+			lastDispatchLog = SignalLog.Instance.GetLastOccurenceOf(type);
 
 			DrawHeader();
 			GUILayout.Space(24f);
@@ -125,6 +129,9 @@ namespace Supyrb
 			DrawDispatchPropertyFields();
 			DrawButtons();
 
+			GUILayout.Space(24f);
+			DrawLogs();
+			
 			GUILayout.Space(24f);
 			DrawListeners();
 
@@ -213,22 +220,34 @@ namespace Supyrb
 			GUI.enabled = true;
 		}
 
-		public void ResetInstance()
+		private void DrawLogs()
+		{
+			foldoutLog = EditorGUILayout.Foldout(foldoutLog, "Log");
+			if (!foldoutLog)
+			{
+				return;
+			}
+			logViewDrawer.Update();
+			logViewDrawer.DrawLog();
+		}
+
+		public void Reset()
 		{
 			instance = null;
+			logViewDrawer.Reset();
 		}
 
 		private void DrawListeners()
 		{
-			if (instance.ListenerCount == 0)
-			{
-				GUILayout.Label("No listeners subscribed");
-				return;
-			}
-
 			foldoutListeners = EditorGUILayout.Foldout(foldoutListeners, string.Format("Listeners ({0})", instance.ListenerCount));
 			if (!foldoutListeners)
 			{
+				return;
+			}
+			
+			if (instance.ListenerCount == 0)
+			{
+				GUILayout.Label("No listeners subscribed");
 				return;
 			}
 
