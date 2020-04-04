@@ -36,6 +36,7 @@ namespace Supyrb
 		private List<SignalLogItem> signalLog;
 		private Vector2 scrollPos;
 		private const float maxHeight = 200f;
+		private const int maxEntries = 100;
 
 		public SignalLogViewDrawer(Type type)
 		{
@@ -72,18 +73,20 @@ namespace Supyrb
 
 			scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Height(height));
 			{
-				GUIStyle style;
-				for (var i = 0; i < signalLog.Count; i++)
+				var startIndex = 0;
+				if (signalLog.Count > maxEntries)
+				{
+					startIndex = signalLog.Count - maxEntries;
+					var style = GetStyleForEntry(startIndex - 1);
+					var text = string.Format("Hiding {0} older entries", startIndex);
+					
+					GUILayout.Label(text, style);
+				}
+				
+				for (var i = startIndex; i < signalLog.Count; i++)
 				{
 					var entry = signalLog[i];
-					if (i % 2 == 0)
-					{
-						style = Styles.EvenEntry;
-					}
-					else
-					{
-						style = Styles.OddEntry;
-					}
+					var style = GetStyleForEntry(i);
 
 					var text = string.Format("{0:000} - [{1:HH:mm:ss}] - Time.time: {2:0.00}", 
 						i, entry.TimeStamp, entry.PlayDispatchTime);
@@ -92,6 +95,21 @@ namespace Supyrb
 				}
 			}
 			GUILayout.EndScrollView();
+		}
+
+		private static GUIStyle GetStyleForEntry(int index)
+		{
+			GUIStyle style;
+			if (index % 2 == 0)
+			{
+				style = Styles.EvenEntry;
+			}
+			else
+			{
+				style = Styles.OddEntry;
+			}
+
+			return style;
 		}
 
 		/// <summary>
