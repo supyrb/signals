@@ -26,6 +26,7 @@ namespace Supyrb
 		private SerializableSystemType currentSelection;
 		private SignalsTreeViewItem currentItem;
 		private GUIContent refreshSignalListGuiContent;
+		private Vector2 detailScrollPosition = Vector2.zero;
 		
 		private const float HierarchyWidth = 250f;
 		private const float ToolbarHeight = 18f;
@@ -106,9 +107,13 @@ namespace Supyrb
 			DoTreeView(rect);
 			EditorGUILayout.EndVertical();
 
-			EditorGUILayout.BeginVertical();
-			DoDetailView();
-			EditorGUILayout.EndVertical();
+			var detailWidth = this.position.width - HierarchyWidth;
+			detailScrollPosition = GUILayout.BeginScrollView(detailScrollPosition, GUILayout.Width(detailWidth), GUILayout.Height(contentHeight));
+			{
+				DoDetailView();
+				GUILayout.Space(EditorGUIUtility.standardVerticalSpacing * 4f);
+			}
+			GUILayout.EndScrollView();
 
 			EditorGUILayout.EndHorizontal();
 
@@ -187,6 +192,8 @@ namespace Supyrb
 		{
 			currentSelection = selectedtype;
 			currentItem = items.Get(currentSelection.SystemType);
+			detailScrollPosition.x = 0f;
+			detailScrollPosition.y = 0f;
 		}
 	}
 }

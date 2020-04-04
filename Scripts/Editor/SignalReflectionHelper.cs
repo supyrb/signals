@@ -29,7 +29,8 @@ namespace Supyrb
 					continue;
 				}
 				
-				// Ignore Microsoft.CodeAnalysis, see https://issuetracker.unity3d.com/issues/reflectiontypeloadexception-is-thrown-when-retrieving-assembly-types-in-project-that-contains-immediate-window-package
+				// Ignore Microsoft.CodeAnalysis
+				// see https://issuetracker.unity3d.com/issues/reflectiontypeloadexception-is-thrown-when-retrieving-assembly-types-in-project-that-contains-immediate-window-package
 				if (assembly.FullName.StartsWith(("Microsoft.CodeAnalysis")))
 				{
 					continue;
