@@ -1,8 +1,8 @@
 # Signals ❇
 
-![Signals Editor Window Screenshot](https://repository-images.githubusercontent.com/196998874/89ce0400-5f94-11ea-91f0-817e8691def5)
+![Signals Editor Window Screenshot](Documentation~/signals-preview-screenshot.png)
 
-### A typesafe, lightweight, tested messaging package for Unity.
+### A typesafe, lightweight, tested messaging package for Unity.  
 [![openupm](https://img.shields.io/npm/v/com.supyrb.signals?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.supyrb.signals/)
 ---
 
