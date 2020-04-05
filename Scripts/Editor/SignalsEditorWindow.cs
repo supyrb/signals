@@ -76,10 +76,12 @@ namespace Supyrb
 		
 		private void OnPlayModeStateChanged(PlayModeStateChange state)
 		{
-			if (state == PlayModeStateChange.EnteredEditMode)
+			if (state == PlayModeStateChange.ExitingEditMode)
 			{
 				items.Reset();
 				SignalLog.Instance.Clear();
+				SignalLog.Instance.Unsubscribe();
+				SignalLog.Instance.Subscribe();
 			}
 		}
 

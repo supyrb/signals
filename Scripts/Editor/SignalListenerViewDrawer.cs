@@ -32,12 +32,19 @@ namespace Supyrb
 				NumberLabel.fixedWidth = 50f;
 				NumberLabel.padding.right = 8;
 
-				RunningLabel = new GUIStyle(EditorStyles.label);
-				RunningLabel.normal.background = SignalsEditorUtilities.CreateColorTexture(new Color(0.2f, 0.8f, 0.2f, 0.4f));
-				PausedLabel = new GUIStyle(EditorStyles.label);
-				PausedLabel.normal.background = SignalsEditorUtilities.CreateColorTexture(new Color(0.8f, 0.8f, 0.2f, 0.6f));
-				ConsumedLabel = new GUIStyle(EditorStyles.label);
-				ConsumedLabel.normal.background = SignalsEditorUtilities.CreateColorTexture(new Color(0.8f, 0.2f, 0.2f, 0.4f));
+				RunningLabel = CreateLabelStyle("SignalRunningLabel", new Color(0.2f, 0.8f, 0.2f, 0.4f));
+				PausedLabel = CreateLabelStyle("SignalPausedLabel", new Color(0.8f, 0.8f, 0.2f, 0.6f));
+				ConsumedLabel = CreateLabelStyle("SignalConsumedLabel", new Color(0.8f, 0.2f, 0.2f, 0.4f));
+			}
+
+			private static GUIStyle CreateLabelStyle(string name, Color color)
+			{
+				var style = new GUIStyle(EditorStyles.label);
+                style.name = name;
+                var backgroundTex = SignalsEditorUtilities.CreateColorTexture(color);
+				backgroundTex.hideFlags = HideFlags.HideAndDontSave;
+				style.normal.background = backgroundTex;
+				return style;
 			}
 		}
 
