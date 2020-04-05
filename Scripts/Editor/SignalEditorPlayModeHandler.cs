@@ -13,6 +13,11 @@ using UnityEngine;
 
 namespace Supyrb
 {
+	/// <summary>
+	/// Handler for exiting Playmode
+	/// Resets the Signal hub to make sure the next Playmode will not reuse old signals.
+	/// This is necessary for supporting the experimental enter Playmode introduced in Unity 2019.3
+	/// </summary>
 	public static class SignalEditorPlayModeHandler
 	{
 		[InitializeOnLoadMethod]

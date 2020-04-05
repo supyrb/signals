@@ -118,12 +118,13 @@ namespace Supyrb
 		/// <returns></returns>
 		private float GetListContentHeight()
 		{
-			// TODO get values from elements instead of hardcoding them
 			var entries = signalLog.Count;
 			if (entries > maxEntries)
 			{
-				entries = 101;
+				entries = maxEntries;
 			}
+			
+			// TODO get values from elements instead of hardcoding them
 			return 8f + entries * 28f;
 		}
 	}
