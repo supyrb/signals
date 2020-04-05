@@ -20,7 +20,7 @@ Find `Packages/manifest.json` in your project and add the following:
 ```json
 {
   "dependencies": {
-    "com.supyrb.signals": "https://github.com/supyrb/signals.git#0.4.3",
+    "com.supyrb.signals": "https://github.com/supyrb/signals.git#0.5.0",
     "...": "..."
   }
 }
@@ -50,9 +50,13 @@ $ openupm add com.supyrb.signals
 * Pausing Signals
 
 As well as
-* An editor window for easily dispatching and debugging signals
+* An editor window
+  * A filterable list of all signals in the project
+  * Dispatch signals with custom parameters
+  * A signal log for each signal
+  * List of all subscribed listeners for a signal
 * Easy integration with UPM
-* Unit tests to assure quality
+* Unit tests for runtime scripts
 * Sample packages to get started fast
 * XML comments for all public methods and properties
 
@@ -63,11 +67,11 @@ As well as
 ### Get Signal
 
 ```c#
-exampleSignal = Signals.Get<BasicExampleSignal>();
+Signals.Get(out exampleSignal);
 ```
 or
 ```c#
-Signals.Get(out exampleSignal);
+exampleSignal = Signals.Get<BasicExampleSignal>();
 ```
 or
 ```c#
@@ -107,11 +111,18 @@ Sometimes only one script should handle a signal or the signal should not reach 
 
 The editor window can be accessed through `Window->Signals`. It is a work in progress, but already adds quite some value to the package. If you would like to use the package without the editor window, the last valid version for that is `0.3.1`
 
-* On the first start and whenever you added a signal you want to debug, just hit the `Update Signals List` button in the bottom right corner of the window
+* On the first start and whenever you added a signal you want to debug, just hit the refresh button in the bottom right corner of the window
 * In the top right corner there is a search field which you can use to filter your signals
 * Click on a signal in the list, to see the details of that signal
+
+### Detail View
+
 * You can dispatch, consume, pause and continue the signal. For dispatching you will get the needed fields to enter your custom arguments. Most common types are supported, for non supported types you will see an information.
-* In the detail view you can also see all listeners subscribed to the signal with their order value and method that is called
+* The log shows a history of all dispatched of that signal with a timestamp of the real time all well as the game time of that dispatch
+* The Listeners list shows all subscribed methods to that signal sorted with their order. Additionally the listeners are colored if the last dispatch is at a certain listener
+  * Green: The signal is currently running at this listener
+  * Yellow: The signal was paused at this listener
+  * Red: The signal was consumed at this listener
 
 ## Contribute
 
