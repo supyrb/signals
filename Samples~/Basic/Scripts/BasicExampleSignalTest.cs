@@ -15,6 +15,9 @@ namespace Supyrb
 {
 	public class BasicExampleSignalTest : MonoBehaviour
 	{
+		[SerializeField]
+		private bool logListeners = true;
+		
 		private BasicExampleSignal basicExampleSignal;
 		private void Awake()
 		{
@@ -53,36 +56,44 @@ namespace Supyrb
 		
 		private void FirstListener()
 		{
-			Debug.Log("First Listener (Order -100)");
+			ConditionalLog("First Listener (Order -100)");
 		}
 
 		private void PauseTwoSecondsListener()
 		{
-			Debug.Log("Pausing for 2 seconds (Order -10)");
+			ConditionalLog("Pausing for 2 seconds (Order -10)");
 			basicExampleSignal.Pause();
 			StartCoroutine(ContinueAfterDelay(basicExampleSignal, 2f));
 		}
 
 		private void DefaultListener()
 		{
-			Debug.Log("Default order Listener (Order 0)");
+			ConditionalLog("Default order Listener (Order 0)");
 		}
 
 		private void ConsumeEventListener()
 		{
-			Debug.Log("Consume Signal (Order 10)");
+			ConditionalLog("Consume Signal (Order 10)");
 			basicExampleSignal.Consume();
 		}
 
 		private void LastListener()
 		{
-			Debug.Log("Won't be called, since the signal was consumed. (Order 100)");
+			ConditionalLog("Won't be called, since the signal was consumed. (Order 100)");
 		}
 
 		private IEnumerator ContinueAfterDelay(Signal signal, float delay)
 		{
 			yield return new WaitForSeconds(delay);
 			signal.Continue();
+		}
+
+		private void ConditionalLog(string text)
+		{
+			if (logListeners)
+			{
+				Debug.Log(text, this);
+			}
 		}
 	}
 }
