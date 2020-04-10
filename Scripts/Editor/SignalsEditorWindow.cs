@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SignalsTreeViewWindow.cs" company="Supyrb">
+// <copyright file="SignalsEditorWindow.cs" company="Supyrb">
 //   Copyright (c) 2020 Supyrb. All rights reserved.
 // </copyright>
 // <author>
@@ -18,23 +18,33 @@ namespace Supyrb
 	{
 		[SerializeField]
 		private TreeViewState treeViewState;
-		
+
 		private SignalsTreeView treeView;
 		private SearchField searchField;
 		private SignalsTreeViewItems items;
 		private SerializableSystemType currentSelection;
 		private SignalsTreeViewItem currentItem;
 		private GUIContent refreshSignalListGuiContent;
+		private GUIContent aboutSignalsGuiContent;
 		private Vector2 detailScrollPosition = Vector2.zero;
-		
+
 		private const float HierarchyWidth = 250f;
 		private const float ToolbarHeight = 18f;
-		private const float FooterHeight = 26f;
+		private const float FooterHeight = 24f;
 
 		private static class Styles
 		{
-			public static GUIStyle HierarchyStyle = (GUIStyle) "OL box";
-			public static GUIStyle FooterStyle = (GUIStyle) "ProjectBrowserBottomBarBg";
+			public static GUIStyle HierarchyStyle;
+			public static GUIStyle FooterStyle;
+			public static GUIStyle IconButton;
+
+			static Styles()
+			{
+				HierarchyStyle = new GUIStyle((GUIStyle) "OL box");
+				FooterStyle = new GUIStyle((GUIStyle) "ProjectBrowserBottomBarBg");
+				IconButton = new GUIStyle((GUIStyle) "IconButton");
+				IconButton.margin.top = 3;
+			}
 		}
 
 		private void OnEnable()
@@ -55,7 +65,11 @@ namespace Supyrb
 
 			refreshSignalListGuiContent = EditorGUIUtility.IconContent("Refresh");
 			refreshSignalListGuiContent.tooltip = "Refresh Signal list";
-			
+
+			aboutSignalsGuiContent = EditorGUIUtility.IconContent("_Help");
+			aboutSignalsGuiContent.tooltip = "About";
+
+
 			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 		}
 
@@ -65,15 +79,16 @@ namespace Supyrb
 			{
 				searchField.downOrUpArrowKeyPressed -= treeView.SetFocusAndEnsureSelectedItem;
 			}
+
 			EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 			SignalLog.Instance.Unsubscribe();
 		}
-		
-		void OnInspectorUpdate()
+
+		private void OnInspectorUpdate()
 		{
 			this.Repaint();
 		}
-		
+
 		private void OnPlayModeStateChanged(PlayModeStateChange state)
 		{
 			if (state == PlayModeStateChange.ExitingEditMode)
@@ -119,6 +134,11 @@ namespace Supyrb
 			GUILayout.Space(100);
 			GUILayout.FlexibleSpace();
 			treeView.searchString = searchField.OnToolbarGUI(treeView.searchString);
+			if (GUILayout.Button(aboutSignalsGuiContent, Styles.IconButton))
+			{
+				SignalsAboutWindow.Init();
+			}
+
 			GUILayout.EndHorizontal();
 		}
 
@@ -152,13 +172,15 @@ namespace Supyrb
 			var lastDispatchedSignal = SignalLog.Instance.GetLastEntry();
 			if (lastDispatchedSignal != null)
 			{
-				var signalText = string.Format("[{0:HH:mm:ss}] {1} - Dispatch Time: {2:0.000}", 
-					lastDispatchedSignal.TimeStamp, lastDispatchedSignal.SignalType.Name, lastDispatchedSignal.PlayDispatchTime);
-				GUILayout.Label(signalText);		
+				var signalText = string.Format("[{0:HH:mm:ss}] {1} - Dispatch Time: {2:0.000}",
+					lastDispatchedSignal.TimeStamp,
+					lastDispatchedSignal.SignalType.Name,
+					lastDispatchedSignal.PlayDispatchTime);
+				GUILayout.Label(signalText);
 			}
-			
+
 			GUILayout.FlexibleSpace();
-			if (GUILayout.Button(refreshSignalListGuiContent))
+			if (GUILayout.Button(refreshSignalListGuiContent, Styles.IconButton))
 			{
 				treeView.UpdateSignalData();
 				items.Clear();
@@ -167,7 +189,7 @@ namespace Supyrb
 			GUILayout.EndHorizontal();
 		}
 
-		
+
 		[MenuItem("Window/Signals")]
 		private static void ShowWindow()
 		{

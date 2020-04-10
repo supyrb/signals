@@ -23,8 +23,8 @@ namespace Supyrb
 
 			static Styles()
 			{
-				EvenEntry = (GUIStyle) "CN EntryBackEven";
-				OddEntry = (GUIStyle) "CN EntryBackOdd";
+				EvenEntry = new GUIStyle((GUIStyle) "CN EntryBackEven");
+				OddEntry = new GUIStyle((GUIStyle) "CN EntryBackOdd");
 
 				EvenEntry.padding.left = 0;
 				OddEntry.padding.left = 0;

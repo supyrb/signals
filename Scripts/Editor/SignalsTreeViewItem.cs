@@ -23,7 +23,7 @@ namespace Supyrb
 
 			static Styles()
 			{
-				HeaderLabel = (GUIStyle)"AM MixerHeader";
+				HeaderLabel = new GUIStyle((GUIStyle)"AM MixerHeader");
 				HeaderLabel.margin.left = 4;
 			}
 		}
