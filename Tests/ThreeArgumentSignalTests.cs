@@ -10,7 +10,7 @@
 
 using NUnit.Framework;
 
-namespace Supyrb
+namespace Supyrb.Tests
 {
 	[TestFixture]
 	public class ThreeArgumentSignalTests : ASignalTests<TestSignalObjectStringInt>

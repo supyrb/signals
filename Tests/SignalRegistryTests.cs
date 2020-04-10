@@ -10,7 +10,7 @@
 
 using NUnit.Framework;
 
-namespace Supyrb
+namespace Supyrb.Tests
 {
 	/// <summary>
 	/// Tests the functionality of class Signals
