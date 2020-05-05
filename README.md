@@ -4,6 +4,7 @@
 
 ### A typesafe, lightweight, tested messaging package for Unity.  
 [![openupm](https://img.shields.io/npm/v/com.supyrb.signals?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.supyrb.signals/)
+[![](https://img.shields.io/github/release-date/supyrb/signals.svg)](https://github.com/supyrb/signals/releases)
 ---
 
 ## Installation
