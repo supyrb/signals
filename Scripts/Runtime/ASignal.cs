@@ -8,7 +8,9 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
+#if ENABLE_MONO || ENABLE_IL2CPP
 using UnityEngine.Profiling;
+#endif
 
 namespace Supyrb
 {
@@ -154,14 +156,18 @@ namespace Supyrb
 
 		protected void BeginSignalProfilerSample(string sampleName)
 		{
+			#if ENABLE_MONO || ENABLE_IL2CPP
 			Profiler.BeginSample(sampleName);
 			Profiler.BeginSample(this.GetType().FullName);
+			#endif
 		}
 		
 		protected void EndSignalProfilerSample()
 		{
+			#if ENABLE_MONO || ENABLE_IL2CPP
 			Profiler.EndSample();
 			Profiler.EndSample();
+			#endif
 		}
 
 		protected abstract void Invoke(int index);
