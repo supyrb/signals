@@ -1,5 +1,6 @@
 {
 	"name": "com.supyrb.signals",
+	"author": "Johannes Deml",
 	"displayName": "Signals ❇",
 	"description": "Signals is a powerful, lightweight messaging system that provides sortable, consumable and pausable signals. Comes with an editor window for easy access to the signals.",
 	"keywords": [
@@ -9,8 +10,9 @@
 		"Messaging",
 		"Decoupled"
 	],
+	"license": "MIT",
 	"category": "Utility",
-	"version": "0.5.0",
+	"version": "1.0.0",
 	"unity": "2018.1",
 	"dependencies": {
 		
