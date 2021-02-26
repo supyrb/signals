@@ -22,6 +22,10 @@ namespace Supyrb
 		[SerializeField]
 		private bool dispatchEveryUpdate = true;
 
+		[Tooltip("Toggle Debug Logging")]
+		[SerializeField]
+		private bool verbose = true;
+		
 		private List<DebugListener> listeners = null;
 		
 		private StressTestSignal signal;
@@ -32,7 +36,7 @@ namespace Supyrb
 			listeners = new List<DebugListener>();
 			for (int i = 0; i < numListener; i++)
 			{
-				listeners.Add(new DebugListener(i, signal));
+				listeners.Add(new DebugListener(i, signal, verbose));
 			}
 			SubscribeListeners();
 		}
@@ -77,9 +81,13 @@ namespace Supyrb
 		[ContextMenu("DispatchSignal")]
 		public void DispatchSignal()
 		{
-			Profiler.BeginSample("DispatchSignal");
+			if (verbose)
 			{
 				Debug.LogFormat("Dispatching stress signal with {0} listeners", signal.ListenerCount);
+			}
+			
+			Profiler.BeginSample("DispatchSignal");
+			{
 				signal.Dispatch();
 			}
 			Profiler.EndSample();

@@ -17,15 +17,17 @@ namespace Supyrb
 	{
 		private readonly int order;
 		private bool subscribed;
+		private bool verbose;
 		private readonly Signal signal;
 		
 		// Cache action in order to avoid additional garbage every subscribe/unsubscribe
 		private readonly Action onSignalAction;
 
-		public DebugListener(int order, Signal signal)
+		public DebugListener(int order, Signal signal, bool verbose)
 		{
 			this.order = order;
 			this.signal = signal;
+			this.verbose = verbose;
 			this.onSignalAction = OnSignal;
 			this.subscribed = false;
 		}
@@ -37,7 +39,7 @@ namespace Supyrb
 				return;
 			}
 
-			if (order % 1000 == 0)
+			if (verbose && order % 1000 == 0)
 			{
 				Debug.LogFormat("Subscribe Listener with order {0}", order);
 			}
@@ -53,7 +55,7 @@ namespace Supyrb
 				return;
 			}
 
-			if (order % 1000 == 0)
+			if (verbose && order % 1000 == 0)
 			{
 				Debug.LogFormat("Unsubscribe Listener with order {0}", order);
 			}
@@ -64,7 +66,7 @@ namespace Supyrb
 
 		private void OnSignal()
 		{
-			if (order % 1000 == 0)
+			if (verbose && order % 1000 == 0)
 			{
 				Debug.LogFormat("Listener with order {0} has received the signal", order);
 			}
