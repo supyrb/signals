@@ -9,6 +9,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Supyrb
 {
@@ -82,10 +83,13 @@ namespace Supyrb
 		/// Dispatch the signal to the listeners in their defined order until the signal
 		/// is consumed (<see cref="ASignal.Consume"/>) or paused (<see cref="ASignal.Pause"/>)
 		/// </summary>
-		public void Dispatch()
+		public void Dispatch([CallerMemberName] string memberName = "",
+							[CallerFilePath] string sourceFilePath = "",
+							[CallerLineNumber] int sourceLineNumber = 0)
 		{
 			BeginSignalProfilerSample("Dispatch Signal");
 			
+			Signals.LogSignalDispatch(this, memberName, sourceFilePath, sourceLineNumber);
 			StartDispatch();
 
 			EndSignalProfilerSample();
@@ -168,11 +172,15 @@ namespace Supyrb
 		/// Dispatch the signal to the listeners in their defined order until the signal
 		/// is consumed (<see cref="ASignal.Consume"/>) or paused (<see cref="ASignal.Pause"/>)
 		/// </summary>
-		public void Dispatch(T context0)
+		public void Dispatch(T context0,
+							[CallerMemberName] string memberName = "",
+							[CallerFilePath] string sourceFilePath = "",
+							[CallerLineNumber] int sourceLineNumber = 0)
 		{
 			BeginSignalProfilerSample("Dispatch Signal");
 			
 			this.context0 = context0;
+			Signals.LogSignalDispatch(this, memberName, sourceFilePath, sourceLineNumber);
 			StartDispatch();
 
 			EndSignalProfilerSample();
@@ -262,12 +270,16 @@ namespace Supyrb
 		/// Dispatch the signal to the listeners in their defined order until the signal
 		/// is consumed (<see cref="ASignal.Consume"/>) or paused (<see cref="ASignal.Pause"/>)
 		/// </summary>
-		public void Dispatch(T context0, U context1)
+		public void Dispatch(T context0, U context1,
+							[CallerMemberName] string memberName = "",
+							[CallerFilePath] string sourceFilePath = "",
+							[CallerLineNumber] int sourceLineNumber = 0)
 		{
 			BeginSignalProfilerSample("Dispatch Signal");
 			
 			this.context0 = context0;
 			this.context1 = context1;
+			Signals.LogSignalDispatch(this, memberName, sourceFilePath, sourceLineNumber);
 			StartDispatch();
 
 			EndSignalProfilerSample();
@@ -359,13 +371,17 @@ namespace Supyrb
 		/// Dispatch the signal to the listeners in their defined order until the signal
 		/// is consumed (<see cref="ASignal.Consume"/>) or paused (<see cref="ASignal.Pause"/>)
 		/// </summary>
-		public void Dispatch(T context0, U context1, V context2)
+		public void Dispatch(T context0, U context1, V context2,
+							[CallerMemberName] string memberName = "",
+							[CallerFilePath] string sourceFilePath = "",
+							[CallerLineNumber] int sourceLineNumber = 0)
 		{
 			BeginSignalProfilerSample("Dispatch Signal");
 			
 			this.context0 = context0;
 			this.context1 = context1;
 			this.context2 = context2;
+			Signals.LogSignalDispatch(this, memberName, sourceFilePath, sourceLineNumber);
 			StartDispatch();
 
 			EndSignalProfilerSample();

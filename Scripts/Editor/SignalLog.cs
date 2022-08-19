@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -21,12 +22,20 @@ namespace Supyrb
 		public readonly float PlayDispatchTime;
 		public readonly ASignal SignalInstance;
 		public readonly Type SignalType;
+		public readonly string MemberName;
+		public readonly string SourceFilePath;
+		public readonly string SourceFileName;
+		public readonly int SourceLineNumber;
 
-		public SignalLogItem(ASignal signalInstance)
+		public SignalLogItem(ASignal signalInstance, string memberName, string sourceFilePath, int sourceLineNumber)
 		{
 			TimeStamp = DateTime.Now;
 			PlayDispatchTime = Time.time;
 			SignalInstance = signalInstance;
+			MemberName = memberName;
+			SourceFilePath = sourceFilePath;
+			SourceFileName = Path.GetFileName(SourceFilePath);
+			SourceLineNumber = sourceLineNumber;
 			SignalType = signalInstance.GetType();
 		}
 	}
@@ -87,13 +96,7 @@ namespace Supyrb
 		
 		public SignalLogItem GetLastOccurenceOf(Type type)
 		{
-			SignalLogItem item;
-			if (lastDispatch.TryGetValue(type, out item))
-			{
-				return item;
-			}
-
-			return null;
+			return lastDispatch.TryGetValue(type, out  SignalLogItem item) ? item : null;
 		}
 
 		public SignalLogItem GetLastEntry()
@@ -112,9 +115,9 @@ namespace Supyrb
 			lastDispatch.Clear();
 		}
 
-		private void OnSignalDispatch(ASignal signal)
+		private void OnSignalDispatch(ASignal signal, string memberName, string sourceFilePath, int sourceLineNumber)
 		{
-			var signalLogItem = new SignalLogItem(signal);
+			var signalLogItem = new SignalLogItem(signal, memberName, sourceFilePath, sourceLineNumber);
 			log.Add(signalLogItem);
 			lastDispatch[signalLogItem.SignalType] = signalLogItem;
 
@@ -124,7 +127,7 @@ namespace Supyrb
 			}
 		}
 
-		public bool UpdateLog(Type type, ref List<SignalLogItem> signalLog)
+		public bool GetLogEntriesForType(Type type, ref List<SignalLogItem> signalLog)
 		{
 			if (!lastDispatch.ContainsKey(type))
 			{

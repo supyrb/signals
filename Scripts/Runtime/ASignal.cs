@@ -98,8 +98,7 @@ namespace Supyrb
 		{
 			currentIndex = 0;
 			state = State.Running;
-			Signals.LogSignalDispatch(this);
-			
+
 			Run();
 		}
 

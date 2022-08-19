@@ -10,6 +10,7 @@
 
 using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 
@@ -28,9 +29,11 @@ namespace Supyrb
 			}
 		}
 
+		private const int NumDispatchDefaultArguments = 3;
 		private readonly Type type;
 		private readonly Type baseType;
 		private readonly Type[] argumentTypes;
+
 		private ASignal instance;
 		private object[] argumentValues;
 		private MethodInfo dispatchMethod;
@@ -71,7 +74,8 @@ namespace Supyrb
 			}
 
 			argumentTypes = baseType.GetGenericArguments();
-			argumentValues = new object[argumentTypes.Length];
+			argumentValues = new object[argumentTypes.Length + NumDispatchDefaultArguments];
+
 
 			dispatchMethod = this.type.GetMethod("Dispatch", BindingFlags.Instance | BindingFlags.Public);
 			currentIndexField = typeof(ASignal).GetField("currentIndex", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -136,7 +140,7 @@ namespace Supyrb
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("Dispatch"))
 			{
-				dispatchMethod.Invoke(instance, argumentValues);
+				DispatchSignalFromEditor();
 			}
 
 			GUI.enabled = state == ASignal.State.Running || state == ASignal.State.Paused;
@@ -164,6 +168,16 @@ namespace Supyrb
 			GUI.enabled = true;
 		}
 
+		private void DispatchSignalFromEditor([CallerMemberName] string memberName = "",
+											[CallerFilePath] string sourceFilePath = "",
+											[CallerLineNumber] int sourceLineNumber = 0)
+		{
+			argumentValues[argumentTypes.Length] = memberName;
+			argumentValues[argumentTypes.Length + 1] = sourceFilePath;
+			argumentValues[argumentTypes.Length + 2] = sourceLineNumber;
+			dispatchMethod.Invoke(instance, argumentValues);
+		}
+
 		private void DrawLogs()
 		{
 			foldoutLog = EditorGUILayout.Foldout(foldoutLog, "Log");
@@ -172,7 +186,7 @@ namespace Supyrb
 				return;
 			}
 			logViewDrawer.Update();
-			logViewDrawer.DrawLog();
+			logViewDrawer.DrawLogsForCurrentType();
 		}
 
 		private void DrawListeners()
