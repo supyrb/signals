@@ -33,7 +33,7 @@ namespace Supyrb
 		}
 
 		private Type type;
-		private List<SignalLogItem> signalLog;
+		private List<SignalLogEntry> signalLog;
 		private Vector2 scrollPos;
 		private const float maxHeight = 200f;
 		private const int maxEntries = 100;
@@ -41,7 +41,7 @@ namespace Supyrb
 		public SignalLogViewDrawer(Type type)
 		{
 			this.type = type;
-			signalLog = new List<SignalLogItem>();
+			signalLog = new List<SignalLogEntry>();
 			scrollPos = new Vector2(0f, 0f);
 		}
 

@@ -10,45 +10,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Supyrb
 {
-	public class SignalLogItem
-	{
-		public readonly DateTime TimeStamp;
-		public readonly float PlayDispatchTime;
-		public readonly ASignal SignalInstance;
-		public readonly Type SignalType;
-		public readonly string MemberName;
-		public readonly string SourceFilePath;
-		public readonly string SourceFileName;
-		public readonly int SourceLineNumber;
-
-		public SignalLogItem(ASignal signalInstance, string memberName, string sourceFilePath, int sourceLineNumber)
-		{
-			TimeStamp = DateTime.Now;
-			PlayDispatchTime = Time.time;
-			SignalInstance = signalInstance;
-			MemberName = memberName;
-			SourceFilePath = sourceFilePath;
-			SourceFileName = Path.GetFileName(SourceFilePath);
-			SourceLineNumber = sourceLineNumber;
-			SignalType = signalInstance.GetType();
-		}
-	}
-
 	public class SignalLog
 	{
-		public delegate void LogDelegate(SignalLogItem logItem);
-
+		public delegate void LogDelegate(SignalLogEntry logEntry);
 		public event LogDelegate OnNewSignalLog;
 
 		private bool subscribed;
-		private readonly List<SignalLogItem> log;
-		private readonly Dictionary<Type, SignalLogItem> lastDispatch;
+		private readonly List<SignalLogEntry> log;
+		private readonly Dictionary<Type, SignalLogEntry> lastDispatch;
 
 		private static SignalLog _instance;
 
@@ -67,8 +40,8 @@ namespace Supyrb
 
 		private SignalLog()
 		{
-			log = new List<SignalLogItem>();
-			lastDispatch = new Dictionary<Type, SignalLogItem>();
+			log = new List<SignalLogEntry>();
+			lastDispatch = new Dictionary<Type, SignalLogEntry>();
 			subscribed = false;
 		}
 
@@ -94,12 +67,12 @@ namespace Supyrb
 			subscribed = false;
 		}
 		
-		public SignalLogItem GetLastOccurenceOf(Type type)
+		public SignalLogEntry GetLastOccurenceOf(Type type)
 		{
-			return lastDispatch.TryGetValue(type, out  SignalLogItem item) ? item : null;
+			return lastDispatch.TryGetValue(type, out  SignalLogEntry item) ? item : null;
 		}
 
-		public SignalLogItem GetLastEntry()
+		public SignalLogEntry GetLastEntry()
 		{
 			if (log.Count == 0)
 			{
@@ -117,7 +90,7 @@ namespace Supyrb
 
 		private void OnSignalDispatch(ASignal signal, string memberName, string sourceFilePath, int sourceLineNumber)
 		{
-			var signalLogItem = new SignalLogItem(signal, memberName, sourceFilePath, sourceLineNumber);
+			var signalLogItem = new SignalLogEntry(signal, memberName, sourceFilePath, sourceLineNumber);
 			log.Add(signalLogItem);
 			lastDispatch[signalLogItem.SignalType] = signalLogItem;
 
@@ -127,7 +100,7 @@ namespace Supyrb
 			}
 		}
 
-		public bool GetLogEntriesForType(Type type, ref List<SignalLogItem> signalLog)
+		public bool GetLogEntriesForType(Type type, ref List<SignalLogEntry> signalLog)
 		{
 			if (!lastDispatch.ContainsKey(type))
 			{
@@ -135,7 +108,7 @@ namespace Supyrb
 			}
 
 			var lastLogEntry = lastDispatch[type];
-			SignalLogItem lastListEntry = null;
+			SignalLogEntry lastListEntry = null;
 			if (signalLog.Count > 0)
 			{
 				lastListEntry = signalLog[signalLog.Count - 1];
