@@ -8,6 +8,8 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,7 +17,14 @@ namespace Supyrb
 {
 	public class SignalsAboutWindow : EditorWindow
 	{
-		private const string Headline = "Signals (0.5.0)";
+		[Serializable]
+		private class UnityPackage
+		{
+			public string version;
+		}
+		
+		private const string Headline = "Signals ({0})";
+		private static string version;
 		private static class Styles
 		{
 			internal static GUIStyle HeaderLabel;
@@ -36,15 +45,38 @@ namespace Supyrb
 		public static void Init()
 		{
 			var window = ScriptableObject.CreateInstance<SignalsAboutWindow>();
-			window.titleContent = new GUIContent(Headline);
+			version = window.GetPackageVersion();
+			window.titleContent = new GUIContent(string.Format(Headline, version));
 			window.position = new Rect(Screen.width / 2, Screen.height / 2, 250, 150);
 			window.ShowModalUtility();
+		}
+
+		private string GetPackageVersion()
+		{
+			MonoScript monoScript = MonoScript.FromScriptableObject(this);
+			var assetPath = AssetDatabase.GetAssetPath(monoScript);
+			DirectoryInfo projectDirectory = new DirectoryInfo(Application.dataPath).Parent;
+			DirectoryInfo directory = new FileInfo(assetPath).Directory;
+			while (directory.GetFiles("package.json").Length == 0 && directory != projectDirectory)
+			{
+				directory = directory.Parent;
+			}
+
+			if (directory == projectDirectory)
+			{
+				return null;
+			}
+
+			FileInfo fileInfo = directory.GetFiles("package.json")[0];
+			string packageContent = File.ReadAllText(fileInfo.FullName);
+			UnityPackage package = JsonUtility.FromJson<UnityPackage>(packageContent);
+			return package.version;
 		}
 
 		private void OnGUI()
 		{
 			GUILayout.Space(12);
-			EditorGUILayout.LabelField(Headline, Styles.HeaderLabel);
+			EditorGUILayout.LabelField(string.Format(Headline, version), Styles.HeaderLabel);
 			GUILayout.Space(12);
 			DrawLink("Github", "https://www.github.com/supyrb/signals");
 			DrawLink("OpenUPM", "https://openupm.com/packages/com.supyrb.signals/");
