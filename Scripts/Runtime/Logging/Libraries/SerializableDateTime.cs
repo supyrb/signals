@@ -1,12 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SerializableDateTime.cs">
-//   Copyright (c) 2022 Johannes Deml. All rights reserved.
-// </copyright>
-// <author>
-//   Johannes Deml
-//   public@deml.io
-// </author>
-// --------------------------------------------------------------------------------------------------------------------
+﻿// Simple helper class that allows you to serialize System.Type objects.
+// Use it however you like, but crediting or even just contacting the author would be appreciated (Always 
+// nice to see people using your stuff!)
+//
+// Written by Bryan Keiren (http://www.bryankeiren.com)
 
 using System;
 using UnityEngine;

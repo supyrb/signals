@@ -177,7 +177,7 @@ Contributions to the repository are always welcome. There are several ways to co
 * Built on the shoulders of [Signals](https://github.com/yankooliveira/signals) by [Yanko Oliveira](https://github.com/yankooliveira)
 * Inspired by [JS-Signas](https://github.com/millermedeiros/js-signals) by [Miller Medeiros](https://github.com/millermedeiros)
 * Thanks to [Benny Berger](https://github.com/Asorano) for introducing me to the pattern
-* Thanks to [Bryan Keiren](https://github.com/bkeiren) for [SerializableSystemType](./Scripts/Runtime/Libraries/SerializableSystemType.cs)
+* Thanks to [Bryan Keiren](https://github.com/bkeiren) for [SerializableDateTime](./Scripts/Runtime/Logging/Libraries/SerializableDateTime.cs)
 * Developed by [Johannes Deml](https://github.com/JohannesDeml) – [public@deml.io](mailto:public@deml.io)
 
 ## License

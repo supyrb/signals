@@ -1,13 +1,10 @@
 {
-    "name": "Supyrb.Signals.Editor",
+    "name": "Supyrb.Signals.Logging",
     "rootNamespace": "",
     "references": [
-        "GUID:16f55dfd49f3b694bab70fdad220587f",
-        "GUID:a93bee54bb381744cbdd02ee23fe7a67"
+        "GUID:16f55dfd49f3b694bab70fdad220587f"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
