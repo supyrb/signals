@@ -3,7 +3,7 @@
 ![Signals Editor Window Screenshot](Documentation~/signals-preview-screenshot.png)
 
 ### A typesafe, lightweight, tested messaging package for Unity.  
-[![openupm](https://img.shields.io/npm/v/com.supyrb.signals?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.supyrb.signals/)  [![](https://img.shields.io/github/release-date/supyrb/signals.svg)](https://github.com/supyrb/signals/releases)  [![Unity 5.6 or later](https://img.shields.io/badge/unity-5.6%20or%20later-blue.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)  [![Tested up to Unity 2020.2](https://img.shields.io/badge/tested%20up%20to%20unity-2020.2-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
+[![openupm](https://img.shields.io/npm/v/com.supyrb.signals?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.supyrb.signals/)  [![](https://img.shields.io/github/release-date/supyrb/signals.svg)](https://github.com/supyrb/signals/releases)  [![Unity 5.6 or later](https://img.shields.io/badge/unity-5.6%20or%20later-blue.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)  [![Tested up to Unity 2020.2](https://img.shields.io/badge/tested%20up%20to%20unity-2021.3-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
 
 ## Installation
 
