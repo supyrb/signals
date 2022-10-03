@@ -72,16 +72,15 @@ namespace Supyrb
 			treeView.OnSelectionChanged += OnSelectionChanged;
 			searchField = new SearchField();
 			searchField.downOrUpArrowKeyPressed += treeView.SetFocusAndEnsureSelectedItem;
-			SignalLog.Instance.Subscribe();
 
 			refreshSignalListGuiContent = EditorGUIUtility.IconContent("Refresh");
 			refreshSignalListGuiContent.tooltip = "Refresh Signal list";
 
 			aboutSignalsGuiContent = EditorGUIUtility.IconContent("_Help");
 			aboutSignalsGuiContent.tooltip = "About";
-
-
-			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+			
+			EditorSignalLog.Instance.Subscribe();
+			EditorSignalLog.Instance.OnClearLogs += Clear;
 		}
 
 		private void OnDisable()
@@ -91,8 +90,8 @@ namespace Supyrb
 				searchField.downOrUpArrowKeyPressed -= treeView.SetFocusAndEnsureSelectedItem;
 			}
 
-			EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-			SignalLog.Instance.Unsubscribe();
+			EditorSignalLog.Instance.Unsubscribe();
+			EditorSignalLog.Instance.OnClearLogs -= Clear;
 		}
 
 		private void OnInspectorUpdate()
@@ -100,15 +99,9 @@ namespace Supyrb
 			this.Repaint();
 		}
 
-		private void OnPlayModeStateChanged(PlayModeStateChange state)
+		private void Clear()
 		{
-			if (state == PlayModeStateChange.ExitingEditMode)
-			{
-				// items.Reset();
-				// SignalLog.Instance.Clear();
-				SignalLog.Instance.Unsubscribe();
-				SignalLog.Instance.Subscribe();
-			}
+			items.Reset();
 		}
 
 		private void OnGUI()

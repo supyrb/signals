@@ -168,9 +168,14 @@ namespace Supyrb
 			GUI.enabled = true;
 		}
 
-		private void DispatchSignalFromEditor([CallerMemberName] string memberName = "",
-											[CallerFilePath] string sourceFilePath = "",
-											[CallerLineNumber] int sourceLineNumber = 0)
+		private void DispatchSignalFromEditor()
+		{
+			DispatchSignalViaReflection();
+		}
+
+		private void DispatchSignalViaReflection([CallerMemberName] string memberName = "",
+													[CallerFilePath] string sourceFilePath = "",
+													[CallerLineNumber] int sourceLineNumber = 0)
 		{
 			argumentValues[argumentTypes.Length] = memberName;
 			argumentValues[argumentTypes.Length + 1] = sourceFilePath;
@@ -191,7 +196,7 @@ namespace Supyrb
 
 		private void DrawListeners()
 		{
-			foldoutListeners = EditorGUILayout.Foldout(foldoutListeners, string.Format("Listeners ({0})", instance.ListenerCount));
+			foldoutListeners = EditorGUILayout.Foldout(foldoutListeners, $"Listeners ({instance.ListenerCount})");
 			if (!foldoutListeners)
 			{
 				return;

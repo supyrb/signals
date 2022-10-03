@@ -8,7 +8,6 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
@@ -24,8 +23,6 @@ namespace Supyrb
 		[SerializeField]
 		private List<SignalLogEntry> entries;
 
-		private ConsoleFlags consoleFlags;
-		
 		private SignalLogEntry currentSelection;
 		private SignalsLogTreeView treeView;
 		private SearchField searchField;
@@ -33,7 +30,6 @@ namespace Supyrb
 		
 		private const float ToolbarHeight = 18f;
 		private const float FooterHeight = 24f;
-		private const string ConsoleFlagsEditorKey = "SignalConsoleFlags";
 
 		private static class Styles
 		{
@@ -49,15 +45,6 @@ namespace Supyrb
 				FooterStyle = new GUIStyle((GUIStyle) "ProjectBrowserBottomBarBg");
 				ToolbarButton = new GUIStyle((GUIStyle) "ToolbarButton");
 			}
-		}
-		
-		[Flags]
-		private enum ConsoleFlags
-		{
-			Collapse = 1 << 0,
-			ClearOnPlay = 1 << 1,
-			ClearOnBuild = 1 << 2,
-			ClearOnRecompile = 1 << 3,
 		}
 		
 		[MenuItem("Window/Signals/Console")]
@@ -85,15 +72,14 @@ namespace Supyrb
 				entries = new List<SignalLogEntry>();
 			}
 
-			consoleFlags = (ConsoleFlags)EditorPrefs.GetInt(ConsoleFlagsEditorKey, (int)ConsoleFlags.ClearOnPlay);
+			
 			treeView = new SignalsLogTreeView(treeViewState, entries);
 			treeView.OnSelectionChanged += OnSelectionChanged;
 			searchField = new SearchField();
 			searchField.downOrUpArrowKeyPressed += treeView.SetFocusAndEnsureSelectedItem;
-			SignalLog.Instance.Subscribe();
-			SignalLog.Instance.OnNewSignalLog += OnNewSignalLog;
-
-			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+			EditorSignalLog.Instance.Subscribe();
+			EditorSignalLog.Instance.OnNewSignalLog += OnNewSignalLog;
+			EditorSignalLog.Instance.OnClearLogs += Clear;
 		}
 		
 		private void OnDisable()
@@ -103,28 +89,14 @@ namespace Supyrb
 				searchField.downOrUpArrowKeyPressed -= treeView.SetFocusAndEnsureSelectedItem;
 			}
 
-			EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-			SignalLog.Instance.Unsubscribe();
-			SignalLog.Instance.OnNewSignalLog -= OnNewSignalLog;
+			EditorSignalLog.Instance.Unsubscribe();
+			EditorSignalLog.Instance.OnNewSignalLog -= OnNewSignalLog;
+			EditorSignalLog.Instance.OnClearLogs -= Clear;
 		}
 
 		private void OnInspectorUpdate()
 		{
 			this.Repaint();
-		}
-
-		private void OnPlayModeStateChanged(PlayModeStateChange state)
-		{
-			if (state == PlayModeStateChange.ExitingEditMode)
-			{
-				if (HasFlag(ConsoleFlags.ClearOnPlay))
-				{
-					Clear();
-				}
-
-				SignalLog.Instance.Unsubscribe();
-				SignalLog.Instance.Subscribe();
-			}
 		}
 
 		private void OnGUI()
@@ -149,14 +121,14 @@ namespace Supyrb
 			}
 			if (EditorGUILayout.DropdownButton(new GUIContent("Options"), FocusType.Passive, Styles.ToolbarButton))
 			{
-				var clearOnPlay = HasFlag(ConsoleFlags.ClearOnPlay);
-				var clearOnBuild = HasFlag(ConsoleFlags.ClearOnBuild);
-				var clearOnRecompile = HasFlag(ConsoleFlags.ClearOnRecompile);
+				var clearOnPlay = HasFlag(EditorSignalLog.ConsoleFlags.ClearOnPlay);
+				var clearOnBuild = HasFlag(EditorSignalLog.ConsoleFlags.ClearOnBuild);
+				var clearOnRecompile = HasFlag(EditorSignalLog.ConsoleFlags.ClearOnRecompile);
 
 				GenericMenu menu = new GenericMenu();
-				menu.AddItem(Styles.ClearOnPlay, clearOnPlay, () => { SetFlag(ConsoleFlags.ClearOnPlay, !clearOnPlay); });
-				menu.AddItem(Styles.ClearOnBuild, clearOnBuild, () => { SetFlag(ConsoleFlags.ClearOnBuild, !clearOnBuild); });
-				menu.AddItem(Styles.ClearOnRecompile, clearOnRecompile, () => { SetFlag(ConsoleFlags.ClearOnRecompile, !clearOnRecompile); });
+				menu.AddItem(Styles.ClearOnPlay, clearOnPlay, () => { SetFlag(EditorSignalLog.ConsoleFlags.ClearOnPlay, !clearOnPlay); });
+				menu.AddItem(Styles.ClearOnBuild, clearOnBuild, () => { SetFlag(EditorSignalLog.ConsoleFlags.ClearOnBuild, !clearOnBuild); });
+				menu.AddItem(Styles.ClearOnRecompile, clearOnRecompile, () => { SetFlag(EditorSignalLog.ConsoleFlags.ClearOnRecompile, !clearOnRecompile); });
 				var rect = GUILayoutUtility.GetLastRect();
 				rect.y += EditorGUIUtility.singleLineHeight;
 				menu.DropDown(rect);
@@ -198,7 +170,6 @@ namespace Supyrb
 		private void Clear()
 		{
 			treeView.ClearLogs();
-			SignalLog.Instance.Clear();
 		}
 
 		private void OnNewSignalLog(SignalLogEntry logentry)
@@ -210,21 +181,15 @@ namespace Supyrb
 		{
 			currentSelection = selectedEntry;
 		}
-		
-		private bool HasFlag(ConsoleFlags flags) { return (consoleFlags & flags) != 0; }
 
-		private void SetFlag(ConsoleFlags flags, bool val)
+		private bool HasFlag(EditorSignalLog.ConsoleFlags flags)
 		{
-			if (val)
-			{
-				consoleFlags |= flags;
-			}
-			else
-			{
-				consoleFlags &= ~flags;
-			}
-			
-			EditorPrefs.SetInt(ConsoleFlagsEditorKey, (int)consoleFlags);
+			return EditorSignalLog.Instance.HasFlag(flags);
+		}
+
+		private void SetFlag(EditorSignalLog.ConsoleFlags flags, bool val)
+		{
+			EditorSignalLog.Instance.SetFlag(flags, val);
 		}
 	}
 }
