@@ -16,3 +16,4 @@ MonoBehaviour:
   - Assets/SignalSamples
   exportOptions: 2
   targetFile: Builds/SignalSamples-{Version}.unitypackage
+  zipFile: 0

@@ -20,3 +20,4 @@ MonoBehaviour:
   - Assets/Signals/CHANGELOG.md
   exportOptions: 2
   targetFile: Builds/Signals-{Version}.unitypackage
+  zipFile: 0
