@@ -29,6 +29,10 @@ As well as
   * Dispatch signals with custom parameters
   * A signal log for each signal
   * List of all subscribed listeners for a signal
+* An editor console window
+  * Similar to Unity's console, just for signals
+  * Options to clear console on enter playmode, script recompile or after builds
+
 * Easy integration with UPM
 * Unit tests for runtime scripts
 * Sample packages to get started fast
@@ -101,9 +105,8 @@ Sometimes only one script should handle a signal or the signal should not reach 
 
 ## Editor Window
 
-The editor window can be accessed through `Window->Signals`. It is a work in progress, but already adds quite some value to the package. If you would like to use the package without the editor window, the last valid version for that is `0.3.1`
+The editor window can be accessed through `Window->Signals->Singals`. On the first start and whenever you added a signal you want to debug, just hit the refresh button in the bottom right corner of the window
 
-* On the first start and whenever you added a signal you want to debug, just hit the refresh button in the bottom right corner of the window
 * In the top right corner there is a search field which you can use to filter your signals
 * Click on a signal in the list, to see the details of that signal
 
@@ -118,7 +121,7 @@ The editor window can be accessed through `Window->Signals`. It is a work in pro
 
 ## Caveats
 
-* Each signal is only instanced once (nice!). This results in reusing the same signal over and over. While in general this is great, you will have to remember that fact while using the signals. Consider the following Case:
+* Each signal is only lazily instanced once (nice!). This results in reusing the same signal over and over. While in general this is great, you will have to remember that fact while using the signals. Consider the following case:
   Signal A has Listeners 1,2,3 and 4.
   Signal A gets dispatched.
 
@@ -172,8 +175,9 @@ Contributions to the repository are always welcome. There are several ways to co
 ## Credits
 
 * Built on the shoulders of [Signals](https://github.com/yankooliveira/signals) by [Yanko Oliveira](https://github.com/yankooliveira)
-* Inspired by the great wisdom of [Benny Berger](https://github.com/Asorano)
 * Inspired by [JS-Signas](https://github.com/millermedeiros/js-signals) by [Miller Medeiros](https://github.com/millermedeiros)
+* Thanks to [Benny Berger](https://github.com/Asorano) for introducing me to the pattern
+* Thanks to [Bryan Keiren](https://github.com/bkeiren) for [SerializableSystemType](./Scripts/Runtime/Libraries/SerializableSystemType.cs)
 * Developed by [Johannes Deml](https://github.com/JohannesDeml) – [public@deml.io](mailto:public@deml.io)
 
 ## License
