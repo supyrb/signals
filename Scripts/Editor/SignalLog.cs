@@ -92,7 +92,7 @@ namespace Supyrb
 		{
 			var signalLogItem = new SignalLogEntry(signal, memberName, sourceFilePath, sourceLineNumber);
 			log.Add(signalLogItem);
-			lastDispatch[signalLogItem.SignalType] = signalLogItem;
+			lastDispatch[signalLogItem.SignalType.SystemType] = signalLogItem;
 
 			if (OnNewSignalLog != null)
 			{
@@ -129,7 +129,7 @@ namespace Supyrb
 			for (var i = startProcessingIndex; i < log.Count; i++)
 			{
 				var entry = log[i];
-				if (entry.SignalType == type)
+				if (entry.SignalType.SystemType == type)
 				{
 					signalLog.Add(entry);
 				}

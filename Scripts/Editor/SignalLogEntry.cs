@@ -14,23 +14,29 @@ using UnityEngine;
 
 namespace Supyrb
 {
+	[Serializable]
 	public class SignalLogEntry
 	{
-		public readonly DateTime TimeStamp;
-		public readonly float PlayDispatchTime;
-		public readonly ASignal SignalInstance;
-		public readonly Type SignalType;
-		public readonly string MemberName;
-		public readonly string SourceFilePath;
-		public readonly string SourceFileName;
-		public readonly int SourceLineNumber;
+		[SerializeField]
+		public DateTime TimeStamp;
+		[SerializeField]
+		public float PlayDispatchTime;
+		[SerializeField]
+		public SerializableSystemType SignalType;
+		[SerializeField]
+		public string MemberName;
+		[SerializeField]
+		public string SourceFilePath;
+		[SerializeField]
+		public string SourceFileName;
+		[SerializeField]
+		public int SourceLineNumber;
 
 		public SignalLogEntry(ASignal signalInstance, string memberName, string sourceFilePath, int sourceLineNumber)
 		{
 			TimeStamp = DateTime.Now;
 			PlayDispatchTime = Time.time;
-			SignalInstance = signalInstance;
-			SignalType = signalInstance.GetType();
+			SignalType = new SerializableSystemType(signalInstance.GetType());
 			MemberName = memberName;
 			SourceFilePath = sourceFilePath;
 			SourceFileName = Path.GetFileNameWithoutExtension(SourceFilePath);

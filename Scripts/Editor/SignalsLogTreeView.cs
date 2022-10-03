@@ -24,13 +24,13 @@ namespace Supyrb
 		private List<SignalLogEntry> entries;
 		private TreeViewItem root;
 		
-		public SignalsLogTreeView(TreeViewState treeViewState)
+		public SignalsLogTreeView(TreeViewState treeViewState, List<SignalLogEntry> entries)
 			: base(treeViewState)
 		{
 			rowHeight = EditorGUIUtility.singleLineHeight * 2f;
 			showAlternatingRowBackgrounds = true;
+			this.entries = entries;
 			treeItems = new List<TreeViewItem>();
-			entries = new List<SignalLogEntry>();
 			root = new TreeViewItem {id = -1, depth = -1, displayName = "Root"};
 			Reload();
 		}
@@ -39,6 +39,7 @@ namespace Supyrb
 		{
 			entries.Clear();
 			treeItems.Clear();
+			Reload();
 		}
 
 		public void AddEntry(SignalLogEntry entry)
@@ -72,7 +73,7 @@ namespace Supyrb
 			{
 				return;
 			}
-			if (selectedIds.Count == 0)
+			if (selectedIds.Count == 0 || entries.Count == 0)
 			{
 				OnSelectionChanged(null);
 			}

@@ -104,8 +104,8 @@ namespace Supyrb
 		{
 			if (state == PlayModeStateChange.ExitingEditMode)
 			{
-				items.Reset();
-				SignalLog.Instance.Clear();
+				// items.Reset();
+				// SignalLog.Instance.Clear();
 				SignalLog.Instance.Unsubscribe();
 				SignalLog.Instance.Subscribe();
 			}
