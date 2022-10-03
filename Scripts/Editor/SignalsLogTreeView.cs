@@ -53,7 +53,7 @@ namespace Supyrb
 			for (int i = treeItems.Count; i < entries.Count; i++)
 			{
 				var entry = entries[i];
-				var signalText = $"[{entry.TimeStamp:HH:mm:ss}] {entry.SignalType.Name} - " +
+				var signalText = $"[{entry.TimeStamp.DateTime:HH:mm:ss}] {entry.SignalType.Name} - " +
 								$"Dispatch Time: {entry.PlayDispatchTime:0.000}\n" +
 								$"{entry.SourceFileName}:{entry.MemberName} (at {entry.SourceFilePath}:{entry.SourceLineNumber}";
 				treeItems.Add(new TreeViewItem(i, 0, signalText));

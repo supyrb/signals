@@ -88,7 +88,7 @@ namespace Supyrb
 					var entry = signalLog[i];
 					var style = GetStyleForIndex(i);
 
-					var text = $"[{entry.TimeStamp:HH:mm:ss}] {i:000} " +
+					var text = $"[{entry.TimeStamp.DateTime:HH:mm:ss}] {i:000} " +
 								$"from {entry.SourceFileName}:{entry.MemberName}:(Line {entry.SourceLineNumber})";
 					
 					GUILayout.Label(text, style);

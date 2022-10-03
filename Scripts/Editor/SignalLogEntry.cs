@@ -14,11 +14,16 @@ using UnityEngine;
 
 namespace Supyrb
 {
+	/// <summary>
+	/// A log entry for a dispatched signal
+	/// This class is fully compatible with Unity's serialization system and can therefore survive script reloads
+	/// Can be used in the editor and in builds
+	/// </summary>
 	[Serializable]
 	public class SignalLogEntry
 	{
 		[SerializeField]
-		public DateTime TimeStamp;
+		public SerializableDateTime TimeStamp;
 		[SerializeField]
 		public float PlayDispatchTime;
 		[SerializeField]
@@ -34,7 +39,7 @@ namespace Supyrb
 
 		public SignalLogEntry(ASignal signalInstance, string memberName, string sourceFilePath, int sourceLineNumber)
 		{
-			TimeStamp = DateTime.Now;
+			TimeStamp = new SerializableDateTime(DateTime.Now);
 			PlayDispatchTime = Time.time;
 			SignalType = new SerializableSystemType(signalInstance.GetType());
 			MemberName = memberName;

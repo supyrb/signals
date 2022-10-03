@@ -157,7 +157,7 @@ namespace Supyrb
 			if (lastDispatchedSignal != null)
 			{
 				var signalText = string.Format("[{0:HH:mm:ss}] {1} - Dispatch Time: {2:0.000}",
-					lastDispatchedSignal.TimeStamp,
+					lastDispatchedSignal.TimeStamp.DateTime,
 					lastDispatchedSignal.SignalType.Name,
 					lastDispatchedSignal.PlayDispatchTime);
 				GUILayout.Label(signalText);

@@ -14,6 +14,10 @@ using UnityEngine;
 
 namespace Supyrb
 {
+	/// <summary>
+	/// General signals editor window showing all available signals in the project
+	/// Can be used to debug and dispatch signals in the editor
+	/// </summary>
 	internal class SignalsEditorWindow : EditorWindow
 	{
 		[SerializeField]
@@ -177,7 +181,7 @@ namespace Supyrb
 			if (lastDispatchedSignal != null)
 			{
 				var signalText = string.Format("[{0:HH:mm:ss}] {1} - Dispatch Time: {2:0.000}",
-					lastDispatchedSignal.TimeStamp,
+					lastDispatchedSignal.TimeStamp.DateTime,
 					lastDispatchedSignal.SignalType.Name,
 					lastDispatchedSignal.PlayDispatchTime);
 				GUILayout.Label(signalText);
