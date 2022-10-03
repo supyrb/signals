@@ -14,6 +14,10 @@ using UnityEngine;
 
 namespace Supyrb
 {
+	/// <summary>
+	/// General signals editor window showing all available signals in the project
+	/// Can be used to debug and dispatch signals in the editor
+	/// </summary>
 	internal class SignalsEditorWindow : EditorWindow
 	{
 		[SerializeField]
@@ -46,11 +50,22 @@ namespace Supyrb
 				IconButton.margin.top = 3;
 			}
 		}
+		
+		[MenuItem("Window/Signals/Signals")]
+		private static void ShowWindow()
+		{
+			// Get existing open window or if none, make a new one:
+			var window = GetWindow<SignalsEditorWindow>();
+			var titleContent = EditorGUIUtility.IconContent("Profiler.NetworkMessages");
+			titleContent.text = "Signals";
+			window.titleContent = titleContent;
+			window.Show();
+		}
 
 		private void OnEnable()
 		{
-			// Check if we already had a serialized view state (state 
-			// that survived assembly reloading)
+			// Check if we already had a serialized view state
+			// (state that survived assembly reloading)
 			if (treeViewState == null)
 			{
 				treeViewState = new TreeViewState();
@@ -61,16 +76,15 @@ namespace Supyrb
 			treeView.OnSelectionChanged += OnSelectionChanged;
 			searchField = new SearchField();
 			searchField.downOrUpArrowKeyPressed += treeView.SetFocusAndEnsureSelectedItem;
-			SignalLog.Instance.Subscribe();
 
 			refreshSignalListGuiContent = EditorGUIUtility.IconContent("Refresh");
 			refreshSignalListGuiContent.tooltip = "Refresh Signal list";
 
 			aboutSignalsGuiContent = EditorGUIUtility.IconContent("_Help");
 			aboutSignalsGuiContent.tooltip = "About";
-
-
-			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+			
+			EditorSignalLog.Instance.Subscribe();
+			EditorSignalLog.Instance.OnClearLogs += Clear;
 		}
 
 		private void OnDisable()
@@ -80,8 +94,8 @@ namespace Supyrb
 				searchField.downOrUpArrowKeyPressed -= treeView.SetFocusAndEnsureSelectedItem;
 			}
 
-			EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-			SignalLog.Instance.Unsubscribe();
+			EditorSignalLog.Instance.Unsubscribe();
+			EditorSignalLog.Instance.OnClearLogs -= Clear;
 		}
 
 		private void OnInspectorUpdate()
@@ -89,15 +103,9 @@ namespace Supyrb
 			this.Repaint();
 		}
 
-		private void OnPlayModeStateChanged(PlayModeStateChange state)
+		private void Clear()
 		{
-			if (state == PlayModeStateChange.ExitingEditMode)
-			{
-				items.Reset();
-				SignalLog.Instance.Clear();
-				SignalLog.Instance.Unsubscribe();
-				SignalLog.Instance.Subscribe();
-			}
+			items.Reset();
 		}
 
 		private void OnGUI()
@@ -136,7 +144,7 @@ namespace Supyrb
 			treeView.searchString = searchField.OnToolbarGUI(treeView.searchString);
 			if (GUILayout.Button(aboutSignalsGuiContent, Styles.IconButton))
 			{
-				SignalsAboutWindow.Init();
+				SignalsAboutWindow.ShowWindow();
 			}
 
 			GUILayout.EndHorizontal();
@@ -173,7 +181,7 @@ namespace Supyrb
 			if (lastDispatchedSignal != null)
 			{
 				var signalText = string.Format("[{0:HH:mm:ss}] {1} - Dispatch Time: {2:0.000}",
-					lastDispatchedSignal.TimeStamp,
+					lastDispatchedSignal.TimeStamp.DateTime,
 					lastDispatchedSignal.SignalType.Name,
 					lastDispatchedSignal.PlayDispatchTime);
 				GUILayout.Label(signalText);
@@ -187,18 +195,6 @@ namespace Supyrb
 			}
 
 			GUILayout.EndHorizontal();
-		}
-
-
-		[MenuItem("Window/Signals")]
-		private static void ShowWindow()
-		{
-			// Get existing open window or if none, make a new one:
-			var window = GetWindow<SignalsEditorWindow>();
-			var titleContent = EditorGUIUtility.IconContent("Profiler.NetworkMessages");
-			titleContent.text = "Signals";
-			window.titleContent = titleContent;
-			window.Show();
 		}
 
 		private void OnSelectionChanged(SerializableSystemType selectedtype)

@@ -33,7 +33,7 @@ namespace Supyrb
 		}
 
 		private Type type;
-		private List<SignalLogItem> signalLog;
+		private List<SignalLogEntry> signalLog;
 		private Vector2 scrollPos;
 		private const float maxHeight = 200f;
 		private const int maxEntries = 100;
@@ -41,7 +41,7 @@ namespace Supyrb
 		public SignalLogViewDrawer(Type type)
 		{
 			this.type = type;
-			signalLog = new List<SignalLogItem>();
+			signalLog = new List<SignalLogEntry>();
 			scrollPos = new Vector2(0f, 0f);
 		}
 
@@ -54,14 +54,14 @@ namespace Supyrb
 
 		public void Update()
 		{
-			var newEntries = SignalLog.Instance.UpdateLog(type, ref signalLog);
+			var newEntries = SignalLog.Instance.GetLogEntriesForType(type, ref signalLog);
 			if (newEntries)
 			{
 				scrollPos.y = Mathf.Max(0f, GetListContentHeight() - maxHeight);
 			}
 		}
 
-		public void DrawLog()
+		public void DrawLogsForCurrentType()
 		{
 			if (signalLog.Count == 0)
 			{
@@ -77,7 +77,7 @@ namespace Supyrb
 				if (signalLog.Count > maxEntries)
 				{
 					startIndex = signalLog.Count - maxEntries;
-					var style = GetStyleForEntry(startIndex - 1);
+					var style = GetStyleForIndex(startIndex - 1);
 					var text = string.Format("Hiding {0} older entries", startIndex);
 					
 					GUILayout.Label(text, style);
@@ -86,10 +86,10 @@ namespace Supyrb
 				for (var i = startIndex; i < signalLog.Count; i++)
 				{
 					var entry = signalLog[i];
-					var style = GetStyleForEntry(i);
+					var style = GetStyleForIndex(i);
 
-					var text = string.Format("{0:000} - [{1:HH:mm:ss}] - Time.time: {2:0.00}", 
-						i, entry.TimeStamp, entry.PlayDispatchTime);
+					var text = $"[{entry.TimeStamp.DateTime:HH:mm:ss}] {i:000} " +
+								$"from {entry.SourceFileName}:{entry.MemberName}:(Line {entry.SourceLineNumber})";
 					
 					GUILayout.Label(text, style);
 				}
@@ -97,25 +97,15 @@ namespace Supyrb
 			GUILayout.EndScrollView();
 		}
 
-		private static GUIStyle GetStyleForEntry(int index)
+		private static GUIStyle GetStyleForIndex(int index)
 		{
-			GUIStyle style;
-			if (index % 2 == 0)
-			{
-				style = Styles.EvenEntry;
-			}
-			else
-			{
-				style = Styles.OddEntry;
-			}
-
-			return style;
+			return index % 2 == 0 ? Styles.EvenEntry : Styles.OddEntry;
 		}
 
 		/// <summary>
 		/// Get the editor height of the complete list with all entries
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>Total list content height</returns>
 		private float GetListContentHeight()
 		{
 			var entries = signalLog.Count;

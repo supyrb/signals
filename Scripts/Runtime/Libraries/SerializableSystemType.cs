@@ -81,5 +81,4 @@ namespace Supyrb
 			return String.Compare(m_Name, other.m_Name, StringComparison.Ordinal);
 		}
 	}
-
 }

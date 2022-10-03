@@ -22,6 +22,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using UnityEngine.Profiling;
 
 namespace Supyrb
 {
@@ -30,7 +32,7 @@ namespace Supyrb
 	/// </summary>
 	public static class Signals
 	{
-		public delegate void SignalDelegate(ASignal signal);
+		public delegate void SignalDelegate(ASignal signal, string memberName, string sourceFilePath, int sourceLineNumber);
 		public static event SignalDelegate OnSignalDispatch;
 		private static readonly SignalHub signalHub = new SignalHub();
 
@@ -81,12 +83,12 @@ namespace Supyrb
 			OnSignalDispatch = null;
 		}
 
-		internal static void LogSignalDispatch(ASignal signal)
+		[Conditional("SIGNALS_DEBUG"), Conditional("UNITY_EDITOR")]
+		internal static void LogSignalDispatch(ASignal signal, string memberName, string sourceFilePath, int sourceLineNumber)
 		{
-			if (OnSignalDispatch != null)
-			{
-				OnSignalDispatch(signal);
-			}
+			Profiler.BeginSample("LogDispatchSignal");
+			OnSignalDispatch?.Invoke(signal, memberName, sourceFilePath, sourceLineNumber);
+			Profiler.EndSample();
 		}
 	}
 
