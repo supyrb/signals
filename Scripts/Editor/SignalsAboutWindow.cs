@@ -41,8 +41,8 @@ namespace Supyrb
 			}
 		}
 
-		
-		public static void Init()
+		[MenuItem("Window/Signals/About")]
+		public static void ShowWindow()
 		{
 			var window = ScriptableObject.CreateInstance<SignalsAboutWindow>();
 			version = window.GetPackageVersion();

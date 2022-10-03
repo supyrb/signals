@@ -1,6 +1,6 @@
-// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SignalsEditorWindow.cs" company="Supyrb">
-//   Copyright (c) 2020 Supyrb. All rights reserved.
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SignalsEditorConsoleWindow.cs">
+//   Copyright (c) 2022 Johannes Deml. All rights reserved.
 // </copyright>
 // <author>
 //   Johannes Deml
@@ -14,22 +14,16 @@ using UnityEngine;
 
 namespace Supyrb
 {
-	internal class SignalsEditorWindow : EditorWindow
+	internal class SignalsEditorConsoleWindow : EditorWindow
 	{
 		[SerializeField]
 		private TreeViewState treeViewState;
-
-		private SignalsTreeView treeView;
+		
+		private SignalLogEntry currentSelection;
+		private SignalsLogTreeView treeView;
 		private SearchField searchField;
-		private SignalsTreeViewItems items;
-		private SerializableSystemType currentSelection;
 		private SignalsTreeViewItem currentItem;
-		private GUIContent refreshSignalListGuiContent;
-		private GUIContent aboutSignalsGuiContent;
-		private Vector2 detailScrollPosition = Vector2.zero;
-
-		private const float HierarchyWidth = 250f;
-		private const float ToolbarHeight = 18f;
+		
 		private const float FooterHeight = 24f;
 
 		private static class Styles
@@ -47,13 +41,13 @@ namespace Supyrb
 			}
 		}
 		
-		[MenuItem("Window/Signals/Signals")]
+		[MenuItem("Window/Signals/Console")]
 		private static void ShowWindow()
 		{
 			// Get existing open window or if none, make a new one:
-			var window = GetWindow<SignalsEditorWindow>();
+			var window = GetWindow<SignalsEditorConsoleWindow>();
 			var titleContent = EditorGUIUtility.IconContent("Profiler.NetworkMessages");
-			titleContent.text = "Signals";
+			titleContent.text = "Signals Console";
 			window.titleContent = titleContent;
 			window.Show();
 		}
@@ -61,29 +55,22 @@ namespace Supyrb
 		private void OnEnable()
 		{
 			// Check if we already had a serialized view state
-			// (state that survived assembly reloading)
+			//  (state that survived assembly reloading)
 			if (treeViewState == null)
 			{
 				treeViewState = new TreeViewState();
 			}
 
-			items = new SignalsTreeViewItems();
-			treeView = new SignalsTreeView(treeViewState);
+			treeView = new SignalsLogTreeView(treeViewState);
 			treeView.OnSelectionChanged += OnSelectionChanged;
 			searchField = new SearchField();
 			searchField.downOrUpArrowKeyPressed += treeView.SetFocusAndEnsureSelectedItem;
 			SignalLog.Instance.Subscribe();
-
-			refreshSignalListGuiContent = EditorGUIUtility.IconContent("Refresh");
-			refreshSignalListGuiContent.tooltip = "Refresh Signal list";
-
-			aboutSignalsGuiContent = EditorGUIUtility.IconContent("_Help");
-			aboutSignalsGuiContent.tooltip = "About";
-
+			SignalLog.Instance.OnNewSignalLog += OnNewSignalLog;
 
 			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 		}
-
+		
 		private void OnDisable()
 		{
 			if (searchField != null)
@@ -93,6 +80,7 @@ namespace Supyrb
 
 			EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 			SignalLog.Instance.Unsubscribe();
+			SignalLog.Instance.OnNewSignalLog -= OnNewSignalLog;
 		}
 
 		private void OnInspectorUpdate()
@@ -104,8 +92,9 @@ namespace Supyrb
 		{
 			if (state == PlayModeStateChange.ExitingEditMode)
 			{
-				items.Reset();
+				treeView.ClearLogs();
 				SignalLog.Instance.Clear();
+				// TODO do we really need to do this?
 				SignalLog.Instance.Unsubscribe();
 				SignalLog.Instance.Subscribe();
 			}
@@ -113,65 +102,22 @@ namespace Supyrb
 
 		private void OnGUI()
 		{
-			var contentHeight = this.position.height - ToolbarHeight - FooterHeight;
+			var contentHeight = this.position.height - FooterHeight;
 
-			DoToolbar();
 			EditorGUILayout.BeginHorizontal(GUILayout.Height(contentHeight));
 
 
-			EditorGUILayout.BeginVertical(Styles.HierarchyStyle, GUILayout.Width(HierarchyWidth));
-			var rect = GUILayoutUtility.GetRect(0, HierarchyWidth, 0, 100000);
+			var rect = GUILayoutUtility.GetRect(0, this.position.width, 0, 100000);
 			DoTreeView(rect);
-			EditorGUILayout.EndVertical();
-
-			var detailWidth = this.position.width - HierarchyWidth;
-			detailScrollPosition = GUILayout.BeginScrollView(detailScrollPosition, GUILayout.Width(detailWidth), GUILayout.Height(contentHeight));
-			{
-				DoDetailView();
-				GUILayout.Space(EditorGUIUtility.standardVerticalSpacing * 4f);
-			}
-			GUILayout.EndScrollView();
 
 			EditorGUILayout.EndHorizontal();
 
 			DoFooter();
 		}
 
-		private void DoToolbar()
-		{
-			GUILayout.BeginHorizontal(EditorStyles.toolbar,
-				GUILayout.Width(this.position.width),
-				GUILayout.Height(ToolbarHeight));
-			GUILayout.Space(100);
-			GUILayout.FlexibleSpace();
-			treeView.searchString = searchField.OnToolbarGUI(treeView.searchString);
-			if (GUILayout.Button(aboutSignalsGuiContent, Styles.IconButton))
-			{
-				SignalsAboutWindow.ShowWindow();
-			}
-
-			GUILayout.EndHorizontal();
-		}
-
 		private void DoTreeView(Rect rect)
 		{
 			treeView.OnGUI(rect);
-		}
-
-		private void DoDetailView()
-		{
-			if (currentSelection == null || currentSelection.SystemType == null)
-			{
-				GUILayout.Label("Nothing selected");
-				return;
-			}
-
-			if (currentItem == null)
-			{
-				currentItem = items.Get(currentSelection.SystemType);
-			}
-
-			currentItem.DrawSignalDetailView();
 		}
 
 		private void DoFooter()
@@ -191,21 +137,17 @@ namespace Supyrb
 			}
 
 			GUILayout.FlexibleSpace();
-			if (GUILayout.Button(refreshSignalListGuiContent, Styles.IconButton))
-			{
-				treeView.UpdateSignalData();
-				items.Clear();
-			}
-
 			GUILayout.EndHorizontal();
 		}
 
-		private void OnSelectionChanged(SerializableSystemType selectedtype)
+		private void OnNewSignalLog(SignalLogEntry logentry)
 		{
-			currentSelection = selectedtype;
-			currentItem = items.Get(currentSelection.SystemType);
-			detailScrollPosition.x = 0f;
-			detailScrollPosition.y = 0f;
+			treeView.AddEntry(logentry);
+		}
+		
+		private void OnSelectionChanged(SignalLogEntry selectedEntry)
+		{
+			currentSelection = selectedEntry;
 		}
 	}
 }

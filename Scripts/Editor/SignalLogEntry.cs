@@ -33,7 +33,7 @@ namespace Supyrb
 			SignalType = signalInstance.GetType();
 			MemberName = memberName;
 			SourceFilePath = sourceFilePath;
-			SourceFileName = Path.GetFileName(SourceFilePath);
+			SourceFileName = Path.GetFileNameWithoutExtension(SourceFilePath);
 			SourceLineNumber = sourceLineNumber;
 		}
 	}
