@@ -156,10 +156,10 @@ Contributions to the repository are always welcome. There are several ways to co
 #### Setup
 
 1. Create a new Unity Project
-2. Clone git repository in your assets folder `C:\UnityProject\Assets> git clone hhtps://github.com/supyrb/signals.git`
+2. Clone git repository in your Assets folder `C:\UnityProject\Assets> git clone https://github.com/supyrb/signals.git`
 3. Get access to the samples
-   1. Simple way: Copy folder `UnityProject/Assets/Signals/Samples~` to `UnityProject/Assets/SignalSamples` in order to see/use the examples.
-   2. Hard way: Run a command prompt as admin and go to the Assets folder of the project, then run `mklink /D SignalSamples .\signals\Samples~`
+   1. Simple way: Copy folder `UnityProject/Assets/Signals/Samples~` to `UnityProject/Assets/SignalSamples` in order to see/use the examples.  Whenever you make changes in the new folder, you would manually need to copy them to the ~Samples folder again.
+   2. Hard way: Run a command prompt as admin and go to the Assets folder of the project, then run `mklink /D SignalSamples .\signals\Samples~`. This will allow you to see the otherwise hidden folder and changes done to the samples with show up as changes in git directly.
 
 
 #### Guidelines
