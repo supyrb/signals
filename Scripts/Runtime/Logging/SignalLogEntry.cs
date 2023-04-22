@@ -43,9 +43,19 @@ namespace Supyrb
 			PlayDispatchTime = Time.time;
 			SignalType = new SerializableSystemType(signalInstance.GetType());
 			MemberName = memberName;
-			SourceFilePath = sourceFilePath;
+			SourceFilePath = GetAssetSourceFilePath(sourceFilePath);
 			SourceFileName = Path.GetFileNameWithoutExtension(SourceFilePath);
 			SourceLineNumber = sourceLineNumber;
+		}
+
+		private string GetAssetSourceFilePath(string fullPath)
+		{
+			#if UNITY_EDITOR
+			return fullPath.Substring(Application.dataPath.Length - "Assets".Length);
+			#else
+			return fullPath;
+			#endif
+
 		}
 	}
 }

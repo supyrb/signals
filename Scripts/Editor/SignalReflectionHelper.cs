@@ -17,7 +17,7 @@ namespace Supyrb
 {
 	public static class SignalReflectionHelper
 	{
-		public static void GetAllDerivedClasses<T>(ref List<Type> list) where T : ABaseSignal
+		public static void GetAllDerivedClasses<T>(ref List<Type> list) where T : ISignal
 		{
 			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
@@ -28,7 +28,7 @@ namespace Supyrb
 				{
 					continue;
 				}
-				
+
 				// Ignore Microsoft.CodeAnalysis
 				// see https://issuetracker.unity3d.com/issues/reflectiontypeloadexception-is-thrown-when-retrieving-assembly-types-in-project-that-contains-immediate-window-package
 				if (assembly.FullName.StartsWith(("Microsoft.CodeAnalysis")))
@@ -42,7 +42,7 @@ namespace Supyrb
 				}
 				catch (ReflectionTypeLoadException e)
 				{
-					Debug.LogWarningFormat("Error when getting types of {0}, ignoring this assembly\n{1}", 
+					Debug.LogWarningFormat("Error when getting types of {0}, ignoring this assembly\n{1}",
 						assembly.FullName, e.Message);
 				}
 			}
@@ -56,7 +56,7 @@ namespace Supyrb
 			return path.StartsWith(projectPath);
 		}
 
-		public static void GetAllDerivedClasses<T>(ref List<Type> list, Assembly assembly) where T : ABaseSignal
+		public static void GetAllDerivedClasses<T>(ref List<Type> list, Assembly assembly) where T : ISignal
 		{
 			var types = assembly.GetTypes();
 			var baseType = typeof(T);

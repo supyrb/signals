@@ -28,7 +28,7 @@ using UnityEngine.Profiling;
 namespace Supyrb
 {
 	/// <summary>
-	/// Global Signal hub
+	/// Global Signal hub, this is the most common access point to retrieve a signal instance
 	/// </summary>
 	public static class Signals
 	{
@@ -41,31 +41,31 @@ namespace Supyrb
 		/// </summary>
 		/// <typeparam name="T">Type of the Signal to retrieve</typeparam>
 		/// <returns>An instance of the Signal of type T</returns>
-		public static T Get<T>() where T : ABaseSignal
+		public static T Get<T>() where T : ISignal
 		{
 			return signalHub.Get<T>();
 		}
-		
+
 		/// <summary>
 		/// Get the Signal for a certain class. If the signal is not yet registered in the hub it will be created.
 		/// </summary>
 		/// <param name="signalType">Type of the Signal to retrieve</param>
 		/// <returns>An instance of the Signal of type signalType</returns>
-		public static ABaseSignal Get(Type signalType)
+		public static ISignal Get(Type signalType)
 		{
 			return signalHub.Get(signalType);
 		}
-		
+
 		/// <summary>
 		/// Get the Signal for a certain class. If the signal is not yet registered in the hub it will be created.
 		/// </summary>
 		/// <param name="reference">The output argument for which the reference will be set</param>
 		/// <typeparam name="T">The signal type to retrieve</typeparam>
-		public static void Get<T>(out T reference) where T : ABaseSignal
+		public static void Get<T>(out T reference) where T : ISignal
 		{
 			reference = Get<T>();
 		}
-		
+
 		/// <summary>
 		/// The number of registered signals
 		/// </summary>
@@ -94,16 +94,16 @@ namespace Supyrb
 
 	public class SignalHub
 	{
-		private readonly Dictionary<Type, ABaseSignal> signals = new Dictionary<Type, ABaseSignal>();
+		private readonly Dictionary<Type, ISignal> signals = new Dictionary<Type, ISignal>();
 
 		/// <summary>
 		/// Getter for a signal of a given type
 		/// </summary>
 		/// <param name="signalType">Type of the Signal to retrieve</param>
 		/// <returns>The proper signal binding</returns>
-		public ABaseSignal Get(Type signalType)
+		public ISignal Get(Type signalType)
 		{
-			ABaseSignal signal;
+			ISignal signal;
 
 			if (signals.TryGetValue(signalType, out signal))
 			{
@@ -112,13 +112,13 @@ namespace Supyrb
 
 			return Bind(signalType);
 		}
-		
+
 		/// <summary>
 		/// Getter for a signal of a given type
 		/// </summary>
 		/// <typeparam name="T">Type of signal</typeparam>
 		/// <returns>The proper signal binding</returns>
-		public T Get<T>() where T : ABaseSignal
+		public T Get<T>() where T : ISignal
 		{
 			var signalType = typeof(T);
 			return (T) Get(signalType);
@@ -140,9 +140,9 @@ namespace Supyrb
 			signals.Clear();
 		}
 
-		private ABaseSignal Bind(Type signalType)
+		private ISignal Bind(Type signalType)
 		{
-			ABaseSignal signal = (ABaseSignal) Activator.CreateInstance(signalType);
+			ISignal signal = (ISignal) Activator.CreateInstance(signalType);
 			signals.Add(signalType, signal);
 			return signal;
 		}

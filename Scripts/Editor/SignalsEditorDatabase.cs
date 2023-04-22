@@ -63,7 +63,7 @@ namespace Supyrb
 			{
 				EditorUtility.DisplayProgressBar("Update Signals List", "Find all signals in project", 0.1f);
 				var types = new List<Type>();
-				SignalReflectionHelper.GetAllDerivedClasses<ABaseSignal>(ref types);
+				SignalReflectionHelper.GetAllDerivedClasses<ISignal>(ref types);
 				signalTypes.Clear();
 				EditorUtility.DisplayProgressBar("Update Signals List", string.Format("Serialize found signals ({0})", types.Count), 0.6f);
 				for (int i = 0; i < types.Count; i++)
@@ -72,7 +72,7 @@ namespace Supyrb
 					signalTypes.Add(new SerializableSystemType(type));
 				}
 				signalTypes.Sort();
-			
+
 				EditorUtility.DisplayProgressBar("Update Signals List", string.Format("Store found signals ({0})", types.Count), 0.9f);
 				EditorUtility.SetDirty(this);
 				AssetDatabase.SaveAssets();

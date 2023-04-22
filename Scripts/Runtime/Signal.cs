@@ -13,71 +13,8 @@ using System.Runtime.CompilerServices;
 
 namespace Supyrb
 {
-	public class Signal : ASignal
+	public class Signal : ASignalAction<Action>
 	{
-		private readonly OrderedList<Action> listeners;
-
-		/// <inheritdoc />
-		public override int ListenerCount
-		{
-			get { return listeners.Count; }
-		}
-
-		public Signal() : base()
-		{
-			this.listeners = new OrderedList<Action>(true);
-		}
-		
-		/// <inheritdoc />
-		public override void Clear()
-		{
-			listeners.Clear();
-		}
-
-		/// <summary>
-		/// Add a listener for that signal
-		/// </summary>
-		/// <param name="listener">Listener Method to call</param>
-		/// <param name="order">Lower order values will be called first</param>
-		/// <returns>
-		/// True, if the listener was added successfully
-		/// False, if the listener was already subscribed
-		/// </returns>
-		public bool AddListener(Action listener, int order = 0)
-		{
-			#if UNITY_EDITOR
-			UnityEngine.Debug.Assert(listener.Method.GetCustomAttributes(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false).Length == 0,
-				"Adding anonymous delegates as Signal callbacks is not supported (you wouldn't be able to unregister them later).");
-			#endif
-			var index = listeners.Add(order, listener);
-			if (index < 0)
-			{
-				return false;
-			}
-
-			AddListenerAt(index);
-			return true;
-		}
-
-		/// <summary>
-		/// Remove a listener from that signal
-		/// </summary>
-		/// <param name="listener">Subscribed listener method</param>
-		/// <returns>
-		/// True, if the signal was removed successfully
-		/// False, if the listener was not subscribed
-		/// </returns>
-		public bool RemoveListener(Action listener)
-		{
-			var index = listeners.Remove(listener);
-			if (index < 0)
-			{
-				return false;
-			}
-
-			RemoveListenerAt(index);
-			return true;
-		}
 
 		/// <summary>
 		/// Dispatch the signal to the listeners in their defined order until the signal
@@ -88,7 +25,7 @@ namespace Supyrb
 							[CallerLineNumber] int sourceLineNumber = 0)
 		{
 			BeginSignalProfilerSample("Dispatch Signal");
-			
+
 			Signals.LogSignalDispatch(this, memberName, sourceFilePath, sourceLineNumber);
 			StartDispatch();
 
@@ -101,72 +38,9 @@ namespace Supyrb
 		}
 	}
 
-	public class Signal<T> : ASignal
+	public class Signal<T> : ASignalAction<Action<T>>
 	{
-		private readonly OrderedList<Action<T>> listeners;
 		private T context0;
-
-		/// <inheritdoc />
-		public override int ListenerCount
-		{
-			get { return listeners.Count; }
-		}
-
-		public Signal() : base()
-		{
-			this.listeners = new OrderedList<Action<T>>(true);
-		}
-
-		/// <inheritdoc />
-		public override void Clear()
-		{
-			listeners.Clear();
-		}
-		
-		/// <summary>
-		/// Add a listener for that signal
-		/// </summary>
-		/// <param name="listener">Listener Method to call</param>
-		/// <param name="order">Lower order values will be called first</param>
-		/// <returns>
-		/// True, if the listener was added successfully
-		/// False, if the listener was already subscribed
-		/// </returns>
-		public bool AddListener(Action<T> listener, int order = 0)
-		{
-			#if UNITY_EDITOR
-			UnityEngine.Debug.Assert(listener.Method.GetCustomAttributes(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false).Length == 0,
-				"Adding anonymous delegates as Signal callbacks is not supported (you wouldn't be able to unregister them later).");
-			#endif
-			var index = listeners.Add(order, listener);
-			if (index < 0)
-			{
-				return false;
-			}
-
-			AddListenerAt(index);
-			return true;
-		}
-
-		/// <summary>
-		/// Remove a listener from that signal
-		/// </summary>
-		/// <param name="listener">Subscribed listener method</param>
-		/// <returns>
-		/// True, if the signal was removed successfully
-		/// False, if the listener was not subscribed
-		/// </returns>
-		public bool RemoveListener(Action<T> listener)
-		{
-			var index = listeners.Remove(listener);
-			if (index < 0)
-			{
-				return false;
-			}
-
-			RemoveListenerAt(index);
-			return true;
-		}
 
 		/// <summary>
 		/// Dispatch the signal to the listeners in their defined order until the signal
@@ -178,7 +52,7 @@ namespace Supyrb
 							[CallerLineNumber] int sourceLineNumber = 0)
 		{
 			BeginSignalProfilerSample("Dispatch Signal");
-			
+
 			this.context0 = context0;
 			Signals.LogSignalDispatch(this, memberName, sourceFilePath, sourceLineNumber);
 			StartDispatch();
@@ -198,73 +72,10 @@ namespace Supyrb
 		}
 	}
 
-	public class Signal<T, U> : ASignal
+	public class Signal<T, U> : ASignalAction<Action<T, U>>
 	{
-		private readonly OrderedList<Action<T, U>> listeners;
 		private T context0;
 		private U context1;
-
-		/// <inheritdoc />
-		public override int ListenerCount
-		{
-			get { return listeners.Count; }
-		}
-
-		public Signal() : base()
-		{
-			this.listeners = new OrderedList<Action<T, U>>(true);
-		}
-		
-		/// <inheritdoc />
-		public override void Clear()
-		{
-			listeners.Clear();
-		}
-
-		/// <summary>
-		/// Add a listener for that signal
-		/// </summary>
-		/// <param name="listener">Listener Method to call</param>
-		/// <param name="order">Lower order values will be called first</param>
-		/// <returns>
-		/// True, if the listener was added successfully
-		/// False, if the listener was already subscribed
-		/// </returns>
-		public bool AddListener(Action<T, U> listener, int order = 0)
-		{
-			#if UNITY_EDITOR
-			UnityEngine.Debug.Assert(listener.Method.GetCustomAttributes(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false).Length == 0,
-				"Adding anonymous delegates as Signal callbacks is not supported (you wouldn't be able to unregister them later).");
-			#endif
-			var index = listeners.Add(order, listener);
-			if (index < 0)
-			{
-				return false;
-			}
-
-			AddListenerAt(index);
-			return true;
-		}
-
-		/// <summary>
-		/// Remove a listener from that signal
-		/// </summary>
-		/// <param name="listener">Subscribed listener method</param>
-		/// <returns>
-		/// True, if the signal was removed successfully
-		/// False, if the listener was not subscribed
-		/// </returns>
-		public bool RemoveListener(Action<T, U> listener)
-		{
-			var index = listeners.Remove(listener);
-			if (index < 0)
-			{
-				return false;
-			}
-
-			RemoveListenerAt(index);
-			return true;
-		}
 
 		/// <summary>
 		/// Dispatch the signal to the listeners in their defined order until the signal
@@ -276,7 +87,7 @@ namespace Supyrb
 							[CallerLineNumber] int sourceLineNumber = 0)
 		{
 			BeginSignalProfilerSample("Dispatch Signal");
-			
+
 			this.context0 = context0;
 			this.context1 = context1;
 			Signals.LogSignalDispatch(this, memberName, sourceFilePath, sourceLineNumber);
@@ -298,74 +109,11 @@ namespace Supyrb
 		}
 	}
 
-	public class Signal<T, U, V> : ASignal
+	public class Signal<T, U, V> : ASignalAction<Action<T, U, V>>
 	{
-		private readonly OrderedList<Action<T, U, V>> listeners;
 		private T context0;
 		private U context1;
 		private V context2;
-
-		/// <inheritdoc />
-		public override int ListenerCount
-		{
-			get { return listeners.Count; }
-		}
-
-		public Signal() : base()
-		{
-			this.listeners = new OrderedList<Action<T, U, V>>(true);
-		}
-		
-		/// <inheritdoc />
-		public override void Clear()
-		{
-			listeners.Clear();
-		}
-
-		/// <summary>
-		/// Add a listener for that signal
-		/// </summary>
-		/// <param name="listener">Listener Method to call</param>
-		/// <param name="order">Lower order values will be called first</param>
-		/// <returns>
-		/// True, if the listener was added successfully
-		/// False, if the listener was already subscribed
-		/// </returns>
-		public bool AddListener(Action<T, U, V> listener, int order = 0)
-		{
-			#if UNITY_EDITOR
-			UnityEngine.Debug.Assert(listener.Method.GetCustomAttributes(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false).Length == 0,
-				"Adding anonymous delegates as Signal callbacks is not supported (you wouldn't be able to unregister them later).");
-			#endif
-			var index = listeners.Add(order, listener);
-			if (index < 0)
-			{
-				return false;
-			}
-
-			AddListenerAt(index);
-			return true;
-		}
-
-		/// <summary>
-		/// Remove a listener from that signal
-		/// </summary>
-		/// <param name="listener">Subscribed listener method</param>
-		/// <returns>
-		/// True, if the signal was removed successfully
-		/// False, if the listener was not subscribed
-		/// </returns>
-		public bool RemoveListener(Action<T, U, V> listener)
-		{
-			var index = listeners.Remove(listener);
-			if (index < 0)
-			{
-				return false;
-			}
-
-			RemoveListenerAt(index);
-			return true;
-		}
 
 		/// <summary>
 		/// Dispatch the signal to the listeners in their defined order until the signal
@@ -377,7 +125,7 @@ namespace Supyrb
 							[CallerLineNumber] int sourceLineNumber = 0)
 		{
 			BeginSignalProfilerSample("Dispatch Signal");
-			
+
 			this.context0 = context0;
 			this.context1 = context1;
 			this.context2 = context2;

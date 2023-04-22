@@ -10,32 +10,7 @@
 
 namespace Supyrb
 {
-	/// <summary>
-	/// Base class for Signals
-	/// Provides a hash and parameterless constructor
-	/// </summary>
-	public abstract class ABaseSignal
+	public interface ISignal
 	{
-		private string _hash;
-
-		/// <summary>
-		/// Unique id for this signal
-		/// </summary>
-		public string Hash
-		{
-			get
-			{
-				if (string.IsNullOrEmpty(_hash))
-				{
-					_hash = this.GetType().ToString();
-				}
-
-				return _hash;
-			}
-		}
-
-		protected ABaseSignal()
-		{
-		}
 	}
 }

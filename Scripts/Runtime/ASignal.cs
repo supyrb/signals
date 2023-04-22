@@ -14,7 +14,12 @@ using UnityEngine.Profiling;
 
 namespace Supyrb
 {
-	public abstract class ASignal : ABaseSignal
+	/// <summary>
+	/// The base implementation for a signal which defines all interfaces the signal should have
+	/// This is also a non-generics version that can be easily referenced.
+	/// Implementations with generics should take <see cref="ASignalAction"/> as their base class
+	/// </summary>
+	public abstract class ASignal : ISignal
 	{
 		public enum State
 		{
@@ -36,30 +41,24 @@ namespace Supyrb
 			Consumed
 		}
 
-		private int currentIndex;
-		private State state;
-
-
 		/// <summary>
 		/// Number of registered listeners
 		/// </summary>
 		public abstract int ListenerCount { get; }
-		
 
-		protected ASignal() : base()
+		private int currentIndex;
+		private State state;
+
+
+		protected ASignal()
 		{
 			this.currentIndex = 0;
 			this.state = State.Idle;
 		}
-		
-		/// <summary>
-		/// Removes all registered listeners
-		/// </summary>
-		public abstract void Clear();
 
 		/// <summary>
 		/// Pause dispatching
-		/// Dispatching can be continued by calling <see cref="Continue"/> 
+		/// Dispatching can be continued by calling <see cref="Continue"/>
 		/// </summary>
 		public void Pause()
 		{
@@ -82,7 +81,7 @@ namespace Supyrb
 			currentIndex++;
 			state = State.Running;
 			Run();
-			
+
 			EndSignalProfilerSample();
 		}
 
@@ -93,7 +92,7 @@ namespace Supyrb
 		{
 			state = State.Consumed;
 		}
-		
+
 		protected void StartDispatch()
 		{
 			currentIndex = 0;
@@ -113,7 +112,7 @@ namespace Supyrb
 				}
 
 				Invoke(currentIndex);
-				
+
 				if (state != State.Running)
 				{
 					return;
@@ -160,7 +159,7 @@ namespace Supyrb
 			Profiler.BeginSample(this.GetType().FullName);
 			#endif
 		}
-		
+
 		protected void EndSignalProfilerSample()
 		{
 			#if ENABLE_MONO || ENABLE_IL2CPP
@@ -169,14 +168,19 @@ namespace Supyrb
 			#endif
 		}
 
-		protected abstract void Invoke(int index);
-
-		/// <inheritdoc />
+				/// <inheritdoc />
 		public override string ToString()
 		{
-			
-			return string.Format("Signal {0}: {1} Listeners, State {2}, Index {3}", 
+
+			return string.Format("Signal {0}: {1} Listeners, State {2}, Index {3}",
 				this.GetType().Name, ListenerCount, state, currentIndex);
 		}
+
+		/// <summary>
+		/// Removes all registered listeners
+		/// </summary>
+		public abstract void Clear();
+
+		protected abstract void Invoke(int index);
 	}
 }
