@@ -81,7 +81,7 @@ namespace Supyrb
 			values.RemoveAt(index);
 			return index;
 		}
-		
+
 		public int IndexOf(T value)
 		{
 			return values.IndexOf(value);
@@ -98,6 +98,12 @@ namespace Supyrb
 			return IndexOf(item) != -1;
 		}
 
+		/// <summary>
+		/// Returns the index after the last value of order
+		/// This way new entries with the same order value will be added at the end of the entries
+		/// </summary>
+		/// <param name="order">Order value to search for</param>
+		/// <returns></returns>
 		private int GetSortedIndexFor(int order)
 		{
 			var low = 0;
@@ -105,13 +111,13 @@ namespace Supyrb
 			while (low < high)
 			{
 				var mid = (low + high) >> 1;
-				if (this.sortedOrders[mid] < order)
+				if (this.sortedOrders[mid] > order)
 				{
-					low = mid + 1;
+					high = mid;
 				}
 				else
 				{
-					high = mid;
+					low = mid + 1;
 				}
 			}
 
