@@ -17,16 +17,24 @@ namespace Supyrb
 		private readonly List<int> sortedOrders;
 		private readonly List<T> values;
 		private readonly bool uniqueValuesOnly;
+		private readonly int defaultOrderValue;
+		private int defaultOrderNextIndex;
+
+		public OrderedList(bool uniqueValuesOnly) : this(uniqueValuesOnly, 0)
+		{}
 
 		/// <summary>
 		/// Ordered list with an order value that does not have to be unique and a value can be unique
 		/// </summary>
 		/// <param name="uniqueValuesOnly">If values should be unique</param>
-		public OrderedList(bool uniqueValuesOnly)
+		/// <param name="defaultOrder">default sorting value - does not need search when adding value</param>
+		public OrderedList(bool uniqueValuesOnly, int defaultOder)
 		{
 			this.uniqueValuesOnly = uniqueValuesOnly;
 			this.sortedOrders = new List<int>();
 			this.values = new List<T>();
+			this.defaultOrderValue = defaultOder;
+			this.defaultOrderNextIndex = 0;
 		}
 
 		public int Count
@@ -46,6 +54,16 @@ namespace Supyrb
 		}
 
 		/// <summary>
+		/// Add an item to the ordered list with order <see cref="defaultOrderValue"/>
+		/// </summary>
+		/// <param name="value">Value to be added</param>
+		/// <returns>The index at which the value was added, or -1 if the value was already in the list and only unique values are allowed</returns>
+		public int Add(T value)
+		{
+			return Add(defaultOrderValue, value);
+		}
+
+		/// <summary>
 		/// Add an item to the ordered list
 		/// </summary>
 		/// <param name="order">Value after which the list is sorted (Ascending)</param>
@@ -58,9 +76,13 @@ namespace Supyrb
 				return -1;
 			}
 
-			var index = GetSortedIndexFor(order);
+			var index = order == defaultOrderValue ? defaultOrderNextIndex : GetSortedIndexFor(order);
 			sortedOrders.Insert(index, order);
 			values.Insert(index, value);
+			if(order <= defaultOrderNextIndex)
+			{
+				defaultOrderNextIndex++;
+			}
 			return index;
 		}
 
@@ -79,6 +101,10 @@ namespace Supyrb
 
 			sortedOrders.RemoveAt(index);
 			values.RemoveAt(index);
+			if(index < defaultOrderNextIndex)
+			{
+				defaultOrderNextIndex--;
+			}
 			return index;
 		}
 
@@ -91,6 +117,7 @@ namespace Supyrb
 		{
 			sortedOrders.Clear();
 			values.Clear();
+			defaultOrderNextIndex = 0;
 		}
 
 		public bool Contains(T item)
