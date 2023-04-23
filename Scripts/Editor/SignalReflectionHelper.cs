@@ -64,7 +64,7 @@ namespace Supyrb
 			for (int i = 0; i < types.Length; i++)
 			{
 				var type = types[i];
-				if (!type.IsClass || type.IsAbstract || !type.IsSubclassOf(baseType) || type.ContainsGenericParameters)
+				if (!type.IsClass || type.IsAbstract || !baseType.IsAssignableFrom(type) || type.ContainsGenericParameters)
 				{
 					continue;
 				}
