@@ -13,11 +13,12 @@ using UnityEngine;
 
 namespace Supyrb
 {
-	public class BasicExampleSignalTest : MonoBehaviour
+
+    public class BasicExampleSignalTest : MonoBehaviour
 	{
 		[SerializeField]
 		private bool logListeners = true;
-		
+
 		private BasicExampleSignal basicExampleSignal;
 		private void Awake()
 		{
@@ -38,7 +39,7 @@ namespace Supyrb
 			basicExampleSignal.AddListener(ConsumeEventListener, 10);
 			basicExampleSignal.AddListener(LastListener, 100);
 		}
-		
+
 		private void OnDestroy()
 		{
 			basicExampleSignal.RemoveListener(FirstListener);
@@ -47,13 +48,13 @@ namespace Supyrb
 			basicExampleSignal.RemoveListener(ConsumeEventListener);
 			basicExampleSignal.RemoveListener(LastListener);
 		}
-		
+
 		[ContextMenu("DispatchSignal")]
 		public void DispatchSignal()
 		{
 			basicExampleSignal.Dispatch();
 		}
-		
+
 		private void FirstListener()
 		{
 			ConditionalLog("First Listener (Order -100)");
