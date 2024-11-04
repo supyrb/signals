@@ -2,7 +2,7 @@
 
 ![Signals Editor Window Screenshot](Documentation~/signals-preview-screenshot.png)
 
-### A typesafe, lightweight, tested messaging package for Unity.  
+### A typesafe, lightweight, tested messaging package for Unity.
 [![openupm](https://img.shields.io/npm/v/com.supyrb.signals?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.supyrb.signals/)  [![](https://img.shields.io/github/release-date/supyrb/signals.svg)](https://github.com/supyrb/signals/releases)  [![Unity 5.6 or later](https://img.shields.io/badge/unity-5.6%20or%20later-blue.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)  [![Tested up to Unity 2020.2](https://img.shields.io/badge/tested%20up%20to%20unity-2021.3-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
 
 ## Installation
@@ -83,6 +83,9 @@ exampleSignal.RemoveListener(DefaultListener);
 ```c#
 // Send the signal to all listeners (if not consumed or paused in between)
 exampleSignal.Dispatch();
+
+// If your type has a parameter, is is added in the dispatch method
+Signals.Get<GameObjectSignal>().Dispatch(gameObject);
 ```
 ### Pause & Continue
 
@@ -140,7 +143,7 @@ The editor window can be accessed through `Window->Signals->Singals`. On the fir
 
 ## Contribute
 
-Contributions to the repository are always welcome. There are several ways to contribute:  
+Contributions to the repository are always welcome. There are several ways to contribute:
 * [Create an issue](../../issues) for a problem you found or an idea on how to improve the project
 * Solve existing issues with PRs
 * Write test cases to make sure everything is running the way it is supposed to run
