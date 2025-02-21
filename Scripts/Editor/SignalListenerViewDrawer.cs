@@ -40,8 +40,8 @@ namespace Supyrb
 			private static GUIStyle CreateLabelStyle(string name, Color color)
 			{
 				var style = new GUIStyle(EditorStyles.label);
-                style.name = name;
-                var backgroundTex = SignalsEditorUtilities.CreateColorTexture(color);
+				style.name = name;
+				var backgroundTex = SignalsEditorUtilities.CreateColorTexture(color);
 				backgroundTex.hideFlags = HideFlags.HideAndDontSave;
 				style.normal.background = backgroundTex;
 				return style;
@@ -75,7 +75,7 @@ namespace Supyrb
 				numEntries = maxEntries;
 				cuttingList = true;
 			}
-			
+
 			for (var i = 0; i < numEntries; i++)
 			{
 				int sortOrder = listeners.GetSortOrderForIndex(i);

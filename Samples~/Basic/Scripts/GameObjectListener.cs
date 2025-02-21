@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace Supyrb
 {
-    public class GameObjectListener : MonoBehaviour
+	public class GameObjectListener : MonoBehaviour
 	{
 		private void OnEnable()
 		{

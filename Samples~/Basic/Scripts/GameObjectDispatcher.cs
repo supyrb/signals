@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace Supyrb
 {
-    public class GameObjectDispatcher : MonoBehaviour
+	public class GameObjectDispatcher : MonoBehaviour
 	{
 		private IEnumerator Start()
 		{

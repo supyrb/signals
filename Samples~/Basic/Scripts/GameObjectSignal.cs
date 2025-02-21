@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace Supyrb
 {
-    public class GameObjectSignal : Signal<GameObject>
+	public class GameObjectSignal : Signal<GameObject>
 	{
 	}
 }

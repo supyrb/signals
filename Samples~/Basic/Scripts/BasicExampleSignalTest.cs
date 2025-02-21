@@ -14,7 +14,7 @@ using UnityEngine;
 namespace Supyrb
 {
 
-    public class BasicExampleSignalTest : MonoBehaviour
+	public class BasicExampleSignalTest : MonoBehaviour
 	{
 		[SerializeField]
 		private bool logListeners = true;

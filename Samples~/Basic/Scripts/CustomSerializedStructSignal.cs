@@ -11,7 +11,7 @@
 
 namespace Supyrb
 {
-    public struct CustomStruct
+	public struct CustomStruct
 	{
 		public int Integer;
 		public string String;
