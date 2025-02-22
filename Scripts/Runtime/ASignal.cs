@@ -10,6 +10,7 @@
 
 #if ENABLE_MONO || ENABLE_IL2CPP
 using UnityEngine.Profiling;
+using UnityEngine.Scripting;
 #endif
 
 namespace Supyrb
@@ -19,6 +20,9 @@ namespace Supyrb
 	/// This is also a non-generics version that can be easily referenced.
 	/// Implementations with generics should take <see cref="ASignalAction"/> as their base class
 	/// </summary>
+#if ENABLE_MONO || ENABLE_IL2CPP
+	[RequireDerived]
+#endif
 	public abstract class ASignal : ISignal
 	{
 		public enum State
