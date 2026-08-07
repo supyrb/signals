@@ -11,6 +11,12 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
+#if UNITY_6000_2_OR_NEWER
+// Non-generic TreeView types are deprecated since Unity 6000.2, an error since 6000.5
+using TreeView = UnityEditor.IMGUI.Controls.TreeView<int>;
+using TreeViewItem = UnityEditor.IMGUI.Controls.TreeViewItem<int>;
+using TreeViewState = UnityEditor.IMGUI.Controls.TreeViewState<int>;
+#endif
 
 namespace Supyrb
 {
