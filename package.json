@@ -1,32 +1,34 @@
 {
-	"name": "com.supyrb.signals",
-	"author": "Johannes Deml",
-	"displayName": "Signals ❇",
-	"description": "Signals is a powerful, lightweight messaging system that provides sortable, consumable and pausable signals. Comes with an editor window for easy access to the signals.",
-	"keywords": [
-		"Signal",
-		"Signals",
-		"Events",
-		"Messaging",
-		"Decoupled"
-	],
-	"license": "MIT",
-	"category": "Utility",
-	"version": "1.2.1",
-	"unity": "2018.1",
-	"dependencies": {
-
-	},
-	"samples": [
-		{
-			"displayName": "Basic",
-			"description": "Simple example with one listener showing the basic usage of order and consuming signals",
-			"path": "Samples~/Basic"
-		},
-		{
-			"displayName": "StressTest",
-			"description": "Dispatch every frame to 10000 listeners",
-			"path": "Samples~/StressTest"
-		}
-	]
+  "name": "com.supyrb.signals",
+  "author": {
+    "name": "Johannes Deml",
+    "url": "https://deml.io"
+  },
+  "displayName": "Signals \u2747",
+  "description": "Signals is a powerful, lightweight messaging system that provides sortable, consumable and pausable signals. Comes with an editor window for easy access to the signals.",
+  "keywords": [
+    "Signal",
+    "Signals",
+    "Events",
+    "Messaging",
+    "Decoupled"
+  ],
+  "license": "MIT",
+  "category": "Utility",
+  "version": "1.2.2",
+  "unity": "2018.1",
+  "documentationUrl": "https://github.com/supyrb/signals/tree/master#usage",
+  "samples": [
+    {
+      "displayName": "Basic",
+      "description": "Simple example with one listener showing the basic usage of order and consuming signals",
+      "path": "Samples~/Basic"
+    },
+    {
+      "displayName": "StressTest",
+      "description": "Dispatch every frame to 10000 listeners",
+      "path": "Samples~/StressTest"
+    }
+  ],
+  "licensesUrl": "https://github.com/supyrb/signals/blob/master/LICENSE"
 }
