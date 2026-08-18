@@ -1,20 +1,60 @@
-# Change Log
+# Changelog
+
+## [1.2.2](https://github.com/supyrb/signals/tree/1.2.2) (2026-08-17)
+
+[Full Changelog](https://github.com/supyrb/signals/compare/1.2.1...1.2.2)
+
+**Closed issues:**
+
+- Fix compile errors from obsolete TreeView types in Unity 6000.5 onward [\#23](https://github.com/supyrb/signals/issues/23)
+
+**Merged pull requests:**
+
+- \#23 Fix compile errors from obsolete TreeView types in Unity 6000.5 [\#24](https://github.com/supyrb/signals/pull/24) ([nikolaireinke](https://github.com/nikolaireinke))
+
+## [1.2.1](https://github.com/supyrb/signals/tree/1.2.1) (2026-01-31)
+
+[Full Changelog](https://github.com/supyrb/signals/compare/1.2.0...1.2.1)
+
+**Closed issues:**
+
+- \[Documentation\] Signals need Preserve attribute when used with aggressive code stripping [\#22](https://github.com/supyrb/signals/issues/22)
+
+## [1.2.0](https://github.com/supyrb/signals/tree/1.2.0) (2025-02-22)
+
+[Full Changelog](https://github.com/supyrb/signals/compare/1.1.0...1.2.0)
+
+## [1.1.0](https://github.com/supyrb/signals/tree/1.1.0) (2022-10-03)
+
+[Full Changelog](https://github.com/supyrb/signals/compare/1.0.0...1.1.0)
+
+**Merged pull requests:**
+
+- Feature/signals console [\#21](https://github.com/supyrb/signals/pull/21) ([JohannesDeml](https://github.com/JohannesDeml))
+
+## [1.0.0](https://github.com/supyrb/signals/tree/1.0.0) (2021-02-26)
+
+[Full Changelog](https://github.com/supyrb/signals/compare/0.5.0...1.0.0)
+
+**Closed issues:**
+
+- Deterministic sorting for same order [\#3](https://github.com/supyrb/signals/issues/3)
 
 ## [0.5.0](https://github.com/supyrb/signals/tree/0.5.0) (2020-04-05)
+
 [Full Changelog](https://github.com/supyrb/signals/compare/0.4.3...0.5.0)
-
-**Implemented enhancements:**
-
-- Signal log [\#16](https://github.com/supyrb/signals/issues/16)
 
 **Closed issues:**
 
 - Reset signal hub in edit mode [\#17](https://github.com/supyrb/signals/issues/17)
+- Signal log [\#16](https://github.com/supyrb/signals/issues/16)
 
 ## [0.4.3](https://github.com/supyrb/signals/tree/0.4.3) (2020-03-10)
+
 [Full Changelog](https://github.com/supyrb/signals/compare/0.4.2...0.4.3)
 
 ## [0.4.2](https://github.com/supyrb/signals/tree/0.4.2) (2020-03-10)
+
 [Full Changelog](https://github.com/supyrb/signals/compare/0.4.1...0.4.2)
 
 **Closed issues:**
@@ -22,16 +62,19 @@
 - TypeLoadException in Signlas Window with Unity 2019.3 [\#15](https://github.com/supyrb/signals/issues/15)
 
 ## [0.4.1](https://github.com/supyrb/signals/tree/0.4.1) (2020-03-06)
+
 [Full Changelog](https://github.com/supyrb/signals/compare/0.4.0...0.4.1)
 
 ## [0.4.0](https://github.com/supyrb/signals/tree/0.4.0) (2020-03-05)
+
 [Full Changelog](https://github.com/supyrb/signals/compare/0.3.1...0.4.0)
 
-**Implemented enhancements:**
+**Closed issues:**
 
 - Add editor window for easy signal access [\#14](https://github.com/supyrb/signals/issues/14)
 
 ## [0.3.1](https://github.com/supyrb/signals/tree/0.3.1) (2020-01-29)
+
 [Full Changelog](https://github.com/supyrb/signals/compare/0.3.0...0.3.1)
 
 **Closed issues:**
@@ -43,46 +86,46 @@
 - Fix namespace 'NUnit' not found on version 0.3.0 [\#12](https://github.com/supyrb/signals/pull/12) ([tony707](https://github.com/tony707))
 
 ## [0.3.0](https://github.com/supyrb/signals/tree/0.3.0) (2020-01-04)
+
 [Full Changelog](https://github.com/supyrb/signals/compare/0.2.1...0.3.0)
-
-**Implemented enhancements:**
-
-- Add test cases [\#7](https://github.com/supyrb/signals/issues/7)
 
 **Closed issues:**
 
 - Create minimal abstract base class for signals [\#11](https://github.com/supyrb/signals/issues/11)
 - Create test cases for Signals with arguments [\#10](https://github.com/supyrb/signals/issues/10)
+- Add test cases [\#7](https://github.com/supyrb/signals/issues/7)
 
 **Merged pull requests:**
 
 - Fixed error in installation [\#9](https://github.com/supyrb/signals/pull/9) ([AntiGuide](https://github.com/AntiGuide))
 
 ## [0.2.1](https://github.com/supyrb/signals/tree/0.2.1) (2019-12-11)
+
 [Full Changelog](https://github.com/supyrb/signals/compare/0.2.0...0.2.1)
 
 ## [0.2.0](https://github.com/supyrb/signals/tree/0.2.0) (2019-12-03)
+
 [Full Changelog](https://github.com/supyrb/signals/compare/0.1.5...0.2.0)
 
 ## [0.1.5](https://github.com/supyrb/signals/tree/0.1.5) (2019-12-03)
+
 [Full Changelog](https://github.com/supyrb/signals/compare/0.1.4...0.1.5)
 
-**Fixed bugs:**
+**Closed issues:**
 
 - Adding and removing Listeners while Signal is dispatching [\#6](https://github.com/supyrb/signals/issues/6)
 
 ## [0.1.4](https://github.com/supyrb/signals/tree/0.1.4) (2019-12-03)
+
 [Full Changelog](https://github.com/supyrb/signals/compare/0.1.3...0.1.4)
-
-**Implemented enhancements:**
-
-- Possibility to clear hub entries [\#5](https://github.com/supyrb/signals/issues/5)
 
 **Closed issues:**
 
+- Possibility to clear hub entries [\#5](https://github.com/supyrb/signals/issues/5)
 - Add code documentation [\#1](https://github.com/supyrb/signals/issues/1)
 
 ## [0.1.3](https://github.com/supyrb/signals/tree/0.1.3) (2019-11-15)
+
 [Full Changelog](https://github.com/supyrb/signals/compare/0.1.2...0.1.3)
 
 **Closed issues:**
@@ -91,12 +134,17 @@
 - Changelog generation [\#2](https://github.com/supyrb/signals/issues/2)
 
 ## [0.1.2](https://github.com/supyrb/signals/tree/0.1.2) (2019-07-19)
+
 [Full Changelog](https://github.com/supyrb/signals/compare/0.1.1...0.1.2)
 
 ## [0.1.1](https://github.com/supyrb/signals/tree/0.1.1) (2019-07-19)
+
 [Full Changelog](https://github.com/supyrb/signals/compare/0.1.0...0.1.1)
 
 ## [0.1.0](https://github.com/supyrb/signals/tree/0.1.0) (2019-07-15)
 
+[Full Changelog](https://github.com/supyrb/signals/compare/4778309839142dd91dbe20871afbe0f1dbb776e9...0.1.0)
 
-\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
+
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
